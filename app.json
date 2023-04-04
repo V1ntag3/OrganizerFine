@@ -1,0 +1,7 @@
+{
+  "name": "OrganizerFine",
+  "displayName": "OrganizerFine",
+  "packagerOpts": {
+    "config": "metro.config.js"
+  }
+}
