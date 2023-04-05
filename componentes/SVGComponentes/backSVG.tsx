@@ -8,7 +8,6 @@ type backSVGProps = {
   style: object;
 };
 
-
 function backSVG(props: backSVGProps) {
   return (
     <Svg

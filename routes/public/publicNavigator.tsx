@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Registrar from '../../views/Registrar';
 import Welcome from '../../views/Welcome';
 import Login from '../../views/Login';
+import EsqueciSenha from '../../views/EsqueciSenha';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +17,8 @@ function PublicNavigator() {
       <Stack.Screen name="Welcome" component={Welcome} />
       <Stack.Screen name="Registrar" component={Registrar} />
       <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="EsqueciSenha" component={EsqueciSenha} />
+
     </Stack.Navigator>
   );
 }

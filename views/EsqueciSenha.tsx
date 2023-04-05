@@ -12,78 +12,64 @@ import {
     Dimensions,
     TextInput,
     ScrollView,
-    TouchableOpacity,
 } from 'react-native';
 import ButtonGeneric from '../componentes/ButtonGeneric'
-import TituloPagina from '../componentes/TituloPaginaLoginRegistrar'
-import PastaSVG from '../componentes/SVGComponentes/pastaSVG'
-import NotebookSVG from '../componentes/SVGComponentes/notebookSVG'
+import TituloPagina from '../componentes/TituloPaginaEsqueci'
 import { useState } from 'react';
-import FundoPagina from '../componentes/FundoPaginaLoginRegistrar';
+import FundoPagina from '../componentes/FundoPaginaEsqueci';
+import EsqueciSVG from '../componentes/SVGComponentes/esqueciSVG';
 
 // Dimensoes
 type props = {
     navigation: any;
 }
-var login = {
+var esqueciSenha = {
     email: "",
-    senha: ""
 }
 
 var width = Dimensions.get('window').width;
 var height = Dimensions.get('window').height;
 
-function Login({ navigation }: props["navigation"]): JSX.Element {
+function EsqueciSenha({ navigation }: props["navigation"]): JSX.Element {
 
 
     const [emailError, setEmailError] = useState(false);
-    const [senhaError, setSenhaError] = useState(false);
 
-    const logar = () => {
-        setEmailError(login.email == "" ? true : false)
-        setSenhaError(login.senha == "" ? true : false)
+    const mandarEmail = () => {
+        setEmailError(esqueciSenha.email == "" ? true : false)
 
-        if (emailError && senhaError) {
+        if (emailError ) {
             navigation.goBack()
         }
     }
     return (
         <SafeAreaView style={styles.body}>
             <ScrollView contentContainerStyle={styles.scrollView} >
-                <TituloPagina title='Login' navigation={navigation} />
+                <TituloPagina title='Esqueceu sua Senha?' navigation={navigation} />
                 <FundoPagina />
                 <View style={[styles.containerInput, { zIndex: 0 }]}>
-
+                    <Text style={styles.textEsqueci}>
+                        Não se preocupe basta digitar o email utilizado no cadastro que lhe enviaremos uma nova senha
+                    </Text>
                     <TextInput style={styles.inputStyle}
                         placeholderTextColor="#323941"
                         selectionColor="black"
-                        onChangeText={(text) => login.email = text}
+                        onChangeText={(text) => esqueciSenha.email = text}
                         placeholder="Email" />
-                    <TextInput style={styles.inputStyle}
-                        placeholderTextColor="#323941"
-                        selectionColor="black"
-                        onChangeText={(text) => login.senha = text}
-                        placeholder="Senha" />
-                    <Text style={[styles.errorStyle, { display: senhaError ? 'flex' : 'none' }]}  >Email e/ou Senha inválido(s)</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('EsqueciSenha')} >
-                        <View>
-                            <Text style={[styles.esqueciSenha]}  >esqueci a senha</Text>
-                        </View>
-                    </TouchableOpacity>
+                
+                    <Text style={[styles.errorStyle, { display: emailError ? 'flex' : 'none' }]}  >Email não cadastrado</Text>
 
                     <View style={styles.containerBotoes}>
-                        <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={() => logar()} title={"Login"} />
+                        <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={() => mandarEmail()} title={"Enviar"} />
                     </View>
                 </View>
-
-                <NotebookSVG style={styles.notebookSVGStyle} width={103} height={103} />
 
                 <View style={styles.containerNome}>
                     <Text style={styles.nomeApp}>ORGANIZER</Text>
                     <Text style={styles.nomeApp}>FINE</Text>
                 </View>
 
-                <PastaSVG style={styles.pastaSVGStyle} width={143} height={143} />
+                <EsqueciSVG style={styles.footerSVGStyle} width={200} height={200} />
 
             </ScrollView>
         </SafeAreaView>
@@ -113,7 +99,8 @@ const styles = StyleSheet.create({
         marginBottom: 4,
         backgroundColor: 'white',
         fontFamily: 'Poppins-Regular',
-        color: '#323941'
+        color: '#323941',
+        marginTop:40
     },
     esqueciSenha:{
         paddingLeft: 3,
@@ -139,7 +126,7 @@ const styles = StyleSheet.create({
     },
     containerInput: {
         paddingVertical: height * 0.3,
-        paddingTop: height * 0.4,
+        paddingTop: height * 0.25,
         paddingBottom: height * 0.2
     },
     containerNome: {
@@ -167,6 +154,19 @@ const styles = StyleSheet.create({
     containerBotoes: {
         width: '100%',
         marginBottom: 100
+    },
+    textEsqueci:{
+        textAlign:'justify',
+        width: '100%',
+        maxWidth: 338.89,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginVertical: 8,
+        fontFamily:'Poppins-Regular',
+        fontSize:22,
+        fontWeight:'400',
+        lineHeight:30,
+        color:'white'
     },
     botaoGrande: {
         alignItems: 'center',
@@ -199,10 +199,10 @@ const styles = StyleSheet.create({
     textBotaoBranco: {
         color: '#3E838C',
     },
-    pastaSVGStyle: {
+    footerSVGStyle: {
         position: 'absolute',
-        right: 0,
-        bottom: -20
+        right: -20,
+        bottom: 0,
     },
     notebookSVGStyle: {
         position: 'absolute',
@@ -211,4 +211,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Login;
+export default EsqueciSenha;
