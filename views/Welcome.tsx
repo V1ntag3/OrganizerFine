@@ -12,16 +12,16 @@ import {
   View,
   Text,
   Dimensions,
-  Alert
 } from 'react-native';
-
 import OfficeSVG from '../componentes/SVGComponentes/officeSVG';
 import ButtonGeneric from '../componentes/ButtonGeneric'
 // Dimensoes
 var width = Dimensions.get('window').width;
 var height = Dimensions.get('window').height;
-
-function Welcome(): JSX.Element {
+type welcomeProps = {
+  navigation: any;
+}
+function Welcome({navigation}:welcomeProps["navigation"]): JSX.Element {
 
   return (
     <SafeAreaView style={styles.body}>
@@ -38,8 +38,8 @@ function Welcome(): JSX.Element {
       </View>
 
       <View style={styles.containerBotoes}>
-        <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro,styles.textoBotaoGrande]} onPress={() => Alert.alert('aqui')} title={"Login"}/>
-        <ButtonGeneric styleButton={[styles.botaoBranco, styles.botaoGrande]} styleText={[styles.textBotaoBranco,styles.textoBotaoGrande]} onPress={() => Alert.alert('aqui')} title={"Registrar"}/>
+        <ButtonGeneric onPress={() => navigation.navigate('Registrar')}  styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro,styles.textoBotaoGrande]} title={"Login"}/>
+        <ButtonGeneric onPress={() => navigation.navigate('Registrar')}  styleButton={[styles.botaoBranco, styles.botaoGrande]} styleText={[styles.textBotaoBranco,styles.textoBotaoGrande]}  title={"Registrar"}/>
       </View>
       <OfficeSVG style={styles.officeSVGStyle} width={height*0.29} height={height*0.29} />
     </SafeAreaView>

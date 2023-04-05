@@ -6,13 +6,10 @@
  */
 
 import React from 'react';
-import Welcome from './views/Welcome';
-
+import Routes from './routes';
 function App(): JSX.Element {
 
-  return (
-    <Welcome/>
-  );
+  return <Routes />;
 }
 
 export default App;
