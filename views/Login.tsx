@@ -21,94 +21,54 @@ import { useState } from 'react';
 import FundoPagina from '../componentes/FundoPaginaLoginRegistrar';
 
 // Dimensoes
-type registrarProps = {
+type props = {
     navigation: any;
 }
-var registrar = {
-    nome: "",
-    sobrenome: "",
+var login = {
     email: "",
-    celular: "",
-    senha: "",
-    confirm_senha: ""
+    senha: ""
 }
 
 var width = Dimensions.get('window').width;
 var height = Dimensions.get('window').height;
 
-function Registrar({ navigation }: registrarProps["navigation"]): JSX.Element {
+function Login({ navigation }: props["navigation"]): JSX.Element {
 
-    const [nomeError, setNomeError] = useState(false);
-    const [sobreNomeError, setsobreNomeError] = useState(false);
+
     const [emailError, setEmailError] = useState(false);
-    const [celularError, setCelularError] = useState(false);
     const [senhaError, setSenhaError] = useState(false);
-    const [confirmSenhaError, setConfirmSenhaError] = useState(false);
 
-    const validarRegistrar = () => {
-        setNomeError(registrar.nome == "" ? true : false)
-        setsobreNomeError(registrar.sobrenome == "" ? true : false)
-        setEmailError(registrar.email == "" ? true : false)
-        setCelularError(registrar.celular == "" ? true : false)
-        setSenhaError(registrar.senha == "" || (registrar.senha != registrar.confirm_senha) ? true : false)
-        setConfirmSenhaError(registrar.confirm_senha == "" ? true : false)
+    const logar = () => {
+        setEmailError(login.email == "" ? true : false)
+        setSenhaError(login.senha == "" ? true : false)
 
-        if (nomeError && sobreNomeError && emailError && celularError && senhaError && confirmSenhaError) {
+        if (emailError && senhaError) {
             navigation.goBack()
         }
     }
     return (
         <SafeAreaView style={styles.body}>
-            <ScrollView contentContainerStyle={styles.scrollView}>
-
+            <ScrollView contentContainerStyle={styles.scrollView} >
+                <TituloPagina title='Login' navigation={navigation} />
                 <FundoPagina />
-                <TituloPagina title='Registrar' navigation={navigation} />
-
-                <View style={styles.containerInput}>
-                    <TextInput style={styles.inputStyle}
-                        placeholderTextColor="#323941"
-                        selectionColor="black"
-                        onChangeText={(text) => registrar.nome = text}
-                        placeholder="Nome" />
-                    <Text style={[styles.errorStyle, { display: nomeError ? 'flex' : 'none' }]} >Campo inválido</Text>
-                    <TextInput style={styles.inputStyle}
-                        placeholderTextColor="#323941"
-                        selectionColor="black"
-                        onChangeText={(text) => registrar.sobrenome = text}
-                        placeholder="Sobrenome" />
-                    <Text style={[styles.errorStyle, { display: sobreNomeError ? 'flex' : 'none' }]} >Campo inválido</Text>
+                <View style={[styles.containerInput, { zIndex: 0 }]}>
 
                     <TextInput style={styles.inputStyle}
                         placeholderTextColor="#323941"
                         selectionColor="black"
-                        onChangeText={(text) => registrar.email = text}
+                        onChangeText={(text) => login.email = text}
                         placeholder="Email" />
                     <Text style={[styles.errorStyle, { display: emailError ? 'flex' : 'none' }]}  >Campo inválido</Text>
 
                     <TextInput style={styles.inputStyle}
                         placeholderTextColor="#323941"
                         selectionColor="black"
-                        onChangeText={(text) => registrar.celular = text}
-                        placeholder="Celular"
-                        keyboardType="numeric" />
-                    <Text style={[styles.errorStyle, { display: celularError ? 'flex' : 'none' }]}  >Campo inválido</Text>
-
-                    <TextInput style={styles.inputStyle}
-                        placeholderTextColor="#323941"
-                        selectionColor="black"
-                        onChangeText={(text) => registrar.senha = text}
+                        onChangeText={(text) => login.senha = text}
                         placeholder="Senha" />
                     <Text style={[styles.errorStyle, { display: senhaError ? 'flex' : 'none' }]}  >Campo inválido</Text>
 
-                    <TextInput style={styles.inputStyle}
-                        placeholderTextColor="#323941"
-                        selectionColor="black"
-                        onChangeText={(text) => registrar.confirm_senha = text}
-                        placeholder="Confirmar Senha" />
-                    <Text style={[styles.errorStyle, { display: confirmSenhaError ? 'flex' : 'none' }]}  >Campo inválido</Text>
-
                     <View style={styles.containerBotoes}>
-                        <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={() => validarRegistrar()} title={"Registrar"} />
+                        <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={() => logar()} title={"Login"} />
                     </View>
                 </View>
 
@@ -120,8 +80,8 @@ function Registrar({ navigation }: registrarProps["navigation"]): JSX.Element {
                 </View>
 
                 <PastaSVG style={styles.pastaSVGStyle} width={143} height={143} />
-            </ScrollView>
 
+            </ScrollView>
         </SafeAreaView>
 
     );
@@ -163,7 +123,9 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Medium'
     },
     containerInput: {
-        marginTop: height * 0.25
+        paddingVertical: height * 0.3,
+        paddingTop: height * 0.4,
+        paddingBottom: height * 0.2
     },
     containerNome: {
         position: 'absolute',
@@ -234,4 +196,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Registrar;
+export default Login;

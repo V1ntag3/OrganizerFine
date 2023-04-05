@@ -1,5 +1,6 @@
 import React from 'react';
-import { Text, StyleSheet, Pressable, View, Dimensions } from 'react-native';
+import { Text, StyleSheet, Pressable, View, Dimensions, Button, TouchableOpacity, Touchable, TouchableHighlightBase, Alert } from 'react-native';
+import { TouchableHighlight } from 'react-native-gesture-handler';
 import BackSVG from './SVGComponentes/backSVG';
 type tituloPaginaProps = {
     title: string;
@@ -11,9 +12,13 @@ export default function tituloPagina(props: tituloPaginaProps) {
     const { title, navigation } = props;
 
     return (
-        <View>
+        <View style={{zIndex:0}}>
             <View style={styles.circulo1}></View>
-            <Pressable onPress={() => { navigation.goBack(); }} ><BackSVG style={styles.backSVGStyle} width={47} height={47} /></Pressable>
+
+            <Pressable style={{width:50, height:50,}} onPress={()=> navigation.goBack()}>
+                <BackSVG style={styles.backSVGStyle} width={47} height={47} />
+            </Pressable>
+            
             <Text style={styles.tituloPagina}>{title}</Text>
         </View>
     );
@@ -22,8 +27,8 @@ export default function tituloPagina(props: tituloPaginaProps) {
 const styles = StyleSheet.create({
     circulo1: {
         position: 'absolute',
-        height: height * 0.46,
-        width: width * 0.85,
+        height: height * 0.44,
+        width: width * 0.89,
         top: height * -0.33,
         left: width * -0.21,
         borderRadius: width * 1.024 / 2,
@@ -43,7 +48,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontFamily: 'Poppins-SemiBold',
         position: 'absolute',
-        left: 56,
+        left: 50,
         top: 10
     },
 });

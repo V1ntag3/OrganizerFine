@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, Pressable } from 'react-native';
+import { Text, StyleSheet, Pressable, TouchableOpacity } from 'react-native';
 type ButtonProps = {
     onPress: () => void;
     title: string;
@@ -11,9 +11,9 @@ export default function ButtonGeneric(props: ButtonProps) {
     const { onPress, title, styleButton, styleText} = props;
 
     return (
-        <Pressable style={styleButton} onPress={onPress}>
+        <TouchableOpacity style={styleButton} onPress={onPress}>
             <Text style={styleText}>{title}</Text>
-        </Pressable>
+        </TouchableOpacity>
     );
 }
 

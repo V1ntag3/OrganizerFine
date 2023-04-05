@@ -18,9 +18,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#195E63',
         position: 'absolute',
         width: width,
-        height: height * 0.70,
+        height: height * 0.65,
         left: 0,
-        bottom: 0
+        bottom: -10
     },
     circulo2: {
         backgroundColor: '#195E63',

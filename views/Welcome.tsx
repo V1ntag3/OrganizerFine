@@ -38,7 +38,7 @@ function Welcome({navigation}:welcomeProps["navigation"]): JSX.Element {
       </View>
 
       <View style={styles.containerBotoes}>
-        <ButtonGeneric onPress={() => navigation.navigate('Registrar')}  styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro,styles.textoBotaoGrande]} title={"Login"}/>
+        <ButtonGeneric onPress={() => navigation.navigate('Login')}  styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro,styles.textoBotaoGrande]} title={"Login"}/>
         <ButtonGeneric onPress={() => navigation.navigate('Registrar')}  styleButton={[styles.botaoBranco, styles.botaoGrande]} styleText={[styles.textBotaoBranco,styles.textoBotaoGrande]}  title={"Registrar"}/>
       </View>
       <OfficeSVG style={styles.officeSVGStyle} width={height*0.29} height={height*0.29} />
