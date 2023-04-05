@@ -55,12 +55,12 @@ function Login({ navigation }: props["navigation"]): JSX.Element {
                 <View style={[styles.containerInput, { zIndex: 0 }]}>
 
                     <TextInput style={styles.inputStyle}
-                        placeholderTextColor="#323941"
                         selectionColor="black"
+                        placeholderTextColor = {emailError ? '#FD6161' : '#323941'}
                         onChangeText={(text) => login.email = text}
                         placeholder="Email" />
                     <TextInput style={styles.inputStyle}
-                        placeholderTextColor="#323941"
+                        placeholderTextColor = {senhaError ? '#FD6161' : '#323941'}
                         selectionColor="black"
                         onChangeText={(text) => login.senha = text}
                         placeholder="Senha" />

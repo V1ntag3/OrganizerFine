@@ -14,7 +14,7 @@ function OkSVG(props: backSVGProps) {
       width={props.width}
       height={props.height}
       style={props.style}
-      viewBox="0 0 13 23"
+      viewBox="0 0 500 500"
       fill="none"
     >
       <Path

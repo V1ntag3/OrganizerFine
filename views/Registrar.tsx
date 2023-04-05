@@ -66,27 +66,27 @@ function Registrar({ navigation }: registrarProps["navigation"]): JSX.Element {
 
                 <View style={styles.containerInput}>
                     <TextInput style={styles.inputStyle}
-                        placeholderTextColor="#323941"
+                        placeholderTextColor = {nomeError ? '#FD6161' : '#323941'}
                         selectionColor="black"
                         onChangeText={(text) => registrar.nome = text}
                         placeholder="Nome" />
                     <Text style={[styles.errorStyle, { display: nomeError ? 'flex' : 'none' }]} >Campo inválido</Text>
                     <TextInput style={styles.inputStyle}
-                        placeholderTextColor="#323941"
+                        placeholderTextColor = {sobreNomeError ? '#FD6161' : '#323941'}
                         selectionColor="black"
                         onChangeText={(text) => registrar.sobrenome = text}
                         placeholder="Sobrenome" />
                     <Text style={[styles.errorStyle, { display: sobreNomeError ? 'flex' : 'none' }]} >Campo inválido</Text>
 
                     <TextInput style={styles.inputStyle}
-                        placeholderTextColor="#323941"
+                        placeholderTextColor = {emailError ? '#FD6161' : '#323941'}
                         selectionColor="black"
                         onChangeText={(text) => registrar.email = text}
                         placeholder="Email" />
                     <Text style={[styles.errorStyle, { display: emailError ? 'flex' : 'none' }]}  >Campo inválido</Text>
 
                     <TextInput style={styles.inputStyle}
-                        placeholderTextColor="#323941"
+                        placeholderTextColor = {celularError ? '#FD6161' : '#323941'}
                         selectionColor="black"
                         onChangeText={(text) => registrar.celular = text}
                         placeholder="Celular"
@@ -94,14 +94,14 @@ function Registrar({ navigation }: registrarProps["navigation"]): JSX.Element {
                     <Text style={[styles.errorStyle, { display: celularError ? 'flex' : 'none' }]}  >Campo inválido</Text>
 
                     <TextInput style={styles.inputStyle}
-                        placeholderTextColor="#323941"
+                        placeholderTextColor = {senhaError ? '#FD6161' : '#323941'}
                         selectionColor="black"
                         onChangeText={(text) => registrar.senha = text}
                         placeholder="Senha" />
                     <Text style={[styles.errorStyle, { display: senhaError ? 'flex' : 'none' }]}  >Campo inválido</Text>
 
                     <TextInput style={styles.inputStyle}
-                        placeholderTextColor="#323941"
+                        placeholderTextColor = {confirmSenhaError ? '#FD6161' : '#323941'}
                         selectionColor="black"
                         onChangeText={(text) => registrar.confirm_senha = text}
                         placeholder="Confirmar Senha" />
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     scrollView: {
-        height:height
+        minHeight:height
     },
     inputStyle: {
         alignItems: 'center',

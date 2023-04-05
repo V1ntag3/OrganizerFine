@@ -14,10 +14,9 @@ import {
     ScrollView,
 } from 'react-native';
 import ButtonGeneric from '../componentes/ButtonGeneric'
-import TituloPagina from '../componentes/TituloPaginaEsqueci'
 import { useState } from 'react';
-import FundoPagina from '../componentes/FundoPaginaEsqueci';
-import EsqueciSVG from '../componentes/SVGComponentes/esqueciSVG';
+
+import OkSVG from '../componentes/SVGComponentes/okSVG';
 
 // Dimensoes
 type props = {
@@ -26,41 +25,27 @@ type props = {
 var esqueciSenha = {
     email: "",
 }
-
-var width = Dimensions.get('window').width;
+var width = Dimensions.get('window').width
 var height = Dimensions.get('window').height;
 
-function EsqueciSenha({ navigation }: props["navigation"]): JSX.Element {
+function EsqueciSenhaOk({ navigation }: props["navigation"]): JSX.Element {
 
 
-    const [emailError, setEmailError] = useState(false);
-
-    const mandarEmail = () => {
-        setEmailError(esqueciSenha.email == "" ? true : false)
-
-        if (!emailError ) {
-            navigation.navigate('EsqueciSenhaOk')
-        }
-    }
+  
     return (
         <SafeAreaView style={styles.body}>
             <ScrollView contentContainerStyle={styles.scrollView} >
-                <TituloPagina title='Esqueceu sua Senha?' navigation={navigation} />
-                <FundoPagina />
+              
                 <View style={[styles.containerInput, { zIndex: 0 }]}>
                     <Text style={styles.textEsqueci}>
-                        Não se preocupe basta digitar o email utilizado no cadastro que lhe enviaremos uma nova senha
-                    </Text>
-                    <TextInput style={styles.inputStyle}
-                        placeholderTextColor="#323941"
-                        selectionColor="black"
-                        onChangeText={(text) => esqueciSenha.email = text}
-                        placeholder="Email" />
-                
-                    <Text style={[styles.errorStyle, { display: !emailError ? 'flex' : 'none' }]}  >Email não cadastrado</Text>
+                    Sua senha foi enviada com sucesso                  
+                      </Text>
+
+                      <OkSVG style={styles.okSVGStyle} width={300} height={300} />
+
 
                     <View style={styles.containerBotoes}>
-                        <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={() => mandarEmail()} title={"Enviar"} />
+                        <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={() => navigation.navigate('Login')} title={"Logar"} />
                     </View>
                 </View>
 
@@ -69,7 +54,6 @@ function EsqueciSenha({ navigation }: props["navigation"]): JSX.Element {
                     <Text style={styles.nomeApp}>FINE</Text>
                 </View>
 
-                <EsqueciSVG style={styles.footerSVGStyle} width={200} height={200} />
 
             </ScrollView>
         </SafeAreaView>
@@ -79,7 +63,7 @@ function EsqueciSenha({ navigation }: props["navigation"]): JSX.Element {
 
 const styles = StyleSheet.create({
     body: {
-        backgroundColor: '#8EBDB6',
+        backgroundColor: '#195E63',
         flex: 1,
     },
     scrollView: {
@@ -126,7 +110,7 @@ const styles = StyleSheet.create({
     },
     containerInput: {
         paddingVertical: height * 0.3,
-        paddingTop: height * 0.25,
+        paddingTop: 10,
         paddingBottom: height * 0.2
     },
     containerNome: {
@@ -156,16 +140,16 @@ const styles = StyleSheet.create({
         marginBottom: 100
     },
     textEsqueci:{
-        textAlign:'justify',
+        textAlign:'left',
         width: '100%',
         maxWidth: 338.89,
         marginLeft: 'auto',
         marginRight: 'auto',
         marginVertical: 8,
         fontFamily:'Poppins-Regular',
-        fontSize:22,
-        fontWeight:'400',
-        lineHeight:30,
+        fontSize:34,
+        fontWeight:'700',
+        lineHeight:52,
         color:'white'
     },
     botaoGrande: {
@@ -199,10 +183,9 @@ const styles = StyleSheet.create({
     textBotaoBranco: {
         color: '#3E838C',
     },
-    footerSVGStyle: {
-        position: 'absolute',
-        right: -20,
-        bottom: 0,
+    okSVGStyle: {
+       marginLeft: width * 0.25,
+       marginVertical:height * 0.084 
     },
     notebookSVGStyle: {
         position: 'absolute',
@@ -211,4 +194,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default EsqueciSenha;
+export default EsqueciSenhaOk;
