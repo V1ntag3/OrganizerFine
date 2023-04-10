@@ -11,8 +11,8 @@ import {
     Text,
     Dimensions,
     TextInput,
-    ScrollView,
     TouchableOpacity,
+    ScrollView,
 } from 'react-native';
 import ButtonGeneric from '../componentes/ButtonGeneric'
 import TituloPagina from '../componentes/TituloPaginaLoginRegistrar'
@@ -35,7 +35,6 @@ var height = Dimensions.get('window').height;
 
 function Login({ navigation }: props["navigation"]): JSX.Element {
 
-
     const [emailError, setEmailError] = useState(false);
     const [senhaError, setSenhaError] = useState(false);
 
@@ -44,23 +43,24 @@ function Login({ navigation }: props["navigation"]): JSX.Element {
         setSenhaError(login.senha == "" ? true : false)
 
         if (emailError && senhaError) {
-            navigation.goBack()
+            navigation.navigate('DashBoard')
         }
     }
     return (
         <SafeAreaView style={styles.body}>
-            <ScrollView contentContainerStyle={styles.scrollView} >
+            <ScrollView contentContainerStyle={styles.scrollView}>
+
                 <TituloPagina title='Login' navigation={navigation} />
                 <FundoPagina />
                 <View style={[styles.containerInput, { zIndex: 0 }]}>
 
                     <TextInput style={styles.inputStyle}
                         selectionColor="black"
-                        placeholderTextColor = {emailError ? '#FD6161' : '#323941'}
+                        placeholderTextColor={emailError ? '#FD6161' : '#323941'}
                         onChangeText={(text) => login.email = text}
                         placeholder="Email" />
                     <TextInput style={styles.inputStyle}
-                        placeholderTextColor = {senhaError ? '#FD6161' : '#323941'}
+                        placeholderTextColor={senhaError ? '#FD6161' : '#323941'}
                         selectionColor="black"
                         onChangeText={(text) => login.senha = text}
                         placeholder="Senha" />
@@ -84,7 +84,6 @@ function Login({ navigation }: props["navigation"]): JSX.Element {
                 </View>
 
                 <PastaSVG style={styles.pastaSVGStyle} width={143} height={143} />
-
             </ScrollView>
         </SafeAreaView>
 
@@ -94,10 +93,10 @@ function Login({ navigation }: props["navigation"]): JSX.Element {
 const styles = StyleSheet.create({
     body: {
         backgroundColor: '#8EBDB6',
-        flex: 1,
+        flex: 1
     },
     scrollView: {
-        height:height
+        minHeight:height
     },
     inputStyle: {
         alignItems: 'center',
@@ -115,7 +114,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Regular',
         color: '#323941'
     },
-    esqueciSenha:{
+    esqueciSenha: {
         paddingLeft: 3,
         width: '100%',
         maxWidth: 338.89,
@@ -138,9 +137,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Medium'
     },
     containerInput: {
-        paddingVertical: height * 0.3,
-        paddingTop: height * 0.4,
-        paddingBottom: height * 0.2
+        paddingTop: height * 0.3
     },
     containerNome: {
         position: 'absolute',

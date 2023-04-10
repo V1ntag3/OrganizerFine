@@ -13,63 +13,32 @@ import {
     TextInput,
     ScrollView,
 } from 'react-native';
-import ButtonGeneric from '../componentes/ButtonGeneric'
-import TituloPagina from '../componentes/TituloPaginaEsqueci'
+
 import { useState } from 'react';
-import FundoPagina from '../componentes/FundoPaginaEsqueci';
-import EsqueciSVG from '../componentes/SVGComponentes/esqueciSVG';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
 // Dimensoes
 type props = {
     navigation: any;
 }
-var esqueciSenha = {
-    email: "",
-}
+
 
 var width = Dimensions.get('window').width;
 var height = Dimensions.get('window').height;
 
-function EsqueciSenha({ navigation }: props["navigation"]): JSX.Element {
+function DashBoard({ navigation }: props["navigation"]): JSX.Element {
 
+    const Drawer = createDrawerNavigator()
 
-    const [emailError, setEmailError] = useState(false);
+    const [gastos, setGastos] = useState(false);
 
-    const mandarEmail = () => {
-        setEmailError(esqueciSenha.email == "" ? true : false)
-
-        if (!emailError ) {
-            navigation.navigate('EsqueciSenhaOk')
-        }
+    const procurarGastos = () => {
+       
     }
     return (
         <SafeAreaView style={styles.body}>
             <ScrollView contentContainerStyle={styles.scrollView} >
-                <TituloPagina title='Esqueceu sua Senha?' navigation={navigation} />
-                <FundoPagina />
-                <View style={[styles.containerInput, { zIndex: 0 }]}>
-                    <Text style={styles.textEsqueci}>
-                        Não se preocupe basta digitar o email utilizado no cadastro que lhe enviaremos uma nova senha
-                    </Text>
-                    <TextInput style={styles.inputStyle}
-                        placeholderTextColor="#323941"
-                        selectionColor="black"
-                        onChangeText={(text) => esqueciSenha.email = text}
-                        placeholder="Email" />
-                
-                    <Text style={[styles.errorStyle, { display: emailError ? 'flex' : 'none' }]}  >Email não cadastrado</Text>
-
-                    <View style={styles.containerBotoes}>
-                        <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={() => mandarEmail()} title={"Enviar"} />
-                    </View>
-                </View>
-
-                <View style={styles.containerNome}>
-                    <Text style={styles.nomeApp}>ORGANIZER</Text>
-                    <Text style={styles.nomeApp}>FINE</Text>
-                </View>
-
-                <EsqueciSVG style={styles.footerSVGStyle} width={0.25 * height} height={0.25 * height} />
+         
 
             </ScrollView>
         </SafeAreaView>
@@ -95,6 +64,7 @@ const styles = StyleSheet.create({
         maxWidth: 338.89,
         marginLeft: 'auto',
         marginRight: 'auto',
+        marginVertical: 8,
         marginBottom: 4,
         backgroundColor: 'white',
         fontFamily: 'Poppins-Regular',
@@ -210,4 +180,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default EsqueciSenha;
+export default DashBoard;
