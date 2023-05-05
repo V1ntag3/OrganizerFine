@@ -9,7 +9,7 @@ function PrivateNavigator() {
   return (
     <Stack.Navigator  screenOptions={{
       headerShown: false
-    }} initialRouteName='DashBoard'>
+    }} initialRouteName='Welcome'>
     </Stack.Navigator>
   );
 }

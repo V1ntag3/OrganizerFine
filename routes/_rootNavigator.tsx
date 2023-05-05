@@ -14,7 +14,7 @@ function RootNavigator() {
       headerShown: false
     }} >
       <Stack.Screen name="PublicNavigator" component={PublicNavigator} />
-      <Stack.Screen name="PrivateNavigator" component={PrivateNavigator} />
+      {/* <Stack.Screen name="PrivateNavigator" component={PrivateNavigator} /> */}
     </Stack.Navigator>
   );
 }
