@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, StyleSheet, Pressable, View, Dimensions} from 'react-native';
 import BackSVG from './SVGComponentes/backSVG';
+import Globals from '../Globals';
 type tituloPaginaProps = {
     title: string;
     navigation: any;
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
         top: height * -0.39,
         left: width * -0.06,
         borderRadius: width * 2 / 2,
-        backgroundColor: '#195E63',
+        backgroundColor: Globals.COLOR.LIGHT.COLOR4
 
     },
     backSVGStyle: {
@@ -42,12 +43,11 @@ const styles = StyleSheet.create({
         left: -5
     },
     tituloPagina: {
-        fontStyle: 'normal',
         fontSize: 30,
         lineHeight: 47,
         fontWeight: '700',
-        color: 'white',
-        fontFamily: 'Poppins-SemiBold',
+        color: Globals.COLOR.BRANCO,
+        fontFamily: Globals.FONT_FAMILY.SEMIBOLD,
         position: 'absolute',
         left: 50,
         top: 10

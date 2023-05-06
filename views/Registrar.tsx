@@ -9,7 +9,6 @@ import {
     StyleSheet,
     View,
     Text,
-    Dimensions,
     TextInput,
     ScrollView,
 } from 'react-native';
@@ -19,8 +18,8 @@ import PastaSVG from '../componentes/SVGComponentes/pastaSVG'
 import NotebookSVG from '../componentes/SVGComponentes/notebookSVG'
 import { useState } from 'react';
 import FundoPagina from '../componentes/FundoPaginaLoginRegistrar';
+import Globals from '../Globals';
 
-// Dimensoes
 type registrarProps = {
     navigation: any;
 }
@@ -32,9 +31,6 @@ var registrar = {
     senha: "",
     confirm_senha: ""
 }
-
-var width = Dimensions.get('window').width;
-var height = Dimensions.get('window').height;
 
 function Registrar({ navigation }: registrarProps["navigation"]): JSX.Element {
 
@@ -60,33 +56,31 @@ function Registrar({ navigation }: registrarProps["navigation"]): JSX.Element {
     return (
         <SafeAreaView style={styles.body}>
             <ScrollView contentContainerStyle={styles.scrollView}>
-
                 <FundoPagina />
                 <TituloPagina title='Registrar' navigation={navigation} />
-
                 <View style={styles.containerInput}>
                     <TextInput style={styles.inputStyle}
-                        placeholderTextColor = {nomeError ? '#FD6161' : '#323941'}
+                        placeholderTextColor={nomeError ? '#FD6161' : '#323941'}
                         selectionColor="black"
                         onChangeText={(text) => registrar.nome = text}
                         placeholder="Nome" />
                     <Text style={[styles.errorStyle, { display: nomeError ? 'flex' : 'none' }]} >Campo inválido</Text>
                     <TextInput style={styles.inputStyle}
-                        placeholderTextColor = {sobreNomeError ? '#FD6161' : '#323941'}
+                        placeholderTextColor={sobreNomeError ? '#FD6161' : '#323941'}
                         selectionColor="black"
                         onChangeText={(text) => registrar.sobrenome = text}
                         placeholder="Sobrenome" />
                     <Text style={[styles.errorStyle, { display: sobreNomeError ? 'flex' : 'none' }]} >Campo inválido</Text>
 
                     <TextInput style={styles.inputStyle}
-                        placeholderTextColor = {emailError ? '#FD6161' : '#323941'}
+                        placeholderTextColor={emailError ? '#FD6161' : '#323941'}
                         selectionColor="black"
                         onChangeText={(text) => registrar.email = text}
                         placeholder="Email" />
                     <Text style={[styles.errorStyle, { display: emailError ? 'flex' : 'none' }]}  >Campo inválido</Text>
 
                     <TextInput style={styles.inputStyle}
-                        placeholderTextColor = {celularError ? '#FD6161' : '#323941'}
+                        placeholderTextColor={celularError ? '#FD6161' : '#323941'}
                         selectionColor="black"
                         onChangeText={(text) => registrar.celular = text}
                         placeholder="Celular"
@@ -94,31 +88,26 @@ function Registrar({ navigation }: registrarProps["navigation"]): JSX.Element {
                     <Text style={[styles.errorStyle, { display: celularError ? 'flex' : 'none' }]}  >Campo inválido</Text>
 
                     <TextInput style={styles.inputStyle}
-                        placeholderTextColor = {senhaError ? '#FD6161' : '#323941'}
+                        placeholderTextColor={senhaError ? '#FD6161' : '#323941'}
                         selectionColor="black"
                         onChangeText={(text) => registrar.senha = text}
                         placeholder="Senha" />
                     <Text style={[styles.errorStyle, { display: senhaError ? 'flex' : 'none' }]}  >Campo inválido</Text>
-
                     <TextInput style={styles.inputStyle}
-                        placeholderTextColor = {confirmSenhaError ? '#FD6161' : '#323941'}
+                        placeholderTextColor={confirmSenhaError ? '#FD6161' : '#323941'}
                         selectionColor="black"
                         onChangeText={(text) => registrar.confirm_senha = text}
                         placeholder="Confirmar Senha" />
                     <Text style={[styles.errorStyle, { display: confirmSenhaError ? 'flex' : 'none' }]}  >Campo inválido</Text>
-
                     <View style={styles.containerBotoes}>
                         <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={() => validarRegistrar()} title={"Registrar"} />
                     </View>
                 </View>
-
                 <NotebookSVG style={styles.notebookSVGStyle} width={103} height={103} />
-
                 <View style={styles.containerNome}>
                     <Text style={styles.nomeApp}>ORGANIZER</Text>
                     <Text style={styles.nomeApp}>FINE</Text>
                 </View>
-
                 <PastaSVG style={styles.pastaSVGStyle} width={143} height={143} />
             </ScrollView>
 
@@ -129,11 +118,11 @@ function Registrar({ navigation }: registrarProps["navigation"]): JSX.Element {
 
 const styles = StyleSheet.create({
     body: {
-        backgroundColor: '#8EBDB6',
+        backgroundColor: Globals.COLOR.LIGHT.COLOR2,
         flex: 1,
     },
     scrollView: {
-        minHeight:height
+        minHeight: Globals.HEIGHT
     },
     inputStyle: {
         alignItems: 'center',
@@ -147,8 +136,8 @@ const styles = StyleSheet.create({
         marginRight: 'auto',
         marginVertical: 8,
         marginBottom: 4,
-        backgroundColor: 'white',
-        fontFamily: 'Poppins-Regular',
+        backgroundColor: Globals.COLOR.BRANCO,
+        fontFamily: Globals.FONT_FAMILY.REGULAR,
         color: '#323941'
     },
     errorStyle: {
@@ -160,10 +149,10 @@ const styles = StyleSheet.create({
         color: '#FD6161',
         fontSize: 11,
         lineHeight: 12,
-        fontFamily: 'Poppins-Medium'
+        fontFamily: Globals.FONT_FAMILY.MEDIUM
     },
     containerInput: {
-        marginTop: height * 0.25
+        marginTop: Globals.HEIGHT * 0.25
     },
     containerNome: {
         position: 'absolute',
@@ -174,11 +163,10 @@ const styles = StyleSheet.create({
         width: '100%',
         textAlign: 'center',
         fontFamily: 'ABSTER',
-        fontStyle: 'normal',
         fontWeight: '500',
         fontSize: 17,
         lineHeight: 25,
-        color: '#FFFFFF',
+        color: Globals.COLOR.BRANCO,
     },
     imagemOffice: {
         width: 300,
@@ -204,23 +192,22 @@ const styles = StyleSheet.create({
         marginVertical: 8
     },
     textoBotaoGrande: {
-        fontFamily: 'Poppins-Regular',
-        fontStyle: 'normal',
+        fontFamily: Globals.FONT_FAMILY.REGULAR,
         fontWeight: '500',
         fontSize: 25.3498,
         lineHeight: 30
     },
     botaoVerdeClaro: {
-        backgroundColor: '#3E838C',
+        backgroundColor: Globals.COLOR.LIGHT.COLOR3,
     },
     textBotaoVerdeClaro: {
-        color: 'white',
+        color: Globals.COLOR.BRANCO,
     },
     botaoBranco: {
-        backgroundColor: 'white',
+        backgroundColor: Globals.COLOR.BRANCO,
     },
     textBotaoBranco: {
-        color: '#3E838C',
+        color: Globals.COLOR.LIGHT.COLOR3,
     },
     pastaSVGStyle: {
         position: 'absolute',

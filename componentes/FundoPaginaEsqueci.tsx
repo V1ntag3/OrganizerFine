@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Dimensions } from 'react-native';
+import Globals from '../Globals';
 
 var width = Dimensions.get('window').width;
 var height = Dimensions.get('window').height;
@@ -15,7 +16,7 @@ export default function FundoPagina() {
 
 const styles = StyleSheet.create({
     retangulo: {
-        backgroundColor: '#195E63',
+        backgroundColor: Globals.COLOR.LIGHT.COLOR4,
         position: 'absolute',
         width: width,
         height: height * 0.65,
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
         bottom: -10
     },
     circulo2: {
-        backgroundColor: '#195E63',
+        backgroundColor: Globals.COLOR.LIGHT.COLOR4,
         position: 'absolute',
         top: height * 0.25,
         left: width * -0.15,
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
         height: height * 0.45
     },
     circulo3: {
-        backgroundColor: '#195E63',
+        backgroundColor: Globals.COLOR.LIGHT.COLOR4,
         position: 'absolute',
         top: height * 0.22,
         left: width * 0.33,

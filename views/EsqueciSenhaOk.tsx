@@ -9,29 +9,18 @@ import {
     StyleSheet,
     View,
     Text,
-    Dimensions,
-    TextInput,
     ScrollView,
 } from 'react-native';
 import ButtonGeneric from '../componentes/ButtonGeneric'
-import { useState } from 'react';
-
 import OkSVG from '../componentes/SVGComponentes/okSVG';
+import Globals from '../Globals';
 
 // Dimensoes
 type props = {
     navigation: any;
 }
-var esqueciSenha = {
-    email: "",
-}
-var width = Dimensions.get('window').width
-var height = Dimensions.get('window').height;
 
 function EsqueciSenhaOk({ navigation }: props["navigation"]): JSX.Element {
-
-
-  
     return (
         <SafeAreaView style={styles.body}>
             <ScrollView contentContainerStyle={styles.scrollView} >
@@ -67,7 +56,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     scrollView: {
-        height:height
+        height:Globals.HEIGHT
     },
     inputStyle: {
         alignItems: 'center',
@@ -81,8 +70,8 @@ const styles = StyleSheet.create({
         marginRight: 'auto',
         marginVertical: 8,
         marginBottom: 4,
-        backgroundColor: 'white',
-        fontFamily: 'Poppins-Regular',
+        backgroundColor: Globals.COLOR.BRANCO,
+        fontFamily:Globals.FONT_FAMILY.REGULAR,
         color: '#323941',
         marginTop:40
     },
@@ -92,10 +81,10 @@ const styles = StyleSheet.create({
         maxWidth: 338.89,
         marginLeft: 'auto',
         marginRight: 'auto',
-        color: 'white',
+        color: Globals.COLOR.BRANCO,
         fontSize: 13,
         lineHeight: 16,
-        fontFamily: 'Poppins-Medium'
+        fontFamily: Globals.FONT_FAMILY.MEDIUM
     },
     errorStyle: {
         paddingLeft: 3,
@@ -106,12 +95,12 @@ const styles = StyleSheet.create({
         color: '#FD6161',
         fontSize: 11,
         lineHeight: 12,
-        fontFamily: 'Poppins-Medium'
+        fontFamily: Globals.FONT_FAMILY.MEDIUM
     },
     containerInput: {
-        paddingVertical: height * 0.3,
+        paddingVertical: Globals.HEIGHT * 0.3,
         paddingTop: 10,
-        paddingBottom: height * 0.2
+        paddingBottom: Globals.HEIGHT * 0.2
     },
     containerNome: {
         position: 'absolute',
@@ -122,11 +111,10 @@ const styles = StyleSheet.create({
         width: '100%',
         textAlign: 'center',
         fontFamily: 'ABSTER',
-        fontStyle: 'normal',
         fontWeight: '500',
         fontSize: 17,
         lineHeight: 25,
-        color: '#FFFFFF',
+        color: Globals.COLOR.BRANCO,
     },
     imagemOffice: {
         width: 300,
@@ -146,11 +134,11 @@ const styles = StyleSheet.create({
         marginLeft: 'auto',
         marginRight: 'auto',
         marginVertical: 8,
-        fontFamily:'Poppins-Regular',
+        fontFamily:Globals.FONT_FAMILY.REGULAR,
         fontSize:34,
         fontWeight:'700',
         lineHeight:52,
-        color:'white'
+        color:Globals.COLOR.BRANCO
     },
     botaoGrande: {
         alignItems: 'center',
@@ -165,27 +153,26 @@ const styles = StyleSheet.create({
         marginVertical: 8
     },
     textoBotaoGrande: {
-        fontFamily: 'Poppins-Regular',
-        fontStyle: 'normal',
+        fontFamily: Globals.FONT_FAMILY.REGULAR,
         fontWeight: '500',
         fontSize: 25.3498,
         lineHeight: 30
     },
     botaoVerdeClaro: {
-        backgroundColor: '#3E838C',
+        backgroundColor: Globals.COLOR.LIGHT.COLOR3,
     },
     textBotaoVerdeClaro: {
-        color: 'white',
+        color: Globals.COLOR.BRANCO,
     },
     botaoBranco: {
-        backgroundColor: 'white',
+        backgroundColor: Globals.COLOR.BRANCO,
     },
     textBotaoBranco: {
-        color: '#3E838C',
+        color: Globals.COLOR.LIGHT.COLOR3,
     },
     okSVGStyle: {
-       marginLeft: width * 0.25,
-       marginVertical:height * 0.084 
+       marginLeft: Globals.WIDTH * 0.25,
+       marginVertical:Globals.HEIGHT * 0.084 
     },
     notebookSVGStyle: {
         position: 'absolute',

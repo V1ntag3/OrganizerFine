@@ -17,13 +17,13 @@ function PublicNavigator() {
       headerShown: false
     }} initialRouteName='DashBoard'>
 
-      <Stack.Screen name="DashBoard" component={DashBoard} />
 
-      {/* <Stack.Screen name="Welcome" component={Welcome} />
+      <Stack.Screen name="Welcome" component={Welcome} />
       <Stack.Screen name="Registrar" component={Registrar} />
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="EsqueciSenha" component={EsqueciSenha} />
-      <Stack.Screen name="EsqueciSenhaOk" component={EsqueciSenhaOk} /> */}
+      <Stack.Screen name="EsqueciSenhaOk" component={EsqueciSenhaOk} />
+      <Stack.Screen name="DashBoard" component={DashBoard} />
 
     </Stack.Navigator>
   );

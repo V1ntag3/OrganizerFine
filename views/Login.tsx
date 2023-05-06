@@ -9,7 +9,6 @@ import {
     StyleSheet,
     View,
     Text,
-    Dimensions,
     TextInput,
     TouchableOpacity,
     ScrollView,
@@ -20,8 +19,8 @@ import PastaSVG from '../componentes/SVGComponentes/pastaSVG'
 import NotebookSVG from '../componentes/SVGComponentes/notebookSVG'
 import { useState } from 'react';
 import FundoPagina from '../componentes/FundoPaginaLoginRegistrar';
+import Globals from '../Globals';
 
-// Dimensoes
 type props = {
     navigation: any;
 }
@@ -29,9 +28,6 @@ var login = {
     email: "",
     senha: ""
 }
-
-var width = Dimensions.get('window').width;
-var height = Dimensions.get('window').height;
 
 function Login({ navigation }: props["navigation"]): JSX.Element {
 
@@ -44,16 +40,15 @@ function Login({ navigation }: props["navigation"]): JSX.Element {
 
         if (emailError && senhaError) {
             navigation.navigate('DashBoard')
+            console.log('awdaw')
         }
     }
     return (
         <SafeAreaView style={styles.body}>
             <ScrollView contentContainerStyle={styles.scrollView}>
-
                 <TituloPagina title='Login' navigation={navigation} />
                 <FundoPagina />
                 <View style={[styles.containerInput, { zIndex: 0 }]}>
-
                     <TextInput style={styles.inputStyle}
                         selectionColor="black"
                         placeholderTextColor={emailError ? '#FD6161' : '#323941'}
@@ -70,33 +65,28 @@ function Login({ navigation }: props["navigation"]): JSX.Element {
                             <Text style={[styles.esqueciSenha]}  >esqueci a senha</Text>
                         </View>
                     </TouchableOpacity>
-
                     <View style={styles.containerBotoes}>
                         <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={() => logar()} title={"Login"} />
                     </View>
                 </View>
-
                 <NotebookSVG style={styles.notebookSVGStyle} width={103} height={103} />
-
                 <View style={styles.containerNome}>
                     <Text style={styles.nomeApp}>ORGANIZER</Text>
                     <Text style={styles.nomeApp}>FINE</Text>
                 </View>
-
                 <PastaSVG style={styles.pastaSVGStyle} width={143} height={143} />
             </ScrollView>
         </SafeAreaView>
-
     );
 }
 
 const styles = StyleSheet.create({
     body: {
-        backgroundColor: '#8EBDB6',
+        backgroundColor: Globals.COLOR.LIGHT.COLOR2,
         flex: 1
     },
     scrollView: {
-        minHeight:height
+        minHeight: Globals.HEIGHT
     },
     inputStyle: {
         alignItems: 'center',
@@ -110,8 +100,8 @@ const styles = StyleSheet.create({
         marginRight: 'auto',
         marginVertical: 8,
         marginBottom: 4,
-        backgroundColor: 'white',
-        fontFamily: 'Poppins-Regular',
+        backgroundColor: Globals.COLOR.BRANCO,
+        fontFamily: Globals.FONT_FAMILY.REGULAR,
         color: '#323941'
     },
     esqueciSenha: {
@@ -120,10 +110,10 @@ const styles = StyleSheet.create({
         maxWidth: 338.89,
         marginLeft: 'auto',
         marginRight: 'auto',
-        color: 'white',
+        color: Globals.COLOR.BRANCO,
         fontSize: 13,
         lineHeight: 16,
-        fontFamily: 'Poppins-Medium'
+        fontFamily: Globals.FONT_FAMILY.MEDIUM
     },
     errorStyle: {
         paddingLeft: 3,
@@ -134,10 +124,10 @@ const styles = StyleSheet.create({
         color: '#FD6161',
         fontSize: 11,
         lineHeight: 12,
-        fontFamily: 'Poppins-Medium'
+        fontFamily: Globals.FONT_FAMILY.MEDIUM
     },
     containerInput: {
-        paddingTop: height * 0.3
+        paddingTop: Globals.HEIGHT * 0.3
     },
     containerNome: {
         position: 'absolute',
@@ -148,11 +138,10 @@ const styles = StyleSheet.create({
         width: '100%',
         textAlign: 'center',
         fontFamily: 'ABSTER',
-        fontStyle: 'normal',
         fontWeight: '500',
         fontSize: 17,
         lineHeight: 25,
-        color: '#FFFFFF',
+        color: Globals.COLOR.BRANCO,
     },
     imagemOffice: {
         width: 300,
@@ -178,23 +167,22 @@ const styles = StyleSheet.create({
         marginVertical: 8
     },
     textoBotaoGrande: {
-        fontFamily: 'Poppins-Regular',
-        fontStyle: 'normal',
+        fontFamily: Globals.FONT_FAMILY.REGULAR,
         fontWeight: '500',
         fontSize: 25.3498,
         lineHeight: 30
     },
     botaoVerdeClaro: {
-        backgroundColor: '#3E838C',
+        backgroundColor: Globals.COLOR.LIGHT.COLOR3,
     },
     textBotaoVerdeClaro: {
-        color: 'white',
+        color: Globals.COLOR.BRANCO,
     },
     botaoBranco: {
-        backgroundColor: 'white',
+        backgroundColor: Globals.COLOR.BRANCO,
     },
     textBotaoBranco: {
-        color: '#3E838C',
+        color: Globals.COLOR.LIGHT.COLOR3,
     },
     pastaSVGStyle: {
         position: 'absolute',

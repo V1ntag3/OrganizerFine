@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, StyleSheet, Pressable, View, Dimensions, Button, TouchableOpacity, Touchable, TouchableHighlightBase, Alert } from 'react-native';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import BackSVG from './SVGComponentes/backSVG';
+import Globals from '../Globals';
 type tituloPaginaProps = {
     title: string;
     navigation: any;
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
         top: height * -0.33,
         left: width * -0.21,
         borderRadius: width * 1.024 / 2,
-        backgroundColor: '#195E63',
+        backgroundColor: Globals.COLOR.LIGHT.COLOR4,
 
     },
     backSVGStyle: {
@@ -41,12 +42,11 @@ const styles = StyleSheet.create({
         left: -5
     },
     tituloPagina: {
-        fontStyle: 'normal',
         fontSize: 30,
         lineHeight: 47,
         fontWeight: '700',
-        color: 'white',
-        fontFamily: 'Poppins-SemiBold',
+        color: Globals.COLOR.BRANCO,
+        fontFamily: Globals.FONT_FAMILY.SEMIBOLD,
         position: 'absolute',
         left: 50,
         top: 10

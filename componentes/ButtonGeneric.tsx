@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, StyleSheet, Pressable, TouchableOpacity } from 'react-native';
+import Globals from '../Globals';
 type ButtonProps = {
     onPress: () => void;
     title: string;
@@ -28,10 +29,11 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
     },
     text: {
+        fontFamily:Globals.FONT_FAMILY.REGULAR,
         fontSize: 16,
         lineHeight: 21,
         fontWeight: 'bold',
         letterSpacing: 0.25,
-        color: 'white',
+        color: Globals.COLOR.BRANCO,
     }
 });
