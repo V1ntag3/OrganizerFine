@@ -8,6 +8,7 @@ import Login from '../../views/Login';
 import EsqueciSenha from '../../views/EsqueciSenha';
 import EsqueciSenhaOk from '../../views/EsqueciSenhaOk';
 import DashBoard from '../../views/DashBoard';
+import Adicionar from '../../views/Adicionar';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,7 @@ function PublicNavigator() {
       <Stack.Screen name="EsqueciSenha" component={EsqueciSenha} />
       <Stack.Screen name="EsqueciSenhaOk" component={EsqueciSenhaOk} />
       <Stack.Screen name="DashBoard" component={DashBoard} />
+      <Stack.Screen name="Adicionar" component={Adicionar} />
 
     </Stack.Navigator>
   );

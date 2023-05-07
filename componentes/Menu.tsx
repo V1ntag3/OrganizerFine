@@ -5,6 +5,7 @@ import FineSVG from './SVGComponentes/fineSVG';
 import ConfigSVG from '../componentes/SVGComponentes/configSVG'
 import LogoutSVG from '../componentes/SVGComponentes/logoutSVG'
 import Globals from '../Globals';
+import AddSVG from './SVGComponentes/addSVG';
 type props = {
     navigation: any;
 }
@@ -32,6 +33,7 @@ export default function Menu({ navigation }: props["navigation"]): JSX.Element {
 
     return (
         <>
+             
             <TouchableOpacity style={{ zIndex: 10000, position: 'absolute', top: 20, left: 15 }} onPress={moveMenu}>
                 <MenuSVG />
             </TouchableOpacity>

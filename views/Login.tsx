@@ -33,14 +33,14 @@ function Login({ navigation }: props["navigation"]): JSX.Element {
 
     const [emailError, setEmailError] = useState(false);
     const [senhaError, setSenhaError] = useState(false);
-
+    const nav = navigation
     const logar = () => {
         setEmailError(login.email == "" ? true : false)
         setSenhaError(login.senha == "" ? true : false)
 
         if (emailError && senhaError) {
-            navigation.navigate('DashBoard')
             console.log('awdaw')
+            nav.goBack()
         }
     }
     return (
@@ -62,7 +62,7 @@ function Login({ navigation }: props["navigation"]): JSX.Element {
                     <Text style={[styles.errorStyle, { display: senhaError ? 'flex' : 'none' }]}  >Email e/ou Senha inválido(s)</Text>
                     <TouchableOpacity onPress={() => navigation.navigate('EsqueciSenha')} >
                         <View>
-                            <Text style={[styles.esqueciSenha]}  >esqueci a senha</Text>
+                            <Text style={[styles.esqueciSenha]} >esqueci a senha</Text>
                         </View>
                     </TouchableOpacity>
                     <View style={styles.containerBotoes}>

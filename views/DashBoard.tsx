@@ -11,6 +11,7 @@ import {
     Text,
     ScrollView,
     TouchableOpacity,
+    Alert,
 } from 'react-native';
 
 import React, { useCallback, useState } from 'react';
@@ -25,6 +26,8 @@ import EletroSVG from '../componentes/SVGComponentes/eletroSVG';
 import EntreSVG from '../componentes/SVGComponentes/entreSVG';
 import OutrosSVG from '../componentes/SVGComponentes/outrosSVG';
 import VestSVG from '../componentes/SVGComponentes/vestSVG';
+import AddSVG from '../componentes/SVGComponentes/addSVG';
+
 type dashboradProps = {
     navigation: any;
 }
@@ -109,7 +112,7 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
             data: '4d atrás'
         },
         {
-            id: 0,
+            id: 2,
             descricao: 'Gastos com roupas',
             tipo: 0,
             catTipo: 2,
@@ -117,7 +120,7 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
             data: '4d atrás'
         },
         {
-            id: 1,
+            id: 3,
             descricao: 'Gastos com casa',
             tipo: 0,
             catTipo: 3,
@@ -125,7 +128,7 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
             data: '4d atrás'
         },
         {
-            id: 0,
+            id: 4,
             descricao: 'Gastos com roupas',
             tipo: 0,
             catTipo: 4,
@@ -133,7 +136,7 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
             data: '4d atrás'
         },
         {
-            id: 1,
+            id: 5,
             descricao: 'Gastos com casa',
             tipo: 0,
             catTipo: 5,
@@ -162,7 +165,11 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
 
-    const showPicker = useCallback((value: boolean | ((prevState: boolean) => boolean)) => setShow(value), []);
+    const showPicker = (valor:boolean = true) =>{
+        setTimeout(() => {
+            setShow(valor)
+        }, 200);
+    }
 
     const handleDateSelect = (selectedDate: String) => {
         setDate(new Date(selectedDate.toString()));
@@ -203,6 +210,27 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
                     }
                 />
             )}
+            <TouchableOpacity style={{ zIndex: 10000, position: 'absolute', top: 20, right: 0 }} onPress={() => { navigation.navigate('Adicionar') }}>
+                <View style={
+                    {
+                        width: 50,
+                        height: 40,
+                        borderTopLeftRadius: 10,
+                        borderBottomLeftRadius: 10,
+                        backgroundColor: Globals.COLOR.LIGHT.COLOR2,
+                        zIndex: 1000
+                    }
+                }>
+                    <View style={{
+                        marginTop: 3.5,
+                        marginLeft: 6
+                    }}>
+                        <AddSVG />
+                    </View>
+
+                </View>
+            </TouchableOpacity>
+
             <ScrollView contentContainerStyle={styles.scrollView} >
 
                 <TouchableOpacity onPress={() => showPicker(true)}>
@@ -248,10 +276,10 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
                             return (
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                     <Text
-                                        style={{ fontSize: 22, color: Globals.COLOR.BRANCO, fontWeight: 'bold' }}>
+                                        style={{ fontSize: 22, color: Globals.COLOR.BRANCO, fontWeight: 'bold', fontFamily:Globals.FONT_FAMILY.BOLD }}>
                                         47%
                                     </Text>
-                                    <Text style={{ fontSize: 14, color: Globals.COLOR.BRANCO }}>Roupas</Text>
+                                    <Text style={{ fontSize: 14, color: Globals.COLOR.BRANCO,fontFamily:Globals.FONT_FAMILY.REGULAR }}>Roupas</Text>
                                 </View>
                             );
                         }}
@@ -260,7 +288,9 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
                         style={{
 
                             flexDirection: 'row',
-                            marginHorizontal: -Globals.WIDTH * 0.20
+                            marginHorizontal: -Globals.WIDTH * 0.20,
+                            zIndex: 10
+
                         }}>
                         <View style={{
                             flexDirection: 'column',
@@ -290,18 +320,18 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
                 <View style={styles.fundosGastos} >
                     <View style={styles.dados}>
                         <View style={styles.totalizadores}>
-                            <Text style={[styles.textTotalizadores,{color:'#F44336'}]}>Gastos</Text>
-                            <Text style={[styles.textTotalizadores,{color:'#F44336'}]}>R$ {gastos}</Text>
+                            <Text style={[styles.textTotalizadores, { color: '#F44336' }]}>Gastos</Text>
+                            <Text style={[styles.textTotalizadores, { color: '#F44336' }]}>R$ {gastos}</Text>
                         </View>
                         <View style={styles.linha}></View>
                         <View style={styles.totalizadores}>
-                            <Text style={[styles.textTotalizadores,{color:'#0BBC5F'}]}>Receitas</Text>
-                            <Text style={[styles.textTotalizadores,{color:'#0BBC5F'}]}>R$ {receitas}</Text>
+                            <Text style={[styles.textTotalizadores, { color: '#0BBC5F' }]}>Receitas</Text>
+                            <Text style={[styles.textTotalizadores, { color: '#0BBC5F' }]}>R$ {receitas}</Text>
                         </View>
                     </View>
                     {
                         item.map(element => (
-                            <View style={styles.card}>
+                            <View key={element.id} style={styles.card}>
                                 <View style={styles.iconCard}>
                                     {
                                         rederImagem(element.catTipo)
@@ -321,8 +351,9 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
                     }
 
                 </View>
-            </ScrollView >
-        </SafeAreaView >
+            </ScrollView>
+
+        </SafeAreaView>
 
     );
 }
@@ -334,7 +365,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     scrollView: {
-        minHeight: Globals.HEIGHT
+        minHeight: Globals.HEIGHT,
     },
     tituloView: {
         fontWeight: '600',
