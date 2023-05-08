@@ -14,10 +14,16 @@ import {
     ScrollView,
 } from 'react-native';
 import Globals from '../Globals';
-import Menu from '../componentes/Menu';
 import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react';
 import AddSVG from '../componentes/SVGComponentes/addSVG';
+import { Drawer } from 'react-native-drawer-layout';
+import FineSVG from '../componentes/SVGComponentes/fineSVG';
+import ConfigSVG from '../componentes/SVGComponentes/configSVG';
+import LogoutSVG from '../componentes/SVGComponentes/logoutSVG';
+import MenuSVG from '../componentes/SVGComponentes/menuSVG';
+import MaskInput, { Masks } from 'react-native-mask-input';
+import SlideButton from 'rn-slide-button';
 
 type props = {
     navigation: any;
@@ -31,13 +37,15 @@ function Adicionar({ navigation }: props["navigation"]): JSX.Element {
                 <Picker
                     placeholder={'Categoria'}
                     numberOfLines={3}
-                    dropdownIconColor={'white'}
+                    dropdownIconColor={'black'}
                     mode='dropdown'
                     selectedValue={selectedValue}
                     style={{
-                        marginTop: 10,
-                        color: 'white',
-                        marginLeft: 9,
+                        backgroundColor: 'white',
+                        marginTop: 4,
+                        color: 'black',
+                        maxWidth: '90%',
+                        marginLeft: '5%',
                         fontSize: 1
                     }}
                     onValueChange={(itemValue: any, itemIndex: any) => setSelectedValue(itemValue)}
@@ -53,53 +61,133 @@ function Adicionar({ navigation }: props["navigation"]): JSX.Element {
             </View>
         );
     }
+    const [openClose, setOpenClose] = useState(false);
+
+    const moveMenu = () => {
+        setOpenClose(openClose ? false : true)
+    };
+    // Dados
+    const [nome, setNome] = useState('Marquin');
+    const [email, setEmail] = useState('marcos@gmail.com');
+    const [telefone, setTelefone] = useState('(86) 9 9 9851 - 4018');
+    const [valor, setValor] = useState('');
+
+    const [tipo, setTipo] = useState(0);
 
     return (
         <SafeAreaView style={styles.body}>
-            <Menu navigation={navigation} />
-            <ScrollView style={styles.scrollView}>
-                <Text style={styles.tituloView}>Adicionar</Text>
+            <Drawer style={{
+                width: '100%',
+                height: '100%',
+                position: 'absolute',
+                zIndex: 100
+            }}
+                drawerStyle={{
+                    width: '90%'
+                }}
+                open={openClose}
+                onOpen={() => setOpenClose(true)}
+                onClose={() => setOpenClose(false)}
+                renderDrawerContent={() => {
+                    return <View style={{
+                        width: '100%', height: '100%', backgroundColor: Globals.COLOR.LIGHT.COLOR5,
+                    }}>
+                        <View style={styles.imagemUser}>
+                        </View>
+                        <View style={{ marginLeft: 20, marginBottom: 30 }}>
+                            <Text style={{
+                                fontWeight: '300',
+                                fontSize: 20,
+                                color: '#FFFFFF'
+                            }}>
+                                <Text style={{ fontWeight: '700' }}>Olá</Text>, {nome}
+                            </Text>
+                            <Text style={styles.dadosMenu}>{telefone}</Text>
+                            <Text style={styles.dadosMenu}>{email}</Text>
+                        </View>
 
-                <TextInput style={[styles.inputStyle, { marginTop: 20 }]}
-                    selectionColor="white"
-                    placeholderTextColor={false ? '#FD6161' : Globals.COLOR.BRANCO}
-                    // onChangeText={(text) => login.email = text}
-                    placeholder="Descrição" />
+                        <TouchableOpacity onPress={() => { setOpenClose(false); navigation.navigate('DashBoard') }}>
+                            <View style={styles.itemMenu}>
+                                <FineSVG />
+                                <Text style={styles.itemMenuText}>Finanças</Text>
+                            </View>
+                        </TouchableOpacity>
 
-                {
-                    renderPicker()
-                }
-                <TextInput style={styles.inputStyle}
-                    selectionColor="white"
-                    placeholderTextColor={false ? '#FD6161' : Globals.COLOR.BRANCO}
-                    // onChangeText={(text) => login.email = text}
-                    placeholder="Valor" />
+                        <View style={styles.itemMenu}>
+                            <ConfigSVG />
+                            <Text style={styles.itemMenuText}>Configurações</Text>
+                        </View>
 
-                <TouchableOpacity>
-                    <View style={
-                        {
-                            width: 60,
-                            height: 60,
-                            borderRadius: 30,
-                            marginTop: (Globals.HEIGHT - 360),
-                            alignSelf: 'center', alignContent: 'flex-end',
-                            backgroundColor: Globals.COLOR.LIGHT.COLOR5
-                        }
-                    }>
+                        <TouchableOpacity onPress={() => { setOpenClose(false); navigation.navigate('Welcome') }}>
+                            <View style={[styles.itemMenu, { paddingLeft: 17 }]}>
+                                <LogoutSVG />
+                                <Text style={styles.itemMenuText}>Sair</Text>
+                            </View>
+                        </TouchableOpacity>
+
+                    </View>;
+                }}
+            >
+                <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+                    <TouchableOpacity style={{ position: 'absolute', top: 20, left: 15, zIndex: 1000 }} onPress={moveMenu}>
+                        <MenuSVG />
+                    </TouchableOpacity>
+                    <Text style={styles.tituloView}>Adicionar</Text>
+                    <View style={{ width: '90%', alignSelf: 'center', flexDirection: 'row', marginTop: 30 }}>
+                        <TouchableOpacity onPress={() => {setTipo(0)}} style={[{ width: '50%', backgroundColor: '#32CD32', height: 60 }, {
+                            opacity: tipo == 0 ? 1 : 0.5
+                        }]}>
+                            <Text style={{ color: 'white', fontSize: 20, textAlign: 'center', paddingVertical: 16, fontFamily: Globals.FONT_FAMILY.BOLD }}>Receita</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => {setTipo(1)}} style={[{ width: '50%', backgroundColor: '#FF6347', height: 60, }, {
+                            opacity: tipo == 1 ? 1 : 0.5
+
+                        }]}>
+                            <Text style={{ color: 'white', fontSize: 20, textAlign: 'center', paddingVertical: 16, fontFamily: Globals.FONT_FAMILY.BOLD }}>Gasto</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <TextInput style={[styles.inputStyle,]}
+                        selectionColor="black"
+                        placeholderTextColor={false ? '#FD6161' : 'black'}
+                        // onChangeText={(text) => login.email = text}
+                        placeholder="Descrição" />
+
+                    {
+                        renderPicker()
+                    }
+                    <MaskInput
+                        style={styles.inputStyle}
+                        value={valor}
+                        placeholderTextColor={false ? '#FD6161' : 'black'}
+                        selectionColor='black'
+                        onChangeText={(masked) => {
+                            setValor(masked);
+                        }}
+                        mask={Masks.BRL_CURRENCY}
+                    />
+                    <TouchableOpacity style={{ width: 60, height: 60, alignSelf: 'center', marginTop: Globals.HEIGHT - 430 }}>
                         <View style={
                             {
-                                marginTop: 13,
-                                marginLeft: 13
+                                width: 60,
+                                height: 60,
+                                borderRadius: 30,
+                                backgroundColor: Globals.COLOR.LIGHT.COLOR5
                             }
                         }>
-                            <AddSVG />
+                            <View style={
+                                {
+                                    marginTop: 13,
+                                    marginLeft: 13
+                                }
+                            }>
+                                <AddSVG />
 
+                            </View>
                         </View>
-                    </View>
-                </TouchableOpacity>
+                    </TouchableOpacity>
 
-            </ScrollView>
-
+                </ScrollView>
+            </Drawer>
         </SafeAreaView>
     );
 }
@@ -128,16 +216,16 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 49.65,
         // borderRadius: 6.96875,
-        maxWidth: 330,
+        maxWidth: '90%',
         marginLeft: 'auto',
         marginRight: 'auto',
         marginVertical: 8,
-        marginBottom: 4,
-        // backgroundColor: Globals.COLOR.BRANCO,
+        marginBottom: 5,
+        backgroundColor: Globals.COLOR.BRANCO,
         fontFamily: Globals.FONT_FAMILY.REGULAR,
-        color: 'white',
-        borderBottomColor: 'white',
-        borderBottomWidth: 3,
+        color: 'black',
+        // borderBottomColor: 'white',
+        // borderBottomWidth: 3,
 
     },
     esqueciSenha: {
@@ -229,6 +317,43 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 0,
         top: 0,
+    }, dadosMenu: {
+        fontFamily: Globals.FONT_FAMILY.REGULAR,
+        fontWeight: '500',
+        fontSize: 14,
+        color: '#FFFFFF',
+        lineHeight: 20,
+    },
+    imagemUser: {
+        width: Globals.WIDTH * 0.4,
+        height: Globals.WIDTH * 0.4,
+        backgroundColor: "black",
+        borderColor: Globals.COLOR.LIGHT.COLOR4,
+        borderRadius: Globals.WIDTH * 0.20,
+        borderWidth: 4,
+        marginHorizontal: Globals.WIDTH * 0.25,
+        marginTop: 40,
+        marginBottom: 10
+    },
+    itemMenu: {
+        width: '90%',
+        backgroundColor: '#E3E3E3',
+        borderBottomRightRadius: 10,
+        borderTopRightRadius: 10,
+        height: 48,
+        paddingTop: 13,
+        paddingBottom: 13,
+        paddingLeft: 12,
+        paddingRight: 10,
+        flexDirection: 'row',
+        marginBottom: 15
+    },
+    itemMenuText: {
+        fontWeight: '500',
+        fontSize: 16,
+        color: Globals.COLOR.LIGHT.COLOR4,
+        marginLeft: 15,
+        lineHeight: 24
     }
 });
 

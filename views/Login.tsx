@@ -39,7 +39,6 @@ function Login({ navigation }: props["navigation"]): JSX.Element {
         setSenhaError(login.senha == "" ? true : false)
 
         if (emailError && senhaError) {
-            console.log('awdaw')
             nav.goBack()
         }
     }

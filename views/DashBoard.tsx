@@ -11,11 +11,9 @@ import {
     Text,
     ScrollView,
     TouchableOpacity,
-    Alert,
 } from 'react-native';
 
-import React, { useCallback, useState } from 'react';
-import Menu from '../componentes/Menu';
+import React, { useState } from 'react';
 import { PieChart } from "react-native-gifted-charts";
 import Globals from '../Globals';
 import DatePicker from 'react-native-modern-datepicker';
@@ -27,13 +25,19 @@ import EntreSVG from '../componentes/SVGComponentes/entreSVG';
 import OutrosSVG from '../componentes/SVGComponentes/outrosSVG';
 import VestSVG from '../componentes/SVGComponentes/vestSVG';
 import AddSVG from '../componentes/SVGComponentes/addSVG';
-
+import MenuSVG from '../componentes/SVGComponentes/menuSVG';
+import { Drawer } from 'react-native-drawer-layout';
+import LogoutSVG from '../componentes/SVGComponentes/logoutSVG';
+import ConfigSVG from '../componentes/SVGComponentes/configSVG';
+import FineSVG from '../componentes/SVGComponentes/fineSVG';
 type dashboradProps = {
     navigation: any;
 }
 
 function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
-    const rederImagem = (item: any) => {
+
+    // Renderizar Imagem
+    const renderImagem = (item: any) => {
         switch (item) {
             case 0:
                 return (
@@ -165,7 +169,7 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
 
-    const showPicker = (valor:boolean = true) =>{
+    const showPicker = (valor: boolean = true) => {
         setTimeout(() => {
             setShow(valor)
         }, 200);
@@ -178,184 +182,253 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
         var valor = Globals.MONTH.slice((parseInt(selectedDate.toString().slice(4, 7)) - 1), (parseInt(selectedDate.toString().slice(4, 7))))
         setMes(valor)
     }
+
+    const [openClose, setOpenClose] = useState(false);
+
+    const moveMenu = () => {
+        setOpenClose(openClose ? false : true)
+    };
+    // Dados
+    const [nome, setNome] = useState('Marquin');
+    const [email, setEmail] = useState('marcos@gmail.com');
+    const [telefone, setTelefone] = useState('(86) 9 9 9851 - 4018');
+
+
     return (
         <SafeAreaView style={styles.body}>
-            <Menu navigation={navigation} />
-            {show && (
-                <DatePicker
-                    mode="monthYear"
-                    isGregorian={true}
-                    selectorStartingYear={2000}
-                    onMonthYearChange={handleDateSelect}
-                    selectorEndingYear={3000}
-                    style={{
-                        position: 'absolute',
-                        top: 50,
-                        zIndex: 10000,
-                        width: Globals.WIDTH * 0.9,
-                        borderRadius: 25,
-                        left: Globals.WIDTH * 0.05
-                    }}
-                    options={
-                        {
-                            backgroundColor: Globals.COLOR.LIGHT.COLOR3,
-                            textHeaderColor: Globals.COLOR.BRANCO,
-                            textDefaultColor: Globals.COLOR.BRANCO,
-                            selectedTextColor: Globals.COLOR.BRANCO,
-                            mainColor: Globals.COLOR.LIGHT.COLOR2,
-                            defaultFont: Globals.FONT_FAMILY.REGULAR,
-                            textFontSize: 13,
 
-                        }
-                    }
-                />
-            )}
-            <TouchableOpacity style={{ zIndex: 10000, position: 'absolute', top: 20, right: 0 }} onPress={() => { navigation.navigate('Adicionar') }}>
-                <View style={
-                    {
-                        width: 50,
-                        height: 40,
-                        borderTopLeftRadius: 10,
-                        borderBottomLeftRadius: 10,
-                        backgroundColor: Globals.COLOR.LIGHT.COLOR2,
-                        zIndex: 1000
-                    }
-                }>
-                    <View style={{
-                        marginTop: 3.5,
-                        marginLeft: 6
+            <Drawer style={{
+                width: '100%',
+                height: '100%',
+                position: 'absolute',
+                zIndex: 100
+            }}
+                drawerStyle={{
+                    width: '90%'
+                }}
+                open={openClose}
+                onOpen={() => setOpenClose(true)}
+                onClose={() => setOpenClose(false)}
+                renderDrawerContent={() => {
+                    return <View style={{
+                        width: '100%', height: '100%', backgroundColor: Globals.COLOR.LIGHT.COLOR5,
                     }}>
-                        <AddSVG />
-                    </View>
+                        <View style={styles.imagemUser}>
+                        </View>
+                        <View style={{ marginLeft: 20, marginBottom: 30 }}>
+                            <Text style={{
+                                fontWeight: '300',
+                                fontSize: 20,
+                                color: '#FFFFFF'
+                            }}>
+                                <Text style={{ fontWeight: '700' }}>Olá</Text>, {nome}
+                            </Text>
+                            <Text style={styles.dadosMenu}>{telefone}</Text>
+                            <Text style={styles.dadosMenu}>{email}</Text>
+                        </View>
 
-                </View>
-            </TouchableOpacity>
+                        <TouchableOpacity onPress={() => { setOpenClose(false); navigation.navigate('DashBoard') }}>
+                            <View style={styles.itemMenu}>
+                                <FineSVG />
+                                <Text style={styles.itemMenuText}>Finanças</Text>
+                            </View>
+                        </TouchableOpacity>
 
-            <ScrollView contentContainerStyle={styles.scrollView} >
+                        <View style={styles.itemMenu}>
+                            <ConfigSVG />
+                            <Text style={styles.itemMenuText}>Configurações</Text>
+                        </View>
 
-                <TouchableOpacity onPress={() => showPicker(true)}>
+                        <TouchableOpacity onPress={() => { setOpenClose(false); navigation.navigate('Welcome') }}>
+                            <View style={[styles.itemMenu, { paddingLeft: 17 }]}>
+                                <LogoutSVG />
+                                <Text style={styles.itemMenuText}>Sair</Text>
+                            </View>
+                        </TouchableOpacity>
 
+                    </View>;
+                }}
+            >
+
+                {show && (
+                    <DatePicker
+                        mode="monthYear"
+                        isGregorian={true}
+                        selectorStartingYear={2000}
+                        onMonthYearChange={handleDateSelect}
+                        selectorEndingYear={3000}
+                        style={{
+                            position: 'absolute',
+                            top: 50,
+                            zIndex: 10000,
+                            width: Globals.WIDTH * 0.9,
+                            borderRadius: 25,
+                            left: Globals.WIDTH * 0.05
+                        }}
+                        options={
+                            {
+                                backgroundColor: Globals.COLOR.LIGHT.COLOR3,
+                                textHeaderColor: Globals.COLOR.BRANCO,
+                                textDefaultColor: Globals.COLOR.BRANCO,
+                                selectedTextColor: Globals.COLOR.BRANCO,
+                                mainColor: Globals.COLOR.LIGHT.COLOR2,
+                                defaultFont: Globals.FONT_FAMILY.REGULAR,
+                                textFontSize: 13,
+
+                            }
+                        }
+                    />
+                )}
+                <TouchableOpacity style={{ zIndex: 10000, position: 'absolute', top: 20, right: 0 }} onPress={() => { navigation.navigate('Adicionar') }}>
                     <View style={
                         {
-                            position: 'absolute',
-                            flexDirection: 'row',
-                            top: 45,
-                            marginRight: 'auto',
-                            marginLeft: 'auto',
-                            alignSelf: 'center'
+                            width: 50,
+                            height: 40,
+                            borderTopLeftRadius: 10,
+                            borderBottomLeftRadius: 10,
+                            backgroundColor: Globals.COLOR.LIGHT.COLOR2,
+                            zIndex: 1000
                         }
                     }>
-                        <View>
-                            <Text style={styles.selectData}>{mes}</Text>
-                            <Text style={styles.selectData}>{ano}</Text>
+                        <View style={{
+                            marginTop: 3.5,
+                            marginLeft: 6
+                        }}>
+                            <AddSVG />
                         </View>
-                        <View style={{ marginTop: 3, marginLeft: 3 }}>
-                            <BackRotSVG />
-                        </View>
+
                     </View>
                 </TouchableOpacity>
 
-                <Text style={styles.tituloView}>Finanças</Text>
-                <View style={
-                    {
-                        margin: 'auto',
-                        width: '100%',
-                        paddingHorizontal: (Globals.WIDTH * 0.5) - 90,
-                        marginTop: 70
-                    }
-                }>
-                    <PieChart
-                        data={pieData}
-                        donut
-                        showGradient
-                        sectionAutoFocus
-                        radius={90}
-                        innerRadius={50}
-                        innerCircleColor={Globals.COLOR.LIGHT.COLOR4}
-                        centerLabelComponent={() => {
-                            return (
-                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text
-                                        style={{ fontSize: 22, color: Globals.COLOR.BRANCO, fontWeight: 'bold', fontFamily:Globals.FONT_FAMILY.BOLD }}>
-                                        47%
-                                    </Text>
-                                    <Text style={{ fontSize: 14, color: Globals.COLOR.BRANCO,fontFamily:Globals.FONT_FAMILY.REGULAR }}>Roupas</Text>
-                                </View>
-                            );
-                        }}
-                    />
-                    <View
-                        style={{
+                <ScrollView contentContainerStyle={styles.scrollView} showsVerticalScrollIndicator={false}>
 
-                            flexDirection: 'row',
-                            marginHorizontal: -Globals.WIDTH * 0.20,
-                            zIndex: 10
+                    <TouchableOpacity style={{ position: 'absolute', top: 20, left: 15 , zIndex:1000}} onPress={moveMenu}>
+                        <MenuSVG />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => showPicker(true)}>
 
-                        }}>
-                        <View style={{
-                            flexDirection: 'column',
-
-                        }}>
-                            {renderLegend('Alimentação', '#FFFFFF')}
-                            {renderLegend('Vestuário', '#ECE1C3')}
-
-
-                        </View>
-                        <View style={{
-                            flexDirection: 'column',
-                        }}>
-                            {renderLegend('Serviços', '#60625F')}
-                            {renderLegend('Entretenimento', '#3E838C')}
-                        </View>
-                        <View style={{
-                            flexDirection: 'column',
-                        }}>
-
-                            {renderLegend('Eletrônicos', '#474747')}
-                            {renderLegend('Outros', '#323131')}
-                        </View>
-                    </View>
-
-                </View>
-                <View style={styles.fundosGastos} >
-                    <View style={styles.dados}>
-                        <View style={styles.totalizadores}>
-                            <Text style={[styles.textTotalizadores, { color: '#F44336' }]}>Gastos</Text>
-                            <Text style={[styles.textTotalizadores, { color: '#F44336' }]}>R$ {gastos}</Text>
-                        </View>
-                        <View style={styles.linha}></View>
-                        <View style={styles.totalizadores}>
-                            <Text style={[styles.textTotalizadores, { color: '#0BBC5F' }]}>Receitas</Text>
-                            <Text style={[styles.textTotalizadores, { color: '#0BBC5F' }]}>R$ {receitas}</Text>
-                        </View>
-                    </View>
-                    {
-                        item.map(element => (
-                            <View key={element.id} style={styles.card}>
-                                <View style={styles.iconCard}>
-                                    {
-                                        rederImagem(element.catTipo)
-
-                                    }
-                                </View>
-                                <View style={styles.decCat}>
-                                    <Text style={styles.decCat1}>{element.descricao}</Text>
-                                    <Text style={styles.decCat2}>Categoria</Text>
-                                </View>
-                                <View style={styles.valDate}>
-                                    <Text style={styles.valDate1}>R$ {element.valor}</Text>
-                                    <Text style={styles.valDate2}>{element.data}</Text>
-                                </View>
+                        <View style={
+                            {
+                                position: 'absolute',
+                                flexDirection: 'row',
+                                top: 45,
+                                marginRight: 'auto',
+                                marginLeft: 'auto',
+                                alignSelf: 'center'
+                            }
+                        }>
+                            <View>
+                                <Text style={styles.selectData}>{mes}</Text>
+                                <Text style={styles.selectData}>{ano}</Text>
                             </View>
-                        ))
-                    }
+                            <View style={{ marginTop: 3, marginLeft: 3 }}>
+                                <BackRotSVG />
+                            </View>
+                        </View>
+                    </TouchableOpacity>
 
-                </View>
-            </ScrollView>
+                    <Text style={styles.tituloView}>Finanças</Text>
+                    <View style={
+                        {
+                            margin: 'auto',
+                            width: '100%',
+                            paddingHorizontal: (Globals.WIDTH * 0.5) - 90,
+                            marginTop: 70
+                        }
+                    }>
+                        <PieChart
+                            data={pieData}
+                            donut
+                            showGradient
+                            sectionAutoFocus
+                            radius={90}
+                            innerRadius={50}
+                            innerCircleColor={Globals.COLOR.LIGHT.COLOR4}
+                            centerLabelComponent={() => {
+                                return (
+                                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                        <Text
+                                            style={{ fontSize: 22, color: Globals.COLOR.BRANCO, fontWeight: 'bold', fontFamily: Globals.FONT_FAMILY.BOLD }}>
+                                            47%
+                                        </Text>
+                                        <Text style={{ fontSize: 14, color: Globals.COLOR.BRANCO, fontFamily: Globals.FONT_FAMILY.REGULAR }}>Roupas</Text>
+                                    </View>
+                                );
+                            }}
+                        />
+                        <View
+                            style={{
 
+                                flexDirection: 'row',
+                                marginHorizontal: -Globals.WIDTH * 0.20,
+                                zIndex: 10
+
+                            }}>
+                            <View style={{
+                                flexDirection: 'column',
+
+                            }}>
+                                {renderLegend('Alimentação', '#FFFFFF')}
+                                {renderLegend('Vestuário', '#ECE1C3')}
+
+
+                            </View>
+                            <View style={{
+                                flexDirection: 'column',
+                            }}>
+                                {renderLegend('Serviços', '#60625F')}
+                                {renderLegend('Entretenimento', '#3E838C')}
+                            </View>
+                            <View style={{
+                                flexDirection: 'column',
+                            }}>
+
+                                {renderLegend('Eletrônicos', '#474747')}
+                                {renderLegend('Outros', '#323131')}
+                            </View>
+                        </View>
+
+                    </View>
+                    <View style={styles.fundosGastos} >
+                        <View style={styles.dados}>
+                            <View style={styles.totalizadores}>
+                                <Text style={[styles.textTotalizadores, { color: '#F44336' }]}>Gastos</Text>
+                                <Text style={[styles.textTotalizadores, { color: '#F44336' }]}>R$ {gastos}</Text>
+                            </View>
+                            <View style={styles.linha}></View>
+                            <View style={styles.totalizadores}>
+                                <Text style={[styles.textTotalizadores, { color: '#0BBC5F' }]}>Receitas</Text>
+                                <Text style={[styles.textTotalizadores, { color: '#0BBC5F' }]}>R$ {receitas}</Text>
+                            </View>
+                        </View>
+                        {
+                            item.map(element => (
+                                <View key={element.id} style={styles.card}>
+                                    <View style={styles.iconCard}>
+                                        {
+                                            renderImagem(element.catTipo)
+
+                                        }
+                                    </View>
+                                    <View style={styles.decCat}>
+                                        <Text style={styles.decCat1}>{element.descricao}</Text>
+                                        <Text style={styles.decCat2}>Categoria</Text>
+                                    </View>
+                                    <View style={styles.valDate}>
+                                        <Text style={styles.valDate1}>R$ {element.valor}</Text>
+                                        <Text style={styles.valDate2}>{element.data}</Text>
+                                    </View>
+                                </View>
+                            ))
+                        }
+
+                    </View>
+                </ScrollView>
+
+            </Drawer>
         </SafeAreaView>
-
     );
+
 }
 
 
@@ -473,6 +546,43 @@ const styles = StyleSheet.create({
     valDate2: {
         fontSize: 10.8889,
         textAlign: 'right'
+    }, dadosMenu: {
+        fontFamily: Globals.FONT_FAMILY.REGULAR,
+        fontWeight: '500',
+        fontSize: 14,
+        color: '#FFFFFF',
+        lineHeight: 20,
+    },
+    imagemUser: {
+        width: Globals.WIDTH * 0.4,
+        height: Globals.WIDTH * 0.4,
+        backgroundColor: "black",
+        borderColor: Globals.COLOR.LIGHT.COLOR4,
+        borderRadius: Globals.WIDTH * 0.20,
+        borderWidth: 4,
+        marginHorizontal: Globals.WIDTH * 0.25,
+        marginTop: 40,
+        marginBottom: 10
+    },
+    itemMenu: {
+        width: '90%',
+        backgroundColor: '#E3E3E3',
+        borderBottomRightRadius: 10,
+        borderTopRightRadius: 10,
+        height: 48,
+        paddingTop: 13,
+        paddingBottom: 13,
+        paddingLeft: 12,
+        paddingRight: 10,
+        flexDirection: 'row',
+        marginBottom: 15
+    },
+    itemMenuText: {
+        fontWeight: '500',
+        fontSize: 16,
+        color: Globals.COLOR.LIGHT.COLOR4,
+        marginLeft: 15,
+        lineHeight: 24
     }
 });
 

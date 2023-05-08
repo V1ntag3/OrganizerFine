@@ -20,6 +20,7 @@
     "react-native": "0.71.5",
     "react-native-asset": "^2.1.0",
     "react-native-date-picker": "^4.2.13",
+    "react-native-drawer-layout": "^3.2.0",
     "react-native-gesture-handler": "^2.9.0",
     "react-native-gifted-charts": "^1.2.42",
     "react-native-mask-input": "^1.2.3",
@@ -30,7 +31,8 @@
     "react-native-screens": "^3.20.0",
     "react-native-splash-screen": "^3.3.0",
     "react-native-svg": "^13.9.0",
-    "react-native-svg-transformer": "^1.0.0"
+    "react-native-svg-transformer": "^1.0.0",
+    "rn-slide-button": "^1.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
