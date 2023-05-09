@@ -37,10 +37,7 @@ function Login({ navigation }: props["navigation"]): JSX.Element {
     const logar = () => {
         setEmailError(login.email == "" ? true : false)
         setSenhaError(login.senha == "" ? true : false)
-
-        if (emailError && senhaError) {
-            nav.goBack()
-        }
+        nav.navigate('DashBoard')
     }
     return (
         <SafeAreaView style={styles.body}>
@@ -50,6 +47,7 @@ function Login({ navigation }: props["navigation"]): JSX.Element {
                 <View style={[styles.containerInput, { zIndex: 0 }]}>
                     <TextInput style={styles.inputStyle}
                         selectionColor="black"
+                        maxLength={20}
                         placeholderTextColor={emailError ? '#FD6161' : '#323941'}
                         onChangeText={(text) => login.email = text}
                         placeholder="Email" />
