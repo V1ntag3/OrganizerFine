@@ -13,7 +13,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PieChart } from "react-native-gifted-charts";
 import Globals from '../Globals';
 import DatePicker from 'react-native-modern-datepicker';
@@ -30,6 +30,9 @@ import { Drawer } from 'react-native-drawer-layout';
 import LogoutSVG from '../componentes/SVGComponentes/logoutSVG';
 import ConfigSVG from '../componentes/SVGComponentes/configSVG';
 import FineSVG from '../componentes/SVGComponentes/fineSVG';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import axios from 'axios';
 type dashboradProps = {
     navigation: any;
 }
@@ -37,44 +40,182 @@ type dashboradProps = {
 function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
 
     // Renderizar Imagem
+    const [token, setToken] = useState('')
+    const [expirity, setExpirity] = useState(new Date)
+
+    const readData = async () => {
+        try {
+            const value = await AsyncStorage.getItem('token');
+
+            if (value !== null) {
+                setToken(value);
+            }
+        } catch (e) {
+            navigation.navigate('Welcome')
+        }
+    };
+
+    const removeData = async () => {
+        await AsyncStorage.clear()
+        navigation.navigate('Welcome')
+    };
+    // Dados
+    const [gastos, setGastos] = useState('R$ 0,00');
+    const [receitas, setReceitas] = useState('R$ 0,00');
+    const [item, setItems] = useState([
+        {
+            id: 0,
+            about: '',
+            type: 6,
+            typeCat: 0,
+            value: 0,
+            date: '0d atrás'
+        }
+    ])
+
+    useEffect(() => {
+        readData();
+        setTimeout(() => {
+            axios({
+                method: 'get',
+                headers: {
+                    Authorization: 'Token ' + token
+                },
+                url: Globals.BASE_URL_API + 'revenue_spending/?month=' + mes + '&year=' + ano,
+            }).then((response) => {
+                var json = response.data
+                var array: any = []
+                var gastos: number = 0
+                var receitas: number = 0
+                var item0 = 0, item1 = 0, item2 = 0, item3 = 0, item4 = 0, item5 = 0
+                for (var item in json) {
+                    switch (json[item].typeCat) {
+                        case '0':
+                            item0++
+                            break
+                        case '1':
+                            item1++
+                            break
+                        case '2':
+                            item2++
+                            break
+                        case '3':
+                            item3++
+                            break
+                        case '4':
+                            item4++
+                            break
+                        case '5':
+                            item5++
+                            break
+                    }
+
+                    if (json[item].type == '0') {
+                        receitas += json[item].value
+                    }
+
+                    if (json[item].type == '1') {
+                        gastos += json[item].value
+                    }
+                    json[item].value = json[item].value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+
+
+                    var valor = parseInt(new Date() - new Date(json[item].date))
+
+                    json[item].date = String(valor / (1000 * 60 * 60 * 24)) + ' dias atrás'
+                    array.push(json[item])
+
+
+                }
+
+                setGastos(gastos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+                setReceitas(receitas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+
+                if (array.length > 0) setItems(array)
+
+                else setItems([
+                    {
+                        id: 0,
+                        about: '',
+                        type: 6,
+                        typeCat: 0,
+                        value: 0,
+                        date: '0d atrás'
+                    }
+                ])
+                setPieData([
+                    {
+                        value: (item5 / array.length),
+                        color: '#323131',
+                        gradientCenterColor: '#323131',
+                        focused: true,
+                    },
+                    { value: (item2 / array.length), color: '#474747', gradientCenterColor: '#474747' },
+                    { value: (item0 / array.length), color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
+                    { value: (item3 / array.length), color: '#ECE1C3', gradientCenterColor: '#ECE1C3' },
+                    { value: (item4 / array.length), color: '#8EBDB6', gradientCenterColor: '#8EBDB6' },
+                    { value: (item1 / array.length), color: '#60625F', gradientCenterColor: '#60625F' },
+                ])
+            });
+
+        }, 500);
+
+    }, []);
+
     const renderImagem = (item: any) => {
         switch (item) {
-            case 0:
+            case '0':
                 return (
                     <>
                         <ComidaSVG />
                     </>
                 )
-            case 1:
+            case '1':
                 return (
                     <>
                         <ServSVG />
                     </>
                 )
-            case 2:
+            case '2':
                 return (
                     <>
                         <EletroSVG />
                     </>
                 )
-            case 3:
+            case '3':
                 return (
                     <>
                         <VestSVG />
                     </>
                 )
-            case 4:
+            case '4':
                 return (
                     <>
                         <EntreSVG />
                     </>
                 )
-            case 5:
+            case '5':
                 return (
                     <>
                         <OutrosSVG />
                     </>
                 )
+        }
+    }
+    const renderNome = (item: any) => {
+        switch (item) {
+            case '0':
+                return 'Alimentação'
+            case '1':
+                return 'Serviço'
+            case '2':
+                return 'Eletrônicos'
+            case '3':
+                return 'Vestuário'
+            case '4':
+                return 'Entretenimento'
+            case '5':
+                return 'Outros'
         }
     }
     // Renderizar Legenda
@@ -95,72 +236,20 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
         );
     };
 
-    // Dados
-    const [gastos, setGastos] = useState('200.000.000,00');
-    const [receitas, setReceitas] = useState('200.000.000,00');
-    const [item, setItems] = useState([
+    const [pieData, setPieData] = useState([
         {
-            id: 0,
-            descricao: 'Gastos com roupas',
-            tipo: 0,
-            catTipo: 0,
-            valor: '100.000,00',
-            data: '4d atrás'
-        },
-        {
-            id: 1,
-            descricao: 'Gastos com casa',
-            tipo: 0,
-            catTipo: 1,
-            valor: '100.000,00',
-            data: '4d atrás'
-        },
-        {
-            id: 2,
-            descricao: 'Gastos com roupas',
-            tipo: 0,
-            catTipo: 2,
-            valor: '100.000,00',
-            data: '4d atrás'
-        },
-        {
-            id: 3,
-            descricao: 'Gastos com casa',
-            tipo: 0,
-            catTipo: 3,
-            valor: '100.000,00',
-            data: '4d atrás'
-        },
-        {
-            id: 4,
-            descricao: 'Gastos com roupas',
-            tipo: 0,
-            catTipo: 4,
-            valor: '100.000,00',
-            data: '4d atrás'
-        },
-        {
-            id: 5,
-            descricao: 'Gastos com casa',
-            tipo: 0,
-            catTipo: 5,
-            valor: '100.000,00',
-            data: '4d atrás'
-        }
-    ])
-    const pieData = [
-        {
-            value: 47,
+            value: 1,
             color: '#323131',
             gradientCenterColor: '#323131',
             focused: true,
         },
-        { value: 40, color: '#474747', gradientCenterColor: '#474747' },
-        { value: 16, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-        { value: 3, color: '#ECE1C3', gradientCenterColor: '#ECE1C3' },
-        { value: 16, color: '#8EBDB6', gradientCenterColor: '#8EBDB6' },
-        { value: 3, color: '#60625F', gradientCenterColor: '#60625F' },
-    ];
+        { value: 1, color: '#474747', gradientCenterColor: '#474747' },
+        { value: 1, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
+        { value: 1, color: '#ECE1C3', gradientCenterColor: '#ECE1C3' },
+        { value: 1, color: '#8EBDB6', gradientCenterColor: '#8EBDB6' },
+        { value: 1, color: '#60625F', gradientCenterColor: '#60625F' },
+    ]);
+
 
     const [mes, setMes] = useState(Globals.MONTH.slice((parseInt(new Date().getMonth().toString()) - 1), (new Date().getMonth())));
     const [ano, setAno] = useState(String(new Date().getFullYear()));
@@ -169,18 +258,103 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
 
-    const showPicker = (valor: boolean = true) => {
-        setTimeout(() => {
-            setShow(valor)
-        }, 200);
+    const showPicker = () => {
+        setShow(show == true ? false : true)
     }
 
     const handleDateSelect = (selectedDate: String) => {
         setDate(new Date(selectedDate.toString()));
         setAno(selectedDate.slice(0, 4).toString())
         setShow(false);
-        var valor = Globals.MONTH.slice((parseInt(selectedDate.toString().slice(4, 7)) - 1), (parseInt(selectedDate.toString().slice(4, 7))))
-        setMes(valor)
+        var value = Globals.MONTH.slice((parseInt(selectedDate.toString().slice(4, 7)) - 1), (parseInt(selectedDate.toString().slice(4, 7))))
+        setMes(value)
+        console.log('aqui')
+
+        axios({
+            method: 'get',
+            headers: {
+                Authorization: 'Token ' + token
+            },
+            url: Globals.BASE_URL_API + 'revenue_spending/?month=' + mes + '&year=' + ano,
+        }).then((response) => {
+            var json = response.data
+            var array: any = []
+            var gastos: number = 0
+            var receitas: number = 0
+            var item0 = 0, item1 = 0, item2 = 0, item3 = 0, item4 = 0, item5 = 0
+            for (var item in json) {
+                switch (json[item].typeCat) {
+                    case '0':
+                        item0++
+                        break
+                    case '1':
+                        item1++
+                        break
+                    case '2':
+                        item2++
+                        break
+                    case '3':
+                        item3++
+                        break
+                    case '4':
+                        item4++
+                        break
+                    case '5':
+                        item5++
+                        break
+                }
+
+                if (json[item].type == '0') {
+                    receitas += json[item].value
+                }
+
+                if (json[item].type == '1') {
+                    gastos += json[item].value
+                }
+                json[item].value = json[item].value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+
+
+                var valor = parseInt(new Date() - new Date(json[item].date))
+
+                json[item].date = String(valor / (1000 * 60 * 60 * 24)) + ' dias atrás'
+                array.push(json[item])
+
+
+            }
+
+            setGastos(gastos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+            setReceitas(receitas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+
+            if (array.length > 0) setItems(array)
+
+            else setItems([
+                {
+                    id: 0,
+                    about: '',
+                    type: 6,
+                    typeCat: 0,
+                    value: 0,
+                    date: '0d atrás'
+                }
+            ])
+            setPieData([
+                {
+                    value: (item5 / array.length),
+                    color: '#323131',
+                    gradientCenterColor: '#323131',
+                    focused: true,
+                },
+                { value: (item2 / array.length), color: '#474747', gradientCenterColor: '#474747' },
+                { value: (item0 / array.length), color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
+                { value: (item3 / array.length), color: '#ECE1C3', gradientCenterColor: '#ECE1C3' },
+                { value: (item4 / array.length), color: '#8EBDB6', gradientCenterColor: '#8EBDB6' },
+                { value: (item1 / array.length), color: '#60625F', gradientCenterColor: '#60625F' },
+            ])
+        });
+
+
+
+
     }
 
     const [openClose, setOpenClose] = useState(false);
@@ -302,10 +476,10 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
 
                 <ScrollView contentContainerStyle={styles.scrollView} showsVerticalScrollIndicator={false}>
 
-                    <TouchableOpacity style={{ position: 'absolute', top: 20, left: 15 , zIndex:1000}} onPress={moveMenu}>
+                    <TouchableOpacity style={{ position: 'absolute', top: 20, left: 15, zIndex: 1000 }} onPress={moveMenu}>
                         <MenuSVG />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => showPicker(true)}>
+                    <TouchableOpacity onPressIn={() => { setShow(show == true ? false : true) }}>
 
                         <View style={
                             {
@@ -393,12 +567,12 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
                         <View style={styles.dados}>
                             <View style={styles.totalizadores}>
                                 <Text style={[styles.textTotalizadores, { color: '#F44336' }]}>Gastos</Text>
-                                <Text style={[styles.textTotalizadores, { color: '#F44336' }]}>R$ {gastos}</Text>
+                                <Text style={[styles.textTotalizadores, { color: '#F44336' }]}>{gastos}</Text>
                             </View>
                             <View style={styles.linha}></View>
                             <View style={styles.totalizadores}>
                                 <Text style={[styles.textTotalizadores, { color: '#0BBC5F' }]}>Receitas</Text>
-                                <Text style={[styles.textTotalizadores, { color: '#0BBC5F' }]}>R$ {receitas}</Text>
+                                <Text style={[styles.textTotalizadores, { color: '#0BBC5F' }]}>{receitas}</Text>
                             </View>
                         </View>
                         {
@@ -406,17 +580,17 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
                                 <View key={element.id} style={styles.card}>
                                     <View style={styles.iconCard}>
                                         {
-                                            renderImagem(element.catTipo)
+                                            renderImagem(element.typeCat)
 
                                         }
                                     </View>
                                     <View style={styles.decCat}>
-                                        <Text style={styles.decCat1}>{element.descricao}</Text>
-                                        <Text style={styles.decCat2}>Categoria</Text>
+                                        <Text style={styles.decCat1}>{element.about}</Text>
+                                        <Text style={styles.decCat2}>{renderNome(element.typeCat)}</Text>
                                     </View>
                                     <View style={styles.valDate}>
-                                        <Text style={styles.valDate1}>R$ {element.valor}</Text>
-                                        <Text style={styles.valDate2}>{element.data}</Text>
+                                        <Text style={styles.valDate1}>{element.value}</Text>
+                                        <Text style={styles.valDate2}>{element.date}</Text>
                                     </View>
                                 </View>
                             ))

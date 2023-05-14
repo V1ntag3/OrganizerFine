@@ -12,7 +12,9 @@ import {
     TextInput,
     TouchableOpacity,
     ScrollView,
+
 } from 'react-native';
+import React from 'react';
 import ButtonGeneric from '../componentes/ButtonGeneric'
 import TituloPagina from '../componentes/TituloPaginaLoginRegistrar'
 import PastaSVG from '../componentes/SVGComponentes/pastaSVG'
@@ -20,24 +22,48 @@ import NotebookSVG from '../componentes/SVGComponentes/notebookSVG'
 import { useState } from 'react';
 import FundoPagina from '../componentes/FundoPaginaLoginRegistrar';
 import Globals from '../Globals';
+import fetch from 'cross-fetch';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type props = {
     navigation: any;
 }
-var login = {
-    email: "",
-    senha: ""
-}
 
 function Login({ navigation }: props["navigation"]): JSX.Element {
-
+    const [email, setEmail] = useState('');
+    const [senha, setSenha] = useState('');
     const [emailError, setEmailError] = useState(false);
     const [senhaError, setSenhaError] = useState(false);
     const nav = navigation
     const logar = () => {
-        setEmailError(login.email == "" ? true : false)
-        setSenhaError(login.senha == "" ? true : false)
-        nav.navigate('DashBoard')
+        setEmailError(email == "" ? true : false)
+        setSenhaError(senha == "" ? true : false)
+
+        fetch(Globals.BASE_URL_API + 'login/', {
+            method: 'POST',
+            body: JSON.stringify({
+                username: email,
+                password: senha
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                console.log(json)
+                AsyncStorage.setItem('token', json.token);
+                AsyncStorage.setItem
+                    ('expiry', json.expiry);
+                
+                nav.navigate('DashBoard')
+
+
+            }).catch((error) => {
+                console.log("Api call error");
+                alert(error.message);
+            });
     }
     return (
         <SafeAreaView style={styles.body}>
@@ -49,12 +75,12 @@ function Login({ navigation }: props["navigation"]): JSX.Element {
                         selectionColor="black"
                         maxLength={20}
                         placeholderTextColor={emailError ? '#FD6161' : '#323941'}
-                        onChangeText={(text) => login.email = text}
+                        onChangeText={(text) => setEmail(text)}
                         placeholder="Email" />
                     <TextInput style={styles.inputStyle}
                         placeholderTextColor={senhaError ? '#FD6161' : '#323941'}
                         selectionColor="black"
-                        onChangeText={(text) => login.senha = text}
+                        onChangeText={(text) => setSenha(text)}
                         placeholder="Senha" />
                     <Text style={[styles.errorStyle, { display: senhaError ? 'flex' : 'none' }]}  >Email e/ou Senha inválido(s)</Text>
                     <TouchableOpacity onPress={() => navigation.navigate('EsqueciSenha')} >

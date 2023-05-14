@@ -1,7 +1,7 @@
 import { Dimensions } from "react-native";
 
 export default {
-    BASE_URL_API: '',
+    BASE_URL_API: 'http://192.168.122.1:8080/api/',
     APP_NAME:'ORGANIZER FINE',
     APP_NAME1:'ORGANIZER',
     APP_NAME2:'FINE',
