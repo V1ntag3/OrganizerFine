@@ -12,10 +12,11 @@ import {
     TextInput,
     TouchableOpacity,
     ScrollView,
+    Alert,
 } from 'react-native';
 import Globals from '../Globals';
 import { Picker } from '@react-native-picker/picker';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AddSVG from '../componentes/SVGComponentes/addSVG';
 import { Drawer } from 'react-native-drawer-layout';
 import FineSVG from '../componentes/SVGComponentes/fineSVG';
@@ -23,43 +24,55 @@ import ConfigSVG from '../componentes/SVGComponentes/configSVG';
 import LogoutSVG from '../componentes/SVGComponentes/logoutSVG';
 import MenuSVG from '../componentes/SVGComponentes/menuSVG';
 import MaskInput, { Masks } from 'react-native-mask-input';
-import SlideButton from 'rn-slide-button';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type props = {
     navigation: any;
+    route:any
+
 }
 
-function Adicionar({ navigation }: props["navigation"]): JSX.Element {
-    const renderPicker = () => {
-        const [selectedValue, setSelectedValue] = useState('');
-        return (
-            <View style={{}}>
-                <Picker
-                    placeholder={'Categoria'}
-                    numberOfLines={3}
-                    dropdownIconColor={'black'}
-                    mode='dropdown'
-                    selectedValue={selectedValue}
-                    style={{
-                        backgroundColor: 'white',
-                        marginTop: 4,
-                        color: 'black',
-                        maxWidth: '90%',
-                        marginLeft: '5%',
-                        fontSize: 1
-                    }}
-                    onValueChange={(itemValue: any, itemIndex: any) => setSelectedValue(itemValue)}
-                >
-                    <Picker.Item label="Alimentação" value="0" />
-                    <Picker.Item label="Serviço" value="1" />
-                    <Picker.Item label="Eletrônico" value="2" />
-                    <Picker.Item label="Vestuário" value="3" />
-                    <Picker.Item label="Entretenimento" value="4" />
-                    <Picker.Item label="Outros" value="5" />
+function Adicionar({ route, navigation } : any): JSX.Element {
+    const {setUserToken} = route.params
 
-                </Picker>
-            </View>
-        );
+    const removeData = async () => {
+        await AsyncStorage.clear().then(() => {setUserToken(null); navigation.navigate('Welcome') })
+    };
+    const [selectedValue, setSelectedValue] = useState('');
+
+    const renderPicker = () => {
+        if (tipo != 0) {
+            return (
+                <View style={{}}>
+                    <Picker
+                        placeholder={'Categoria'}
+                        numberOfLines={3}
+                        dropdownIconColor={'black'}
+                        mode='dropdown'
+                        selectedValue={selectedValue}
+                        style={{
+                            backgroundColor: 'white',
+                            marginTop: 4,
+                            color: 'black',
+                            maxWidth: '90%',
+                            marginLeft: '5%',
+                            fontSize: 1
+                        }}
+                        onValueChange={(itemValue: any, itemIndex: any) => setSelectedValue(itemValue)}
+                    >
+                        <Picker.Item label="Selecione a categoria" value="" />
+                        <Picker.Item label="Alimentação" value="0" />
+                        <Picker.Item label="Serviço" value="1" />
+                        <Picker.Item label="Eletrônico" value="2" />
+                        <Picker.Item label="Vestuário" value="3" />
+                        <Picker.Item label="Entretenimento" value="4" />
+                        <Picker.Item label="Outros" value="5" />
+
+                    </Picker>
+                </View>
+            );
+        }
+
     }
     const [openClose, setOpenClose] = useState(false);
 
@@ -67,13 +80,65 @@ function Adicionar({ navigation }: props["navigation"]): JSX.Element {
         setOpenClose(openClose ? false : true)
     };
     // Dados
+    const [token, setToken] = useState('')
+
     const [nome, setNome] = useState('Marquin');
     const [email, setEmail] = useState('marcos@gmail.com');
     const [telefone, setTelefone] = useState('(86) 9 9 9851 - 4018');
     const [valor, setValor] = useState('');
+    const [descricao, setDescricao] = useState('')
+    const [tipo, setTipo] = useState(null);
 
-    const [tipo, setTipo] = useState(0);
+    const readData = async () => {
+        try {
+            const value = await AsyncStorage.getItem('token', (err, result) => {
+                if (result == null) {
+                    navigation.navigate('Welcome')
+                }
 
+            })
+
+            if (value !== null) {
+                setToken(value);
+            }
+        } catch (e) {
+            navigation.navigate('Welcome')
+        }
+    };
+
+    useEffect(() => {
+        readData();
+    }, []);
+    const mandarDados = () => {
+        console.log(JSON.stringify({
+            'about': descricao,
+            'value': valor / 100,
+            'type': String(tipo),
+            'typeCat': selectedValue
+        }))
+        fetch(Globals.BASE_URL_API + 'revenue_spending/', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': 'Token ' + token
+            },
+            body: JSON.stringify({
+                'about': descricao,
+                'value': (valor / 100),
+                'type': String(tipo),
+                'typeCat': selectedValue
+            })
+        }).then(response => {
+            if (response.status == 401 || response.status == 403) { removeData() };
+            if (response.status == 200) {
+                navigation.navigate("DashBoard");
+                return response.json();
+            }
+        }
+        ).then((json) => {
+
+        });
+    }
     return (
         <SafeAreaView style={styles.body}>
             <Drawer style={{
@@ -118,7 +183,7 @@ function Adicionar({ navigation }: props["navigation"]): JSX.Element {
                             <Text style={styles.itemMenuText}>Configurações</Text>
                         </View>
 
-                        <TouchableOpacity onPress={() => { setOpenClose(false); navigation.navigate('Welcome') }}>
+                        <TouchableOpacity onPress={() => { setOpenClose(false); removeData() }}>
                             <View style={[styles.itemMenu, { paddingLeft: 17 }]}>
                                 <LogoutSVG />
                                 <Text style={styles.itemMenuText}>Sair</Text>
@@ -134,12 +199,12 @@ function Adicionar({ navigation }: props["navigation"]): JSX.Element {
                     </TouchableOpacity>
                     <Text style={styles.tituloView}>Adicionar</Text>
                     <View style={{ width: '90%', alignSelf: 'center', flexDirection: 'row', marginTop: 30 }}>
-                        <TouchableOpacity onPress={() => {setTipo(0)}} style={[{ width: '50%', backgroundColor: '#32CD32', height: 60 }, {
+                        <TouchableOpacity onPress={() => { setTipo(0) }} style={[{ width: '50%', backgroundColor: '#32CD32', height: 60 }, {
                             opacity: tipo == 0 ? 1 : 0.5
                         }]}>
                             <Text style={{ color: 'white', fontSize: 20, textAlign: 'center', paddingVertical: 16, fontFamily: Globals.FONT_FAMILY.BOLD }}>Receita</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {setTipo(1)}} style={[{ width: '50%', backgroundColor: '#FF6347', height: 60, }, {
+                        <TouchableOpacity onPress={() => { setTipo(1) }} style={[{ width: '50%', backgroundColor: '#FF6347', height: 60, }, {
                             opacity: tipo == 1 ? 1 : 0.5
 
                         }]}>
@@ -149,7 +214,7 @@ function Adicionar({ navigation }: props["navigation"]): JSX.Element {
                     <TextInput style={[styles.inputStyle,]}
                         selectionColor="black"
                         placeholderTextColor={false ? '#FD6161' : 'black'}
-                        // onChangeText={(text) => login.email = text}
+                        onChangeText={(text) => setDescricao(text)}
                         placeholder="Descrição" />
 
                     {
@@ -160,12 +225,16 @@ function Adicionar({ navigation }: props["navigation"]): JSX.Element {
                         value={valor}
                         placeholderTextColor={false ? '#FD6161' : 'black'}
                         selectionColor='black'
-                        onChangeText={(masked) => {
-                            setValor(masked);
+                        onChangeText={(masked, unmasked) => {
+                            setValor(unmasked);
                         }}
+                        keyboardType="numeric"
                         mask={Masks.BRL_CURRENCY}
                     />
-                    <TouchableOpacity style={{ width: 60, height: 60, alignSelf: 'center', marginTop: Globals.HEIGHT - 430 }}>
+            
+
+                </ScrollView>
+                <TouchableOpacity onPress={() => mandarDados()} style={{ width: 60, height: 60, alignSelf: 'center', position: 'absolute', bottom:30}}>
                         <View style={
                             {
                                 width: 60,
@@ -185,8 +254,6 @@ function Adicionar({ navigation }: props["navigation"]): JSX.Element {
                             </View>
                         </View>
                     </TouchableOpacity>
-
-                </ScrollView>
             </Drawer>
         </SafeAreaView>
     );

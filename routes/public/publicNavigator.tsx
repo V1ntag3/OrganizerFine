@@ -7,25 +7,27 @@ import Welcome from '../../views/Welcome';
 import Login from '../../views/Login';
 import EsqueciSenha from '../../views/EsqueciSenha';
 import EsqueciSenhaOk from '../../views/EsqueciSenhaOk';
-import DashBoard from '../../views/DashBoard';
-import Adicionar from '../../views/Adicionar';
+import { LogBox } from 'react-native';
+
 
 const Stack = createNativeStackNavigator();
 
-function PublicNavigator() {
+function PublicNavigator({route}:any) {
+  LogBox.ignoreLogs([
+    'Non-serializable values were found in the navigation state',
+  ]);
+  const { setUserToken } = route.params
+
   return (
     <Stack.Navigator  screenOptions={{
       headerShown: false
-    }} initialRouteName='DashBoard'>
-
+    }} initialRouteName='Welcome'>
 
       <Stack.Screen name="Welcome" component={Welcome} />
-      <Stack.Screen name="Registrar" component={Registrar} />
-      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Registrar" component={Registrar} initialParams={{setUserToken}} />
+      <Stack.Screen name="Login" component={Login} initialParams={{setUserToken}}/>
       <Stack.Screen name="EsqueciSenha" component={EsqueciSenha} />
       <Stack.Screen name="EsqueciSenhaOk" component={EsqueciSenhaOk} />
-      <Stack.Screen name="DashBoard" component={DashBoard} />
-      <Stack.Screen name="Adicionar" component={Adicionar} />
 
     </Stack.Navigator>
   );

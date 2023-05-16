@@ -30,7 +30,8 @@ type props = {
     navigation: any;
 }
 
-function Login({ navigation }: props["navigation"]): JSX.Element {
+function Login({ route, navigation } : any): JSX.Element {
+  
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [emailError, setEmailError] = useState(false);
@@ -52,17 +53,11 @@ function Login({ navigation }: props["navigation"]): JSX.Element {
         })
             .then((response) => response.json())
             .then((json) => {
-                console.log(json)
                 AsyncStorage.setItem('token', json.token);
-                AsyncStorage.setItem
-                    ('expiry', json.expiry);
-                
-                nav.navigate('DashBoard')
-
+                const { setUserToken } = route.params 
+                setUserToken(json.token)
 
             }).catch((error) => {
-                console.log("Api call error");
-                alert(error.message);
             });
     }
     return (
@@ -78,6 +73,8 @@ function Login({ navigation }: props["navigation"]): JSX.Element {
                         onChangeText={(text) => setEmail(text)}
                         placeholder="Email" />
                     <TextInput style={styles.inputStyle}
+                        secureTextEntry={true}
+
                         placeholderTextColor={senhaError ? '#FD6161' : '#323941'}
                         selectionColor="black"
                         onChangeText={(text) => setSenha(text)}
@@ -128,6 +125,7 @@ const styles = StyleSheet.create({
         color: '#323941'
     },
     esqueciSenha: {
+        marginTop:10,
         paddingLeft: 3,
         width: '100%',
         maxWidth: 338.89,

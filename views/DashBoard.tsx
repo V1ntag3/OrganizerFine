@@ -32,58 +32,185 @@ import ConfigSVG from '../componentes/SVGComponentes/configSVG';
 import FineSVG from '../componentes/SVGComponentes/fineSVG';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import axios from 'axios';
-type dashboradProps = {
+type props = {
     navigation: any;
+    route:any
 }
 
-function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
+function DashBoard({ route, navigation } : any): JSX.Element {
 
-    // Renderizar Imagem
     const [token, setToken] = useState('')
-    const [expirity, setExpirity] = useState(new Date)
+    const [gastos, setGastos] = useState('R$ 0,00');
+    const [receitas, setReceitas] = useState('R$ 0,00');
+    const [item, setItems] = useState([])
+    const [nome, setNome] = useState('Marquin');
+    const [email, setEmail] = useState('marcos@gmail.com');
+    const [telefone, setTelefone] = useState('(86) 9 9 9851 - 4018');
+    const [mes, setMes] = useState(Globals.MONTH[parseInt(new Date().getMonth().toString())])
+    const [ano, setAno] = useState(String(new Date().getFullYear()));
+    const [show, setShow] = useState(false);
+    const [pieData, setPieData] = useState([
+        { value: 0, color: '#323131', gradientCenterColor: '#323131' },
+        { value: 0, color: '#474747', gradientCenterColor: '#474747' },
+        { value: 0, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
+        { value: 0, color: '#ECE1C3', gradientCenterColor: '#ECE1C3' },
+        { value: 0, color: '#3E838C', gradientCenterColor: '#3E838C' },
+        { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
+    ]);
+    const [openClose, setOpenClose] = useState(false);
+    const [valorMaiorPorc, setValorMaiorPorc] = useState('0%')
+    const [valorMaiorNome, setValorMaiorNome] = useState('')
 
+    const renderItens = (itemRend: { id: React.Key | null | undefined; typeCat: any; about: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; value: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; date: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }[]) => {
+
+        if (itemRend.length > 0) {
+            return item.map((element: { id: React.Key | null | undefined; typeCat: any; about: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; value: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; date: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) => (
+                <View key={element.id} style={styles.card}>
+                    <View style={styles.iconCard}>
+                        {
+                            renderImagem(element.typeCat)
+
+                        }
+                    </View>
+                    <View style={styles.decCat}>
+                        <Text style={styles.decCat1}>{element.about}</Text>
+                        <Text style={styles.decCat2}>{renderNome(element.typeCat)}</Text>
+                    </View>
+                    <View style={styles.valDate}>
+                        <Text style={styles.valDate1}>{element.value}</Text>
+                        <Text style={styles.valDate2}>{element.date}</Text>
+                    </View>
+                </View>
+            ))
+        } else {
+            return (<Text style={{ color: 'black', textAlign: 'center', fontFamily: Globals.FONT_FAMILY.BOLD, marginTop: 40 }}>Gastos não encontrados</Text>)
+        }
+    }
     const readData = async () => {
         try {
-            const value = await AsyncStorage.getItem('token');
+            const value = await AsyncStorage.getItem('token', (err, result) => {
+              
+                fetch(Globals.BASE_URL_API + 'revenue_spending/?month=' + mes + '&year=' + ano, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Token ' + result
+                    },
+                }).then(response => {
+                    if (response.status == 401 || response.status == 403) { removeData() };
+                    return response.json();
+                }).then((json) => {
+                    setShow(false)
+                    if (json != 0 && json.detail == null) {
+                        var array: any = []
+                        var gastos: number = 0
+                        var receitas: number = 0
+                        var item0 = 0, item1 = 0, item2 = 0, item3 = 0, item4 = 0, item5 = 0
+                        for (var item in json) {
+                            switch (json[item].typeCat) {
+                                case '0':
+                                    item0++
+                                    break
+                                case '1':
+                                    item1++
+                                    break
+                                case '2':
+                                    item2++
+                                    break
+                                case '3':
+                                    item3++
+                                    break
+                                case '4':
+                                    item4++
+                                    break
+                                case '5':
+                                    item5++
+                                    break
+                            }
+
+                            if (json[item].type == '0') {
+                                receitas += json[item].value
+                            }
+
+                            if (json[item].type == '1') {
+                                gastos += json[item].value
+                            }
+                            json[item].value = json[item].value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+
+
+                            var valor = parseInt(new Date() - new Date(json[item].date))
+
+                            json[item].date = String(parseInt(valor / (1000 * 60 * 60 * 24))) + ' dias atrás'
+                            array.push(json[item])
+
+
+                        }
+
+                        setGastos(gastos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+                        setReceitas(receitas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+
+
+                        setItems(array)
+
+                        setPieData([
+                            { value: (item5 / array.length), color: '#323131', gradientCenterColor: '#323131' },
+                            { value: (item2 / array.length), color: '#474747', gradientCenterColor: '#474747' },
+                            { value: (item0 / array.length), color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
+                            { value: (item3 / array.length), color: '#ECE1C3', gradientCenterColor: '#ECE1C3' },
+                            { value: (item4 / array.length), color: '#3E838C', gradientCenterColor: '#3E838C' },
+                            { value: (item1 / array.length), color: '#60625F', gradientCenterColor: '#60625F' },
+                        ])
+                        var arrayValores = [item0, item1, item2, item3, item4, item5]
+                        setValorMaiorPorc(String(parseInt((Math.max(...arrayValores) / array.length) * 100)) + '%')
+                        setValorMaiorNome(renderNome(String(arrayValores.indexOf(Math.max(...arrayValores)))))
+                    } else {
+                        setPieData([
+                            { value: 0, color: '#323131', gradientCenterColor: '#323131' },
+                            { value: 0, color: '#474747', gradientCenterColor: '#474747' },
+                            { value: 0, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
+                            { value: 0, color: '#ECE1C3', gradientCenterColor: '#ECE1C3' },
+                            { value: 0, color: '#3E838C', gradientCenterColor: '#3E838C' },
+                            { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
+                        ])
+                        setItems([]);
+                        setGastos('R$ 0,00');
+                        setReceitas('R$ 0,00');
+                        setValorMaiorPorc('0%')
+                        setValorMaiorNome('')
+                        setItems([]);
+                    }
+                }).catch(error => {
+                    if (error.toString() == "TypeError: Network request failed") {
+                        setShow(false)
+                    }
+                })
+            })
 
             if (value !== null) {
                 setToken(value);
             }
         } catch (e) {
-            navigation.navigate('Welcome')
         }
     };
-
+    const { setUserToken } = route.params 
+    
     const removeData = async () => {
-        await AsyncStorage.clear()
-        navigation.navigate('Welcome')
+        await AsyncStorage.clear().then(() => {setUserToken(null)})
     };
-    // Dados
-    const [gastos, setGastos] = useState('R$ 0,00');
-    const [receitas, setReceitas] = useState('R$ 0,00');
-    const [item, setItems] = useState([
-        {
-            id: 0,
-            about: '',
-            type: 6,
-            typeCat: 0,
-            value: 0,
-            date: '0d atrás'
-        }
-    ])
 
-    useEffect(() => {
-        readData();
-        setTimeout(() => {
-            axios({
-                method: 'get',
-                headers: {
-                    Authorization: 'Token ' + token
-                },
-                url: Globals.BASE_URL_API + 'revenue_spending/?month=' + mes + '&year=' + ano,
-            }).then((response) => {
-                var json = response.data
+    const handleDateSelect = (selectedDate: String) => {
+        var anoItem = selectedDate.slice(0, 4).toString()
+        setAno(selectedDate.slice(0, 4).toString())
+        var mesItem = Globals.MONTH[parseInt(selectedDate.toString().slice(4, 7)) - 1]
+        setMes(mesItem)
+
+        fetch(Globals.BASE_URL_API + 'revenue_spending/?month=' + mesItem + '&year=' + anoItem, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Token ' + token
+            },
+        }).then(response => response.json()).then((json) => {
+            setShow(false)
+            if (json != 0) {
                 var array: any = []
                 var gastos: number = 0
                 var receitas: number = 0
@@ -122,7 +249,7 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
 
                     var valor = parseInt(new Date() - new Date(json[item].date))
 
-                    json[item].date = String(valor / (1000 * 60 * 60 * 24)) + ' dias atrás'
+                    json[item].date = String(parseInt(valor / (1000 * 60 * 60 * 24))) + ' dias atrás'
                     array.push(json[item])
 
 
@@ -131,242 +258,50 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
                 setGastos(gastos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
                 setReceitas(receitas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
 
-                if (array.length > 0) setItems(array)
 
-                else setItems([
-                    {
-                        id: 0,
-                        about: '',
-                        type: 6,
-                        typeCat: 0,
-                        value: 0,
-                        date: '0d atrás'
-                    }
-                ])
+                setItems(array)
+
                 setPieData([
-                    {
-                        value: (item5 / array.length),
-                        color: '#323131',
-                        gradientCenterColor: '#323131',
-                        focused: true,
-                    },
+                    { value: (item5 / array.length), color: '#323131', gradientCenterColor: '#323131' },
                     { value: (item2 / array.length), color: '#474747', gradientCenterColor: '#474747' },
                     { value: (item0 / array.length), color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
                     { value: (item3 / array.length), color: '#ECE1C3', gradientCenterColor: '#ECE1C3' },
-                    { value: (item4 / array.length), color: '#8EBDB6', gradientCenterColor: '#8EBDB6' },
+                    { value: (item4 / array.length), color: '#3E838C', gradientCenterColor: '#3E838C' },
                     { value: (item1 / array.length), color: '#60625F', gradientCenterColor: '#60625F' },
                 ])
-            });
-
-        }, 500);
-
-    }, []);
-
-    const renderImagem = (item: any) => {
-        switch (item) {
-            case '0':
-                return (
-                    <>
-                        <ComidaSVG />
-                    </>
-                )
-            case '1':
-                return (
-                    <>
-                        <ServSVG />
-                    </>
-                )
-            case '2':
-                return (
-                    <>
-                        <EletroSVG />
-                    </>
-                )
-            case '3':
-                return (
-                    <>
-                        <VestSVG />
-                    </>
-                )
-            case '4':
-                return (
-                    <>
-                        <EntreSVG />
-                    </>
-                )
-            case '5':
-                return (
-                    <>
-                        <OutrosSVG />
-                    </>
-                )
-        }
-    }
-    const renderNome = (item: any) => {
-        switch (item) {
-            case '0':
-                return 'Alimentação'
-            case '1':
-                return 'Serviço'
-            case '2':
-                return 'Eletrônicos'
-            case '3':
-                return 'Vestuário'
-            case '4':
-                return 'Entretenimento'
-            case '5':
-                return 'Outros'
-        }
-    }
-    // Renderizar Legenda
-    const renderLegend = (text: any, color: any) => {
-        return (
-            <View style={{ flexDirection: 'row', marginBottom: 5 }}>
-                <View
-                    style={{
-                        height: 11,
-                        width: 11,
-                        marginRight: 10,
-                        borderRadius: 9,
-                        backgroundColor: color || Globals.COLOR.BRANCO,
-                    }}
-                />
-                <Text style={{ color: Globals.COLOR.BRANCO, fontSize: 11, marginRight: 20, fontFamily: Globals.FONT_FAMILY.REGULAR, marginTop: -3 }}>{text || ''}</Text>
-            </View>
-        );
-    };
-
-    const [pieData, setPieData] = useState([
-        {
-            value: 1,
-            color: '#323131',
-            gradientCenterColor: '#323131',
-            focused: true,
-        },
-        { value: 1, color: '#474747', gradientCenterColor: '#474747' },
-        { value: 1, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-        { value: 1, color: '#ECE1C3', gradientCenterColor: '#ECE1C3' },
-        { value: 1, color: '#8EBDB6', gradientCenterColor: '#8EBDB6' },
-        { value: 1, color: '#60625F', gradientCenterColor: '#60625F' },
-    ]);
-
-
-    const [mes, setMes] = useState(Globals.MONTH.slice((parseInt(new Date().getMonth().toString()) - 1), (new Date().getMonth())));
-    const [ano, setAno] = useState(String(new Date().getFullYear()));
-
-
-    const [date, setDate] = useState(new Date());
-    const [show, setShow] = useState(false);
-
-    const showPicker = () => {
-        setShow(show == true ? false : true)
-    }
-
-    const handleDateSelect = (selectedDate: String) => {
-        setDate(new Date(selectedDate.toString()));
-        setAno(selectedDate.slice(0, 4).toString())
-        setShow(false);
-        var value = Globals.MONTH.slice((parseInt(selectedDate.toString().slice(4, 7)) - 1), (parseInt(selectedDate.toString().slice(4, 7))))
-        setMes(value)
-        console.log('aqui')
-
-        axios({
-            method: 'get',
-            headers: {
-                Authorization: 'Token ' + token
-            },
-            url: Globals.BASE_URL_API + 'revenue_spending/?month=' + mes + '&year=' + ano,
-        }).then((response) => {
-            var json = response.data
-            var array: any = []
-            var gastos: number = 0
-            var receitas: number = 0
-            var item0 = 0, item1 = 0, item2 = 0, item3 = 0, item4 = 0, item5 = 0
-            for (var item in json) {
-                switch (json[item].typeCat) {
-                    case '0':
-                        item0++
-                        break
-                    case '1':
-                        item1++
-                        break
-                    case '2':
-                        item2++
-                        break
-                    case '3':
-                        item3++
-                        break
-                    case '4':
-                        item4++
-                        break
-                    case '5':
-                        item5++
-                        break
-                }
-
-                if (json[item].type == '0') {
-                    receitas += json[item].value
-                }
-
-                if (json[item].type == '1') {
-                    gastos += json[item].value
-                }
-                json[item].value = json[item].value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
-
-
-                var valor = parseInt(new Date() - new Date(json[item].date))
-
-                json[item].date = String(valor / (1000 * 60 * 60 * 24)) + ' dias atrás'
-                array.push(json[item])
-
-
+                var arrayValores = [item0, item1, item2, item3, item4, item5]
+                setValorMaiorPorc(String(parseInt((Math.max(...arrayValores) / array.length) * 100)) + '%')
+                setValorMaiorNome(renderNome(String(arrayValores.indexOf(Math.max(...arrayValores)))))
+            } else {
+                setPieData([
+                    { value: 0, color: '#323131', gradientCenterColor: '#323131' },
+                    { value: 0, color: '#474747', gradientCenterColor: '#474747' },
+                    { value: 0, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
+                    { value: 0, color: '#ECE1C3', gradientCenterColor: '#ECE1C3' },
+                    { value: 0, color: '#3E838C', gradientCenterColor: '#3E838C' },
+                    { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
+                ])
+                setItems([]);
+                setGastos('R$ 0,00');
+                setReceitas('R$ 0,00');
+                setValorMaiorPorc('0%')
+                setValorMaiorNome('')
+                setItems([]);
             }
-
-            setGastos(gastos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-            setReceitas(receitas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-
-            if (array.length > 0) setItems(array)
-
-            else setItems([
-                {
-                    id: 0,
-                    about: '',
-                    type: 6,
-                    typeCat: 0,
-                    value: 0,
-                    date: '0d atrás'
-                }
-            ])
-            setPieData([
-                {
-                    value: (item5 / array.length),
-                    color: '#323131',
-                    gradientCenterColor: '#323131',
-                    focused: true,
-                },
-                { value: (item2 / array.length), color: '#474747', gradientCenterColor: '#474747' },
-                { value: (item0 / array.length), color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-                { value: (item3 / array.length), color: '#ECE1C3', gradientCenterColor: '#ECE1C3' },
-                { value: (item4 / array.length), color: '#8EBDB6', gradientCenterColor: '#8EBDB6' },
-                { value: (item1 / array.length), color: '#60625F', gradientCenterColor: '#60625F' },
-            ])
-        });
-
-
-
-
+        }).catch(error => {
+            if (error.toString() == "TypeError: Network request failed") {
+                setShow(false)
+            }
+        })
     }
-
-    const [openClose, setOpenClose] = useState(false);
 
     const moveMenu = () => {
         setOpenClose(openClose ? false : true)
     };
-    // Dados
-    const [nome, setNome] = useState('Marquin');
-    const [email, setEmail] = useState('marcos@gmail.com');
-    const [telefone, setTelefone] = useState('(86) 9 9 9851 - 4018');
 
+    useEffect(() => {
+        readData();
+    }, []);
 
     return (
         <SafeAreaView style={styles.body}>
@@ -413,7 +348,7 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
                             <Text style={styles.itemMenuText}>Configurações</Text>
                         </View>
 
-                        <TouchableOpacity onPress={() => { setOpenClose(false); navigation.navigate('Welcome') }}>
+                        <TouchableOpacity onPress={() => { setOpenClose(false); removeData() }}>
                             <View style={[styles.itemMenu, { paddingLeft: 17 }]}>
                                 <LogoutSVG />
                                 <Text style={styles.itemMenuText}>Sair</Text>
@@ -429,7 +364,10 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
                         mode="monthYear"
                         isGregorian={true}
                         selectorStartingYear={2000}
-                        onMonthYearChange={handleDateSelect}
+                        onMonthYearChange={(selectedDate) => {
+                            handleDateSelect(selectedDate)
+                        }
+                        }
                         selectorEndingYear={3000}
                         style={{
                             position: 'absolute',
@@ -523,9 +461,9 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
                                     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                         <Text
                                             style={{ fontSize: 22, color: Globals.COLOR.BRANCO, fontWeight: 'bold', fontFamily: Globals.FONT_FAMILY.BOLD }}>
-                                            47%
+                                            {valorMaiorPorc}
                                         </Text>
-                                        <Text style={{ fontSize: 14, color: Globals.COLOR.BRANCO, fontFamily: Globals.FONT_FAMILY.REGULAR }}>Roupas</Text>
+                                        <Text style={{ fontSize: 14, color: Globals.COLOR.BRANCO, fontFamily: Globals.FONT_FAMILY.REGULAR }}>{valorMaiorNome}</Text>
                                     </View>
                                 );
                             }}
@@ -575,26 +513,7 @@ function DashBoard({ navigation }: dashboradProps["navigation"]): JSX.Element {
                                 <Text style={[styles.textTotalizadores, { color: '#0BBC5F' }]}>{receitas}</Text>
                             </View>
                         </View>
-                        {
-                            item.map(element => (
-                                <View key={element.id} style={styles.card}>
-                                    <View style={styles.iconCard}>
-                                        {
-                                            renderImagem(element.typeCat)
-
-                                        }
-                                    </View>
-                                    <View style={styles.decCat}>
-                                        <Text style={styles.decCat1}>{element.about}</Text>
-                                        <Text style={styles.decCat2}>{renderNome(element.typeCat)}</Text>
-                                    </View>
-                                    <View style={styles.valDate}>
-                                        <Text style={styles.valDate1}>{element.value}</Text>
-                                        <Text style={styles.valDate2}>{element.date}</Text>
-                                    </View>
-                                </View>
-                            ))
-                        }
+                        {renderItens(item)}
 
                     </View>
                 </ScrollView>
@@ -632,9 +551,10 @@ const styles = StyleSheet.create({
     ,
     fundosGastos: {
         backgroundColor: "#D9D9D9",
+        // backgroundColor: "#fff",
         borderTopRightRadius: 40,
         borderTopLeftRadius: 40,
-        minHeight: 0.4 * Globals.HEIGHT,
+        minHeight: 0.40 * Globals.HEIGHT + 95,
         width: Globals.WIDTH,
         marginTop: 20
     },
@@ -759,5 +679,78 @@ const styles = StyleSheet.create({
         lineHeight: 24
     }
 });
+const renderImagem = (item: any) => {
+    switch (item) {
+        case '0':
+            return (
+                <>
+                    <ComidaSVG />
+                </>
+            )
+        case '1':
+            return (
+                <>
+                    <ServSVG />
+                </>
+            )
+        case '2':
+            return (
+                <>
+                    <EletroSVG />
+                </>
+            )
+        case '3':
+            return (
+                <>
+                    <VestSVG />
+                </>
+            )
+        case '4':
+            return (
+                <>
+                    <EntreSVG />
+                </>
+            )
+        case '5':
+            return (
+                <>
+                    <OutrosSVG />
+                </>
+            )
+    }
+}
 
+const renderNome = (item: any) => {
+    switch (item) {
+        case '0':
+            return 'Alimentação'
+        case '1':
+            return 'Serviço'
+        case '2':
+            return 'Eletrônicos'
+        case '3':
+            return 'Vestuário'
+        case '4':
+            return 'Entretenimento'
+        case '5':
+            return 'Outros'
+    }
+}
+
+const renderLegend = (text: any, color: any) => {
+    return (
+        <View style={{ flexDirection: 'row', marginBottom: 5 }}>
+            <View
+                style={{
+                    height: 11,
+                    width: 11,
+                    marginRight: 10,
+                    borderRadius: 9,
+                    backgroundColor: color || Globals.COLOR.BRANCO,
+                }}
+            />
+            <Text style={{ color: Globals.COLOR.BRANCO, fontSize: 11, marginRight: 20, fontFamily: Globals.FONT_FAMILY.REGULAR, marginTop: -3 }}>{text || ''}</Text>
+        </View>
+    );
+};
 export default DashBoard;

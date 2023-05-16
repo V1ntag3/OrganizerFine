@@ -19,38 +19,62 @@ import NotebookSVG from '../componentes/SVGComponentes/notebookSVG'
 import { useState } from 'react';
 import FundoPagina from '../componentes/FundoPaginaLoginRegistrar';
 import Globals from '../Globals';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type registrarProps = {
     navigation: any;
-}
-var registrar = {
-    nome: "",
-    sobrenome: "",
-    email: "",
-    celular: "",
-    senha: "",
-    confirm_senha: ""
+    route:any
 }
 
-function Registrar({ navigation }: registrarProps["navigation"]): JSX.Element {
+
+function Registrar({ route, navigation } : any ): JSX.Element {
+    const [nome, setNome] = useState('');
+    const [sobrenome, setSobrenome] = useState('');
+    const [email, setEmail] = useState('');
+    const [senha, setSenha] = useState('');
+    const [confirm_senha, setConfSenha] = useState('');
 
     const [nomeError, setNomeError] = useState(false);
     const [sobreNomeError, setsobreNomeError] = useState(false);
     const [emailError, setEmailError] = useState(false);
-    const [celularError, setCelularError] = useState(false);
     const [senhaError, setSenhaError] = useState(false);
     const [confirmSenhaError, setConfirmSenhaError] = useState(false);
 
-    const validarRegistrar = () => {
-        setNomeError(registrar.nome == "" ? true : false)
-        setsobreNomeError(registrar.sobrenome == "" ? true : false)
-        setEmailError(registrar.email == "" ? true : false)
-        setCelularError(registrar.celular == "" ? true : false)
-        setSenhaError(registrar.senha == "" || (registrar.senha != registrar.confirm_senha) ? true : false)
-        setConfirmSenhaError(registrar.confirm_senha == "" ? true : false)
+    const {setUserToken} = route.params
 
-        if (nomeError && sobreNomeError && emailError && celularError && senhaError && confirmSenhaError) {
-            navigation.goBack()
+    const validarRegistrar = () => {
+        setNomeError(nome == "" ? true : false)
+        setsobreNomeError(sobrenome == "" ? true : false)
+        setEmailError(email == "" ? true : false)
+        setSenhaError(senha == "" || (senha != confirm_senha) ? true : false)
+        setConfirmSenhaError(confirm_senha == "" ? true : false)
+
+
+        if (!(nomeError && sobreNomeError && emailError && senhaError && confirmSenhaError)) {
+
+            fetch(Globals.BASE_URL_API + 'register/', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    'username': email,
+                    'first_name': nome,
+                    'last_name': sobrenome,
+                    'email': email,
+                    'password': senha
+                })
+            }).then(response => {
+                return response.json();
+            }
+            ).then((json) => {
+                AsyncStorage.setItem('token', json.token, () => {
+                    setUserToken(json.token)
+                });
+
+
+            });
+
         }
     }
     return (
@@ -60,44 +84,56 @@ function Registrar({ navigation }: registrarProps["navigation"]): JSX.Element {
                 <TituloPagina title='Registrar' navigation={navigation} />
                 <View style={styles.containerInput}>
                     <TextInput style={styles.inputStyle}
+                        value={nome}
                         placeholderTextColor={nomeError ? '#FD6161' : '#323941'}
                         selectionColor="black"
-                        onChangeText={(text) => registrar.nome = text}
-                        placeholder="Nome" />
+                        placeholder="Nome"
+                        onChangeText={text => { setNome(text) }}
+
+                    />
                     <Text style={[styles.errorStyle, { display: nomeError ? 'flex' : 'none' }]} >Campo inválido</Text>
                     <TextInput style={styles.inputStyle}
+                        value={sobrenome}
                         placeholderTextColor={sobreNomeError ? '#FD6161' : '#323941'}
                         selectionColor="black"
-                        onChangeText={(text) => registrar.sobrenome = text}
-                        placeholder="Sobrenome" />
+                        placeholder="Sobrenome"
+                        onChangeText={text => { setSobrenome(text) }}
+
+                    />
                     <Text style={[styles.errorStyle, { display: sobreNomeError ? 'flex' : 'none' }]} >Campo inválido</Text>
 
                     <TextInput style={styles.inputStyle}
+
+                        value={email}
                         placeholderTextColor={emailError ? '#FD6161' : '#323941'}
                         selectionColor="black"
-                        onChangeText={(text) => registrar.email = text}
-                        placeholder="Email" />
+                        placeholder="Email"
+                        inputMode='email'
+                        onChangeText={text => { setEmail(text) }}
+
+                    />
                     <Text style={[styles.errorStyle, { display: emailError ? 'flex' : 'none' }]}  >Campo inválido</Text>
 
                     <TextInput style={styles.inputStyle}
-                        placeholderTextColor={celularError ? '#FD6161' : '#323941'}
-                        selectionColor="black"
-                        onChangeText={(text) => registrar.celular = text}
-                        placeholder="Celular"
-                        keyboardType="numeric" />
-                    <Text style={[styles.errorStyle, { display: celularError ? 'flex' : 'none' }]}  >Campo inválido</Text>
-
-                    <TextInput style={styles.inputStyle}
+                        value={senha}
                         placeholderTextColor={senhaError ? '#FD6161' : '#323941'}
                         selectionColor="black"
-                        onChangeText={(text) => registrar.senha = text}
-                        placeholder="Senha" />
+                        placeholder="Senha"
+                        secureTextEntry={true}
+                        onChangeText={text => { setSenha(text) }}
+
+                    />
                     <Text style={[styles.errorStyle, { display: senhaError ? 'flex' : 'none' }]}  >Campo inválido</Text>
                     <TextInput style={styles.inputStyle}
+                        value={confirm_senha}
                         placeholderTextColor={confirmSenhaError ? '#FD6161' : '#323941'}
                         selectionColor="black"
-                        onChangeText={(text) => registrar.confirm_senha = text}
-                        placeholder="Confirmar Senha" />
+                        placeholder="Confirmar Senha"
+                        onChangeText={text => { setConfSenha(text) }}
+                        secureTextEntry={true}
+
+
+                    />
                     <Text style={[styles.errorStyle, { display: confirmSenhaError ? 'flex' : 'none' }]}  >Campo inválido</Text>
                     <View style={styles.containerBotoes}>
                         <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={() => validarRegistrar()} title={"Registrar"} />
