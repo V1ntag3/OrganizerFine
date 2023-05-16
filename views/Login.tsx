@@ -25,22 +25,23 @@ import Globals from '../Globals';
 import fetch from 'cross-fetch';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoadingScreen from './LoadingScreen';
 
 type props = {
     navigation: any;
 }
 
 function Login({ route, navigation } : any): JSX.Element {
-  
+    const [isLoading, setIsLoading] = useState(false)
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [emailError, setEmailError] = useState(false);
     const [senhaError, setSenhaError] = useState(false);
-    const nav = navigation
+
     const logar = () => {
         setEmailError(email == "" ? true : false)
         setSenhaError(senha == "" ? true : false)
-
+        setIsLoading(true)
         fetch(Globals.BASE_URL_API + 'login/', {
             method: 'POST',
             body: JSON.stringify({
@@ -58,11 +59,19 @@ function Login({ route, navigation } : any): JSX.Element {
                 setUserToken(json.token)
 
             }).catch((error) => {
+            }).finally(() => {
+                setIsLoading(false)
             });
     }
-    return (
-        <SafeAreaView style={styles.body}>
-            <ScrollView contentContainerStyle={styles.scrollView}>
+    const renderLoad = () => {
+        return (<>
+
+            <LoadingScreen />
+
+        </>)
+    }
+    const renderTela = () =>{
+        return (<ScrollView contentContainerStyle={styles.scrollView}>
                 <TituloPagina title='Login' navigation={navigation} />
                 <FundoPagina />
                 <View style={[styles.containerInput, { zIndex: 0 }]}>
@@ -80,11 +89,11 @@ function Login({ route, navigation } : any): JSX.Element {
                         onChangeText={(text) => setSenha(text)}
                         placeholder="Senha" />
                     <Text style={[styles.errorStyle, { display: senhaError ? 'flex' : 'none' }]}  >Email e/ou Senha inválido(s)</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('EsqueciSenha')} >
+                    {/* <TouchableOpacity onPress={() => navigation.navigate('EsqueciSenha')} >
                         <View>
                             <Text style={[styles.esqueciSenha]} >esqueci a senha</Text>
                         </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                     <View style={styles.containerBotoes}>
                         <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={() => logar()} title={"Login"} />
                     </View>
@@ -95,7 +104,14 @@ function Login({ route, navigation } : any): JSX.Element {
                     <Text style={styles.nomeApp}>FINE</Text>
                 </View>
                 <PastaSVG style={styles.pastaSVGStyle} width={143} height={143} />
-            </ScrollView>
+            </ScrollView>)
+    }
+    return (
+        <SafeAreaView style={styles.body}>
+             {
+                isLoading ? renderLoad() : (<></>)
+            }
+            {renderTela()}
         </SafeAreaView>
     );
 }

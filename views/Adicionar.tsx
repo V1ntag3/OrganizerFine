@@ -110,24 +110,24 @@ function Adicionar({ route, navigation } : any): JSX.Element {
         readData();
     }, []);
     const mandarDados = () => {
-        console.log(JSON.stringify({
+        var tipo0 = JSON.stringify({
             'about': descricao,
-            'value': valor / 100,
+            'value': (valor / 100),
+            'type': String(tipo)
+        })
+        var tipo1 = JSON.stringify({
+            'about': descricao,
+            'value': (valor / 100),
             'type': String(tipo),
-            'typeCat': selectedValue
-        }))
+            'typeCat': selectedValue 
+        })
         fetch(Globals.BASE_URL_API + 'revenue_spending/', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
                 'Authorization': 'Token ' + token
             },
-            body: JSON.stringify({
-                'about': descricao,
-                'value': (valor / 100),
-                'type': String(tipo),
-                'typeCat': selectedValue
-            })
+            body: tipo == 0 ? tipo0 : tipo1
         }).then(response => {
             if (response.status == 401 || response.status == 403) { removeData() };
             if (response.status == 200) {
@@ -136,7 +136,7 @@ function Adicionar({ route, navigation } : any): JSX.Element {
             }
         }
         ).then((json) => {
-
+            
         });
     }
     return (

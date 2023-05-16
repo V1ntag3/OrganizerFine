@@ -4,7 +4,7 @@
  *
  * @format
  */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,7 +15,7 @@ import {
 
 import Globals from '../Globals';
 
-function SplashScreen(): JSX.Element {
+function LoadingScreen(): JSX.Element {
   const animatedValue = new Animated.Value(0)
 
   useEffect(() => {
@@ -53,6 +53,7 @@ function SplashScreen(): JSX.Element {
 
 const styles = StyleSheet.create({
   body: {
+    opacity:0.7,
     backgroundColor: Globals.COLOR.LIGHT.COLOR5,
     flex: 1,
     zIndex:10000
@@ -72,4 +73,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SplashScreen;
+export default LoadingScreen;

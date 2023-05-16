@@ -31,21 +31,21 @@ import LogoutSVG from '../componentes/SVGComponentes/logoutSVG';
 import ConfigSVG from '../componentes/SVGComponentes/configSVG';
 import FineSVG from '../componentes/SVGComponentes/fineSVG';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoadingScreen from './LoadingScreen';
 
 type props = {
     navigation: any;
-    route:any
+    route: any
 }
 
-function DashBoard({ route, navigation } : any): JSX.Element {
-
+function DashBoard({ route, navigation }: any): JSX.Element {
+    const [isLoading, setIsLoading] = useState(false)
     const [token, setToken] = useState('')
     const [gastos, setGastos] = useState('R$ 0,00');
     const [receitas, setReceitas] = useState('R$ 0,00');
     const [item, setItems] = useState([])
     const [nome, setNome] = useState('Marquin');
     const [email, setEmail] = useState('marcos@gmail.com');
-    const [telefone, setTelefone] = useState('(86) 9 9 9851 - 4018');
     const [mes, setMes] = useState(Globals.MONTH[parseInt(new Date().getMonth().toString())])
     const [ano, setAno] = useState(String(new Date().getFullYear()));
     const [show, setShow] = useState(false);
@@ -88,8 +88,28 @@ function DashBoard({ route, navigation } : any): JSX.Element {
     }
     const readData = async () => {
         try {
+
             const value = await AsyncStorage.getItem('token', (err, result) => {
-              
+                fetch(Globals.BASE_URL_API + 'profile/', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Token ' + result
+                    },
+                }).then(response => {
+                    if (response.status == 401 || response.status == 403) { removeData() };
+                    return response.json();
+                }).then((json) => {
+                    setNome(json.first_name + ' ' + json.last_name)
+                    setEmail(json.email)
+                }).catch(error => {
+                    if (error.toString() == "TypeError: Network request failed") {
+                    }
+                }).finally(() => {
+                    setIsLoading(false)
+                })
+
+                setIsLoading(true)
+
                 fetch(Globals.BASE_URL_API + 'revenue_spending/?month=' + mes + '&year=' + ano, {
                     method: 'GET',
                     headers: {
@@ -140,7 +160,10 @@ function DashBoard({ route, navigation } : any): JSX.Element {
                             var valor = parseInt(new Date() - new Date(json[item].date))
 
                             json[item].date = String(parseInt(valor / (1000 * 60 * 60 * 24))) + ' dias atrás'
-                            array.push(json[item])
+
+                            if (json[item].typeCat != '') {
+                                array.push(json[item])
+                            }
 
 
                         }
@@ -180,8 +203,9 @@ function DashBoard({ route, navigation } : any): JSX.Element {
                     }
                 }).catch(error => {
                     if (error.toString() == "TypeError: Network request failed") {
-                        setShow(false)
                     }
+                }).finally(() => {
+                    setIsLoading(false)
                 })
             })
 
@@ -191,10 +215,10 @@ function DashBoard({ route, navigation } : any): JSX.Element {
         } catch (e) {
         }
     };
-    const { setUserToken } = route.params 
-    
+    const { setUserToken } = route.params
+
     const removeData = async () => {
-        await AsyncStorage.clear().then(() => {setUserToken(null)})
+        await AsyncStorage.clear().then(() => { setUserToken(null) })
     };
 
     const handleDateSelect = (selectedDate: String) => {
@@ -202,14 +226,14 @@ function DashBoard({ route, navigation } : any): JSX.Element {
         setAno(selectedDate.slice(0, 4).toString())
         var mesItem = Globals.MONTH[parseInt(selectedDate.toString().slice(4, 7)) - 1]
         setMes(mesItem)
-
+        setShow(false)
+        setIsLoading(true)
         fetch(Globals.BASE_URL_API + 'revenue_spending/?month=' + mesItem + '&year=' + anoItem, {
             method: 'GET',
             headers: {
                 'Authorization': 'Token ' + token
             },
         }).then(response => response.json()).then((json) => {
-            setShow(false)
             if (json != 0) {
                 var array: any = []
                 var gastos: number = 0
@@ -250,8 +274,12 @@ function DashBoard({ route, navigation } : any): JSX.Element {
                     var valor = parseInt(new Date() - new Date(json[item].date))
 
                     json[item].date = String(parseInt(valor / (1000 * 60 * 60 * 24))) + ' dias atrás'
-                    array.push(json[item])
 
+                    console.log(json[item])
+
+                    if (json[item].typeCat != '') {
+                        array.push(json[item])
+                    }
 
                 }
 
@@ -292,6 +320,8 @@ function DashBoard({ route, navigation } : any): JSX.Element {
             if (error.toString() == "TypeError: Network request failed") {
                 setShow(false)
             }
+        }).finally(() => {
+            setIsLoading(false)
         })
     }
 
@@ -299,226 +329,244 @@ function DashBoard({ route, navigation } : any): JSX.Element {
         setOpenClose(openClose ? false : true)
     };
 
+
     useEffect(() => {
         readData();
-    }, []);
 
-    return (
-        <SafeAreaView style={styles.body}>
+        navigation.addListener('focus', () => {
+            readData();
+        });
 
-            <Drawer style={{
-                width: '100%',
-                height: '100%',
-                position: 'absolute',
-                zIndex: 100
+    }, [navigation]);
+
+    const renderTela = () => {
+        return (<Drawer style={{
+
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            zIndex: 100
+        }}
+            drawerStyle={{
+                width: '90%'
             }}
-                drawerStyle={{
-                    width: '90%'
-                }}
-                open={openClose}
-                onOpen={() => setOpenClose(true)}
-                onClose={() => setOpenClose(false)}
-                renderDrawerContent={() => {
-                    return <View style={{
-                        width: '100%', height: '100%', backgroundColor: Globals.COLOR.LIGHT.COLOR5,
-                    }}>
-                        <View style={styles.imagemUser}>
-                        </View>
-                        <View style={{ marginLeft: 20, marginBottom: 30 }}>
-                            <Text style={{
-                                fontWeight: '300',
-                                fontSize: 20,
-                                color: '#FFFFFF'
-                            }}>
-                                <Text style={{ fontWeight: '700' }}>Olá</Text>, {nome}
-                            </Text>
-                            <Text style={styles.dadosMenu}>{telefone}</Text>
-                            <Text style={styles.dadosMenu}>{email}</Text>
-                        </View>
+            open={openClose}
+            onOpen={() => setOpenClose(true)}
+            onClose={() => setOpenClose(false)}
+            renderDrawerContent={() => {
+                return <View style={{
+                    width: '100%', height: '100%', backgroundColor: Globals.COLOR.LIGHT.COLOR5,
+                }}>
+                    <View style={styles.imagemUser}>
+                    </View>
+                    <View style={{ marginLeft: 20, marginBottom: 30 }}>
+                        <Text style={{
+                            fontWeight: '300',
+                            fontSize: 20,
+                            color: '#FFFFFF'
+                        }}>
+                            <Text style={{ fontWeight: '700' }}>Olá</Text>, {nome}
+                        </Text>
+                        <Text style={styles.dadosMenu}>{email}</Text>
+                    </View>
 
-                        <TouchableOpacity onPress={() => { setOpenClose(false); navigation.navigate('DashBoard') }}>
-                            <View style={styles.itemMenu}>
-                                <FineSVG />
-                                <Text style={styles.itemMenuText}>Finanças</Text>
-                            </View>
-                        </TouchableOpacity>
-
+                    <TouchableOpacity onPress={() => { setOpenClose(false); navigation.navigate('DashBoard') }}>
                         <View style={styles.itemMenu}>
-                            <ConfigSVG />
-                            <Text style={styles.itemMenuText}>Configurações</Text>
+                            <FineSVG />
+                            <Text style={styles.itemMenuText}>Finanças</Text>
                         </View>
+                    </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => { setOpenClose(false); removeData() }}>
-                            <View style={[styles.itemMenu, { paddingLeft: 17 }]}>
-                                <LogoutSVG />
-                                <Text style={styles.itemMenuText}>Sair</Text>
-                            </View>
-                        </TouchableOpacity>
+                    <View style={styles.itemMenu}>
+                        <ConfigSVG />
+                        <Text style={styles.itemMenuText}>Configurações</Text>
+                    </View>
 
-                    </View>;
-                }}
-            >
+                    <TouchableOpacity onPress={() => { setOpenClose(false); removeData() }}>
+                        <View style={[styles.itemMenu, { paddingLeft: 17 }]}>
+                            <LogoutSVG />
+                            <Text style={styles.itemMenuText}>Sair</Text>
+                        </View>
+                    </TouchableOpacity>
 
-                {show && (
-                    <DatePicker
-                        mode="monthYear"
-                        isGregorian={true}
-                        selectorStartingYear={2000}
-                        onMonthYearChange={(selectedDate) => {
-                            handleDateSelect(selectedDate)
+                </View>;
+            }}
+        >
+
+            {show && (
+                <DatePicker
+                    mode="monthYear"
+                    isGregorian={true}
+                    selectorStartingYear={2000}
+                    onMonthYearChange={(selectedDate) => {
+                        handleDateSelect(selectedDate)
+                    }
+                    }
+                    selectorEndingYear={3000}
+                    style={{
+                        position: 'absolute',
+                        top: 50,
+                        zIndex: 10000,
+                        width: Globals.WIDTH * 0.9,
+                        borderRadius: 25,
+                        left: Globals.WIDTH * 0.05
+                    }}
+                    options={
+                        {
+                            backgroundColor: Globals.COLOR.LIGHT.COLOR3,
+                            textHeaderColor: Globals.COLOR.BRANCO,
+                            textDefaultColor: Globals.COLOR.BRANCO,
+                            selectedTextColor: Globals.COLOR.BRANCO,
+                            mainColor: Globals.COLOR.LIGHT.COLOR2,
+                            defaultFont: Globals.FONT_FAMILY.REGULAR,
+                            textFontSize: 13,
+
                         }
-                        }
-                        selectorEndingYear={3000}
-                        style={{
-                            position: 'absolute',
-                            top: 50,
-                            zIndex: 10000,
-                            width: Globals.WIDTH * 0.9,
-                            borderRadius: 25,
-                            left: Globals.WIDTH * 0.05
-                        }}
-                        options={
-                            {
-                                backgroundColor: Globals.COLOR.LIGHT.COLOR3,
-                                textHeaderColor: Globals.COLOR.BRANCO,
-                                textDefaultColor: Globals.COLOR.BRANCO,
-                                selectedTextColor: Globals.COLOR.BRANCO,
-                                mainColor: Globals.COLOR.LIGHT.COLOR2,
-                                defaultFont: Globals.FONT_FAMILY.REGULAR,
-                                textFontSize: 13,
+                    }
+                />
+            )}
+            <TouchableOpacity style={{ zIndex: 10000, position: 'absolute', top: 20, right: 0 }} onPress={() => { navigation.navigate('Adicionar') }}>
+                <View style={
+                    {
+                        width: 50,
+                        height: 40,
+                        borderTopLeftRadius: 10,
+                        borderBottomLeftRadius: 10,
+                        backgroundColor: Globals.COLOR.LIGHT.COLOR2,
+                        zIndex: 1000
+                    }
+                }>
+                    <View style={{
+                        marginTop: 3.5,
+                        marginLeft: 6
+                    }}>
+                        <AddSVG />
+                    </View>
 
-                            }
-                        }
-                    />
-                )}
-                <TouchableOpacity style={{ zIndex: 10000, position: 'absolute', top: 20, right: 0 }} onPress={() => { navigation.navigate('Adicionar') }}>
+                </View>
+            </TouchableOpacity>
+
+            <ScrollView contentContainerStyle={styles.scrollView} showsVerticalScrollIndicator={false}>
+
+                <TouchableOpacity style={{ position: 'absolute', top: 20, left: 15, zIndex: 1000 }} onPress={moveMenu}>
+                    <MenuSVG />
+                </TouchableOpacity>
+                <TouchableOpacity onPressIn={() => { setShow(show == true ? false : true) }}>
+
                     <View style={
                         {
-                            width: 50,
-                            height: 40,
-                            borderTopLeftRadius: 10,
-                            borderBottomLeftRadius: 10,
-                            backgroundColor: Globals.COLOR.LIGHT.COLOR2,
-                            zIndex: 1000
+                            position: 'absolute',
+                            flexDirection: 'row',
+                            top: 45,
+                            marginRight: 'auto',
+                            marginLeft: 'auto',
+                            alignSelf: 'center'
                         }
                     }>
-                        <View style={{
-                            marginTop: 3.5,
-                            marginLeft: 6
-                        }}>
-                            <AddSVG />
+                        <View>
+                            <Text style={styles.selectData}>{mes}</Text>
+                            <Text style={styles.selectData}>{ano}</Text>
                         </View>
-
+                        <View style={{ marginTop: 3, marginLeft: 3 }}>
+                            <BackRotSVG />
+                        </View>
                     </View>
                 </TouchableOpacity>
 
-                <ScrollView contentContainerStyle={styles.scrollView} showsVerticalScrollIndicator={false}>
+                <Text style={styles.tituloView}>Finanças</Text>
+                <View style={
+                    {
+                        margin: 'auto',
+                        width: '100%',
+                        paddingHorizontal: (Globals.WIDTH * 0.5) - 90,
+                        marginTop: 70
+                    }
+                }>
+                    <PieChart
+                        data={pieData}
+                        donut
+                        showGradient
+                        sectionAutoFocus
+                        radius={90}
+                        innerRadius={50}
+                        innerCircleColor={Globals.COLOR.LIGHT.COLOR4}
+                        centerLabelComponent={() => {
+                            return (
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <Text
+                                        style={{ fontSize: 22, color: Globals.COLOR.BRANCO, fontWeight: 'bold', fontFamily: Globals.FONT_FAMILY.BOLD }}>
+                                        {valorMaiorPorc}
+                                    </Text>
+                                    <Text style={{ fontSize: 14, color: Globals.COLOR.BRANCO, fontFamily: Globals.FONT_FAMILY.REGULAR }}>{valorMaiorNome}</Text>
+                                </View>
+                            );
+                        }}
+                    />
+                    <View
+                        style={{
 
-                    <TouchableOpacity style={{ position: 'absolute', top: 20, left: 15, zIndex: 1000 }} onPress={moveMenu}>
-                        <MenuSVG />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPressIn={() => { setShow(show == true ? false : true) }}>
+                            flexDirection: 'row',
+                            marginHorizontal: -Globals.WIDTH * 0.20,
+                            zIndex: 10
 
-                        <View style={
-                            {
-                                position: 'absolute',
-                                flexDirection: 'row',
-                                top: 45,
-                                marginRight: 'auto',
-                                marginLeft: 'auto',
-                                alignSelf: 'center'
-                            }
-                        }>
-                            <View>
-                                <Text style={styles.selectData}>{mes}</Text>
-                                <Text style={styles.selectData}>{ano}</Text>
-                            </View>
-                            <View style={{ marginTop: 3, marginLeft: 3 }}>
-                                <BackRotSVG />
-                            </View>
+                        }}>
+                        <View style={{
+                            flexDirection: 'column',
+
+                        }}>
+                            {renderLegend('Alimentação', '#FFFFFF')}
+                            {renderLegend('Vestuário', '#ECE1C3')}
+
+
                         </View>
-                    </TouchableOpacity>
-
-                    <Text style={styles.tituloView}>Finanças</Text>
-                    <View style={
-                        {
-                            margin: 'auto',
-                            width: '100%',
-                            paddingHorizontal: (Globals.WIDTH * 0.5) - 90,
-                            marginTop: 70
-                        }
-                    }>
-                        <PieChart
-                            data={pieData}
-                            donut
-                            showGradient
-                            sectionAutoFocus
-                            radius={90}
-                            innerRadius={50}
-                            innerCircleColor={Globals.COLOR.LIGHT.COLOR4}
-                            centerLabelComponent={() => {
-                                return (
-                                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                        <Text
-                                            style={{ fontSize: 22, color: Globals.COLOR.BRANCO, fontWeight: 'bold', fontFamily: Globals.FONT_FAMILY.BOLD }}>
-                                            {valorMaiorPorc}
-                                        </Text>
-                                        <Text style={{ fontSize: 14, color: Globals.COLOR.BRANCO, fontFamily: Globals.FONT_FAMILY.REGULAR }}>{valorMaiorNome}</Text>
-                                    </View>
-                                );
-                            }}
-                        />
-                        <View
-                            style={{
-
-                                flexDirection: 'row',
-                                marginHorizontal: -Globals.WIDTH * 0.20,
-                                zIndex: 10
-
-                            }}>
-                            <View style={{
-                                flexDirection: 'column',
-
-                            }}>
-                                {renderLegend('Alimentação', '#FFFFFF')}
-                                {renderLegend('Vestuário', '#ECE1C3')}
-
-
-                            </View>
-                            <View style={{
-                                flexDirection: 'column',
-                            }}>
-                                {renderLegend('Serviços', '#60625F')}
-                                {renderLegend('Entretenimento', '#3E838C')}
-                            </View>
-                            <View style={{
-                                flexDirection: 'column',
-                            }}>
-
-                                {renderLegend('Eletrônicos', '#474747')}
-                                {renderLegend('Outros', '#323131')}
-                            </View>
+                        <View style={{
+                            flexDirection: 'column',
+                        }}>
+                            {renderLegend('Serviços', '#60625F')}
+                            {renderLegend('Entretenimento', '#3E838C')}
                         </View>
+                        <View style={{
+                            flexDirection: 'column',
+                        }}>
 
+                            {renderLegend('Eletrônicos', '#474747')}
+                            {renderLegend('Outros', '#323131')}
+                        </View>
                     </View>
-                    <View style={styles.fundosGastos} >
-                        <View style={styles.dados}>
-                            <View style={styles.totalizadores}>
-                                <Text style={[styles.textTotalizadores, { color: '#F44336' }]}>Gastos</Text>
-                                <Text style={[styles.textTotalizadores, { color: '#F44336' }]}>{gastos}</Text>
-                            </View>
-                            <View style={styles.linha}></View>
-                            <View style={styles.totalizadores}>
-                                <Text style={[styles.textTotalizadores, { color: '#0BBC5F' }]}>Receitas</Text>
-                                <Text style={[styles.textTotalizadores, { color: '#0BBC5F' }]}>{receitas}</Text>
-                            </View>
+
+                </View>
+                <View style={styles.fundosGastos} >
+                    <View style={styles.dados}>
+                        <View style={styles.totalizadores}>
+                            <Text style={[styles.textTotalizadores, { color: '#F44336' }]}>Gastos</Text>
+                            <Text style={[styles.textTotalizadores, { color: '#F44336' }]}>{gastos}</Text>
                         </View>
-                        {renderItens(item)}
-
+                        <View style={styles.linha}></View>
+                        <View style={styles.totalizadores}>
+                            <Text style={[styles.textTotalizadores, { color: '#0BBC5F' }]}>Receitas</Text>
+                            <Text style={[styles.textTotalizadores, { color: '#0BBC5F' }]}>{receitas}</Text>
+                        </View>
                     </View>
-                </ScrollView>
+                    {renderItens(item)}
 
-            </Drawer>
+                </View>
+            </ScrollView>
+
+        </Drawer>)
+    }
+    const renderLoad = () => {
+        return (<>
+
+            <LoadingScreen />
+
+        </>)
+    }
+    return (
+        <SafeAreaView style={styles.body}>
+            {
+                isLoading ? renderLoad() : (<></>)
+            }
+            {renderTela()}
         </SafeAreaView>
     );
 
@@ -620,6 +668,7 @@ const styles = StyleSheet.create({
 
     },
     decCat2: {
+        color: '#195E63',
         fontSize: 10.8889
     },
     valDate: {
@@ -639,7 +688,9 @@ const styles = StyleSheet.create({
     },
     valDate2: {
         fontSize: 10.8889,
-        textAlign: 'right'
+        textAlign: 'right',
+        color: '#195E63',
+
     }, dadosMenu: {
         fontFamily: Globals.FONT_FAMILY.REGULAR,
         fontWeight: '500',
