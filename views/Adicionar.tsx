@@ -26,6 +26,7 @@ import MenuSVG from '../componentes/SVGComponentes/menuSVG';
 import MaskInput, { Masks } from 'react-native-mask-input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from './LoadingScreen';
+import UserSVG from '../componentes/SVGComponentes/userSVG';
 
 type props = {
     navigation: any;
@@ -190,6 +191,9 @@ function Adicionar({ route, navigation }: any): JSX.Element {
                         width: '100%', height: '100%', backgroundColor: Globals.COLOR.LIGHT.COLOR5,
                     }}>
                         <View style={styles.imagemUser}>
+                            <View style={{alignSelf:'center', marginTop:10}}>
+                                <UserSVG/>
+                            </View>
                         </View>
                         <View style={{ marginLeft: 20, marginBottom: 30 }}>
                             <Text style={{
@@ -374,7 +378,7 @@ const styles = StyleSheet.create({
     nomeApp: {
         width: '100%',
         textAlign: 'center',
-        fontFamily: Globals.FONT_FAMILY_NAME_APP,
+        fontFamily: Globals.FONT_FAMILY_NAME_APP.REGULAR,
         fontWeight: '500',
         fontSize: 17,
         lineHeight: 25,
@@ -440,7 +444,7 @@ const styles = StyleSheet.create({
     imagemUser: {
         width: Globals.WIDTH * 0.4,
         height: Globals.WIDTH * 0.4,
-        backgroundColor: "black",
+        backgroundColor: Globals.COLOR.LIGHT.COLOR1,
         borderColor: Globals.COLOR.LIGHT.COLOR4,
         borderRadius: Globals.WIDTH * 0.20,
         borderWidth: 4,

@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     nomeApp: {
         width: '100%',
         textAlign: 'center',
-        fontFamily: Globals.FONT_FAMILY_NAME_APP,
+        fontFamily: Globals.FONT_FAMILY_NAME_APP.REGULAR,
         fontWeight: '500',
         fontSize: 17,
         lineHeight: 25,
