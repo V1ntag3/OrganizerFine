@@ -217,8 +217,21 @@ function DashBoard({ route, navigation }: any): JSX.Element {
     };
     const { setUserToken } = route.params
 
-    const removeData = async () => {
-        await AsyncStorage.clear().then(() => { setUserToken(null) })
+    const removeData = () => {
+        setIsLoading(true)
+        fetch(Globals.BASE_URL_API + 'logout/', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Token ' + token
+            },
+        }).then(response => {if(response.status == 204){
+            AsyncStorage.clear().then(() => { setUserToken(null) })
+        }}).catch(error => {
+           
+        }).finally(() => {
+            setIsLoading(false)
+        })
+       
     };
 
     const handleDateSelect = (selectedDate: String) => {
@@ -544,13 +557,13 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                 <View style={styles.fundosGastos} >
                     <View style={styles.dados}>
                         <View style={styles.totalizadores}>
-                            <Text style={[styles.textTotalizadores, { color: '#F44336' }]}>Gastos</Text>
-                            <Text style={[styles.textTotalizadores, { color: '#F44336' }]}>{gastos}</Text>
+                            <Text style={[styles.textTotalizadores, { color: Globals.COLOR_GASTO }]}>Gastos</Text>
+                            <Text style={[styles.textTotalizadores, { color: Globals.COLOR_GASTO }]}>{gastos}</Text>
                         </View>
                         <View style={styles.linha}></View>
                         <View style={styles.totalizadores}>
-                            <Text style={[styles.textTotalizadores, { color: '#0BBC5F' }]}>Receitas</Text>
-                            <Text style={[styles.textTotalizadores, { color: '#0BBC5F' }]}>{receitas}</Text>
+                            <Text style={[styles.textTotalizadores, { color: Globals.COLOR_RECEITA }]}>Receitas</Text>
+                            <Text style={[styles.textTotalizadores, { color: Globals.COLOR_RECEITA }]}>{receitas}</Text>
                         </View>
                     </View>
                     {renderItens(item)}

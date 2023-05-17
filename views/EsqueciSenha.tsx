@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
         maxWidth: 338.89,
         marginLeft: 'auto',
         marginRight: 'auto',
-        color: '#FD6161',
+        color: Globals.COLOR_ERROR,
         fontSize: 11,
         lineHeight: 12,
         fontFamily: Globals.FONT_FAMILY.MEDIUM

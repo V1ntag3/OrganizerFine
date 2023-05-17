@@ -75,5 +75,8 @@ export default {
         'Outubro',
         'Novembro',
         'Dezembro',
-    ]
+    ],
+    COLOR_ERROR:'#FF6962',
+    COLOR_GASTO: '#FF6962',
+    COLOR_RECEITA:'#77DD78'
   };

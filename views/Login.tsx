@@ -93,13 +93,13 @@ function Login({ route, navigation }: any): JSX.Element {
                 <TextInput style={styles.inputStyle}
                     selectionColor="black"
                     maxLength={20}
-                    placeholderTextColor={emailError ? '#FD6161' : '#323941'}
+                    placeholderTextColor={emailError ? Globals.COLOR_ERROR : '#323941'}
                     onChangeText={(text) => setEmail(text)}
                     placeholder="Email" />
                 <TextInput style={styles.inputStyle}
                     secureTextEntry={true}
 
-                    placeholderTextColor={senhaError ? '#FD6161' : '#323941'}
+                    placeholderTextColor={senhaError ? Globals.COLOR_ERROR : '#323941'}
                     selectionColor="black"
                     onChangeText={(text) => setSenha(text)}
                     placeholder="Senha" />
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
         maxWidth: 338.89,
         marginLeft: 'auto',
         marginRight: 'auto',
-        color: '#FD6161',
+        color: Globals.COLOR_ERROR,
         fontSize: 11,
         lineHeight: 12,
         fontFamily: Globals.FONT_FAMILY.MEDIUM

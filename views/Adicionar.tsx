@@ -37,8 +37,21 @@ type props = {
 function Adicionar({ route, navigation }: any): JSX.Element {
     const { setUserToken } = route.params
 
-    const removeData = async () => {
-        await AsyncStorage.clear().then(() => { setUserToken(null) })
+    const removeData =  () => {
+        setIsLoading(true)
+        fetch(Globals.BASE_URL_API + 'logout/', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Token ' + token
+            },
+        }).then(response => {if(response.status == 204){
+            AsyncStorage.clear().then(() => { setUserToken(null) })
+        }}).catch(error => {
+            
+        }).finally(() => {
+            setIsLoading(false)
+        })
+       
     };
     const [selectedValue, setSelectedValue] = useState('');
 
@@ -238,12 +251,12 @@ function Adicionar({ route, navigation }: any): JSX.Element {
                     </TouchableOpacity>
                     <Text style={styles.tituloView}>Adicionar</Text>
                     <View style={{ width: '90%', alignSelf: 'center', flexDirection: 'row', marginTop: 30 }}>
-                        <TouchableOpacity onPress={() => { setTipo(0) }} style={[{ width: '50%', backgroundColor: '#32CD32', height: 60 }, {
+                        <TouchableOpacity onPress={() => { setTipo(0) }} style={[{ width: '50%', backgroundColor: Globals.COLOR_RECEITA, height: 60 }, {
                             opacity: tipo == 0 ? 1 : 0.5
                         }]}>
                             <Text style={{ color: 'white', fontSize: 20, textAlign: 'center', paddingVertical: 16, fontFamily: Globals.FONT_FAMILY.BOLD }}>Receita</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { setTipo(1) }} style={[{ width: '50%', backgroundColor: '#FF6347', height: 60, }, {
+                        <TouchableOpacity onPress={() => { setTipo(1) }} style={[{ width: '50%', backgroundColor: Globals.COLOR_GASTO, height: 60, }, {
                             opacity: tipo == 1 ? 1 : 0.5
 
                         }]}>
@@ -252,7 +265,7 @@ function Adicionar({ route, navigation }: any): JSX.Element {
                     </View>
                     <TextInput style={[styles.inputStyle,]}
                         selectionColor="black"
-                        placeholderTextColor={false ? '#FD6161' : 'black'}
+                        placeholderTextColor={false ? Globals.COLOR_ERROR : 'black'}
                         onChangeText={(text) => setDescricao(text)}
                         placeholder="Descrição" />
                     <Text style={[styles.errorStyle, { display: descricaoError ? 'flex' : 'none' }]}  >Campo inválido</Text>
@@ -265,7 +278,7 @@ function Adicionar({ route, navigation }: any): JSX.Element {
                     <MaskInput
                         value={valor}
                         style={[styles.inputStyle, { marginTop: 5 }]}
-                        placeholderTextColor={false ? '#FD6161' : 'black'}
+                        placeholderTextColor={false ? Globals.COLOR_ERROR : 'black'}
                         selectionColor='black'
                         onChangeText={(masked, unmasked) => {
                             setValor(unmasked);
@@ -362,7 +375,7 @@ const styles = StyleSheet.create({
         maxWidth: 338.89,
         marginLeft: 'auto',
         marginRight: 'auto',
-        color: '#FD6161',
+        color: Globals.COLOR_ERROR,
         fontSize: 11,
         lineHeight: 12,
         fontFamily: Globals.FONT_FAMILY.MEDIUM,

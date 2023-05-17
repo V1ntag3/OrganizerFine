@@ -53,7 +53,7 @@ function Registrar({ route, navigation }: any): JSX.Element {
 
 
         if (nome != "" && sobrenome != "" && email != "" && senha != "" && confirm_senha != "" && (senha == confirm_senha)) {
-
+            setIsLoading(true)
             fetch(Globals.BASE_URL_API + 'register/', {
                 method: 'POST',
                 headers: {
@@ -72,6 +72,8 @@ function Registrar({ route, navigation }: any): JSX.Element {
             ).then((json) => {
                 AsyncStorage.setItem('token', json.token, () => {
                     setUserToken(json.token)
+                    setIsLoading(false)
+
                 });
 
 
@@ -89,7 +91,7 @@ function Registrar({ route, navigation }: any): JSX.Element {
             <View style={styles.containerInput}>
                 <TextInput style={styles.inputStyle}
                     value={nome}
-                    placeholderTextColor={nomeError ? '#FD6161' : '#323941'}
+                    placeholderTextColor={nomeError ? Globals.COLOR_ERROR : '#323941'}
                     selectionColor="black"
                     placeholder="Nome"
                     onChangeText={text => { setNome(text) }}
@@ -98,7 +100,7 @@ function Registrar({ route, navigation }: any): JSX.Element {
                 <Text style={[styles.errorStyle, { display: nomeError ? 'flex' : 'none' }]} >Campo inválido</Text>
                 <TextInput style={styles.inputStyle}
                     value={sobrenome}
-                    placeholderTextColor={sobreNomeError ? '#FD6161' : '#323941'}
+                    placeholderTextColor={sobreNomeError ? Globals.COLOR_ERROR : '#323941'}
                     selectionColor="black"
                     placeholder="Sobrenome"
                     onChangeText={text => { setSobrenome(text) }}
@@ -109,7 +111,7 @@ function Registrar({ route, navigation }: any): JSX.Element {
                 <TextInput style={styles.inputStyle}
 
                     value={email}
-                    placeholderTextColor={emailError ? '#FD6161' : '#323941'}
+                    placeholderTextColor={emailError ? Globals.COLOR_ERROR : '#323941'}
                     selectionColor="black"
                     placeholder="Email"
                     inputMode='email'
@@ -120,7 +122,7 @@ function Registrar({ route, navigation }: any): JSX.Element {
 
                 <TextInput style={styles.inputStyle}
                     value={senha}
-                    placeholderTextColor={senhaError ? '#FD6161' : '#323941'}
+                    placeholderTextColor={senhaError ? Globals.COLOR_ERROR : '#323941'}
                     selectionColor="black"
                     placeholder="Senha"
                     secureTextEntry={true}
@@ -130,7 +132,7 @@ function Registrar({ route, navigation }: any): JSX.Element {
                 <Text style={[styles.errorStyle, { display: senhaError ? 'flex' : 'none' }]}  >Campo inválido</Text>
                 <TextInput style={styles.inputStyle}
                     value={confirm_senha}
-                    placeholderTextColor={confirmSenhaError ? '#FD6161' : '#323941'}
+                    placeholderTextColor={confirmSenhaError ? Globals.COLOR_ERROR : '#323941'}
                     selectionColor="black"
                     placeholder="Confirmar Senha"
                     onChangeText={text => { setConfSenha(text) }}
@@ -194,7 +196,7 @@ const styles = StyleSheet.create({
         maxWidth: 338.89,
         marginLeft: 'auto',
         marginRight: 'auto',
-        color: '#FD6161',
+        color: Globals.COLOR_ERROR,
         fontSize: 11,
         lineHeight: 12,
         fontFamily: Globals.FONT_FAMILY.MEDIUM
