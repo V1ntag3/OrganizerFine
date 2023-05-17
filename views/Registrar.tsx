@@ -20,14 +20,16 @@ import { useState } from 'react';
 import FundoPagina from '../componentes/FundoPaginaLoginRegistrar';
 import Globals from '../Globals';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoadingScreen from './LoadingScreen';
 
 type registrarProps = {
     navigation: any;
-    route:any
+    route: any
 }
 
 
-function Registrar({ route, navigation } : any ): JSX.Element {
+function Registrar({ route, navigation }: any): JSX.Element {
+    const [isLoading, setIsLoading] = useState(false)
     const [nome, setNome] = useState('');
     const [sobrenome, setSobrenome] = useState('');
     const [email, setEmail] = useState('');
@@ -40,7 +42,7 @@ function Registrar({ route, navigation } : any ): JSX.Element {
     const [senhaError, setSenhaError] = useState(false);
     const [confirmSenhaError, setConfirmSenhaError] = useState(false);
 
-    const {setUserToken} = route.params
+    const { setUserToken } = route.params
 
     const validarRegistrar = () => {
         setNomeError(nome == "" ? true : false)
@@ -50,7 +52,7 @@ function Registrar({ route, navigation } : any ): JSX.Element {
         setConfirmSenhaError(confirm_senha == "" ? true : false)
 
 
-        if (!(nomeError && sobreNomeError && emailError && senhaError && confirmSenhaError)) {
+        if (nome != "" && sobrenome != "" && email != "" && senha != "" && confirm_senha != "" && (senha == confirm_senha)) {
 
             fetch(Globals.BASE_URL_API + 'register/', {
                 method: 'POST',
@@ -77,75 +79,85 @@ function Registrar({ route, navigation } : any ): JSX.Element {
 
         }
     }
+    const renderLoad = () => {
+        return (<><LoadingScreen /></>)
+    }
+    const renderTela = () => {
+        return (<ScrollView contentContainerStyle={styles.scrollView}>
+            <FundoPagina />
+            <TituloPagina title='Registrar' navigation={navigation} />
+            <View style={styles.containerInput}>
+                <TextInput style={styles.inputStyle}
+                    value={nome}
+                    placeholderTextColor={nomeError ? '#FD6161' : '#323941'}
+                    selectionColor="black"
+                    placeholder="Nome"
+                    onChangeText={text => { setNome(text) }}
+
+                />
+                <Text style={[styles.errorStyle, { display: nomeError ? 'flex' : 'none' }]} >Campo inválido</Text>
+                <TextInput style={styles.inputStyle}
+                    value={sobrenome}
+                    placeholderTextColor={sobreNomeError ? '#FD6161' : '#323941'}
+                    selectionColor="black"
+                    placeholder="Sobrenome"
+                    onChangeText={text => { setSobrenome(text) }}
+
+                />
+                <Text style={[styles.errorStyle, { display: sobreNomeError ? 'flex' : 'none' }]} >Campo inválido</Text>
+
+                <TextInput style={styles.inputStyle}
+
+                    value={email}
+                    placeholderTextColor={emailError ? '#FD6161' : '#323941'}
+                    selectionColor="black"
+                    placeholder="Email"
+                    inputMode='email'
+                    onChangeText={text => { setEmail(text) }}
+
+                />
+                <Text style={[styles.errorStyle, { display: emailError ? 'flex' : 'none' }]}  >Campo inválido</Text>
+
+                <TextInput style={styles.inputStyle}
+                    value={senha}
+                    placeholderTextColor={senhaError ? '#FD6161' : '#323941'}
+                    selectionColor="black"
+                    placeholder="Senha"
+                    secureTextEntry={true}
+                    onChangeText={text => { setSenha(text) }}
+
+                />
+                <Text style={[styles.errorStyle, { display: senhaError ? 'flex' : 'none' }]}  >Campo inválido</Text>
+                <TextInput style={styles.inputStyle}
+                    value={confirm_senha}
+                    placeholderTextColor={confirmSenhaError ? '#FD6161' : '#323941'}
+                    selectionColor="black"
+                    placeholder="Confirmar Senha"
+                    onChangeText={text => { setConfSenha(text) }}
+                    secureTextEntry={true}
+
+
+                />
+                <Text style={[styles.errorStyle, { display: confirmSenhaError ? 'flex' : 'none' }]}  >Campo inválido</Text>
+                <View style={styles.containerBotoes}>
+                    <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={() => validarRegistrar()} title={"Registrar"} />
+                </View>
+            </View>
+            <NotebookSVG style={styles.notebookSVGStyle} width={103} height={103} />
+            <View style={styles.containerNome}>
+                <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
+                <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
+            </View>
+            <PastaSVG style={styles.pastaSVGStyle} width={143} height={143} />
+        </ScrollView>)
+    }
     return (
         <SafeAreaView style={styles.body}>
-            <ScrollView contentContainerStyle={styles.scrollView}>
-                <FundoPagina />
-                <TituloPagina title='Registrar' navigation={navigation} />
-                <View style={styles.containerInput}>
-                    <TextInput style={styles.inputStyle}
-                        value={nome}
-                        placeholderTextColor={nomeError ? '#FD6161' : '#323941'}
-                        selectionColor="black"
-                        placeholder="Nome"
-                        onChangeText={text => { setNome(text) }}
 
-                    />
-                    <Text style={[styles.errorStyle, { display: nomeError ? 'flex' : 'none' }]} >Campo inválido</Text>
-                    <TextInput style={styles.inputStyle}
-                        value={sobrenome}
-                        placeholderTextColor={sobreNomeError ? '#FD6161' : '#323941'}
-                        selectionColor="black"
-                        placeholder="Sobrenome"
-                        onChangeText={text => { setSobrenome(text) }}
-
-                    />
-                    <Text style={[styles.errorStyle, { display: sobreNomeError ? 'flex' : 'none' }]} >Campo inválido</Text>
-
-                    <TextInput style={styles.inputStyle}
-
-                        value={email}
-                        placeholderTextColor={emailError ? '#FD6161' : '#323941'}
-                        selectionColor="black"
-                        placeholder="Email"
-                        inputMode='email'
-                        onChangeText={text => { setEmail(text) }}
-
-                    />
-                    <Text style={[styles.errorStyle, { display: emailError ? 'flex' : 'none' }]}  >Campo inválido</Text>
-
-                    <TextInput style={styles.inputStyle}
-                        value={senha}
-                        placeholderTextColor={senhaError ? '#FD6161' : '#323941'}
-                        selectionColor="black"
-                        placeholder="Senha"
-                        secureTextEntry={true}
-                        onChangeText={text => { setSenha(text) }}
-
-                    />
-                    <Text style={[styles.errorStyle, { display: senhaError ? 'flex' : 'none' }]}  >Campo inválido</Text>
-                    <TextInput style={styles.inputStyle}
-                        value={confirm_senha}
-                        placeholderTextColor={confirmSenhaError ? '#FD6161' : '#323941'}
-                        selectionColor="black"
-                        placeholder="Confirmar Senha"
-                        onChangeText={text => { setConfSenha(text) }}
-                        secureTextEntry={true}
-
-
-                    />
-                    <Text style={[styles.errorStyle, { display: confirmSenhaError ? 'flex' : 'none' }]}  >Campo inválido</Text>
-                    <View style={styles.containerBotoes}>
-                        <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={() => validarRegistrar()} title={"Registrar"} />
-                    </View>
-                </View>
-                <NotebookSVG style={styles.notebookSVGStyle} width={103} height={103} />
-                <View style={styles.containerNome}>
-                    <Text style={styles.nomeApp}>ORGANIZER</Text>
-                    <Text style={styles.nomeApp}>FINE</Text>
-                </View>
-                <PastaSVG style={styles.pastaSVGStyle} width={143} height={143} />
-            </ScrollView>
+            {
+                isLoading == true ? renderLoad() : (<></>)
+            }
+            {renderTela()}
 
         </SafeAreaView>
 
@@ -198,7 +210,7 @@ const styles = StyleSheet.create({
     nomeApp: {
         width: '100%',
         textAlign: 'center',
-        fontFamily: 'ABSTER',
+        fontFamily: Globals.FONT_FAMILY_NAME_APP,
         fontWeight: '500',
         fontSize: 17,
         lineHeight: 25,

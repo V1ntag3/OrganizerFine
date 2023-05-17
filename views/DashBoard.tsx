@@ -53,8 +53,8 @@ function DashBoard({ route, navigation }: any): JSX.Element {
         { value: 0, color: '#323131', gradientCenterColor: '#323131' },
         { value: 0, color: '#474747', gradientCenterColor: '#474747' },
         { value: 0, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-        { value: 0, color: '#ECE1C3', gradientCenterColor: '#ECE1C3' },
-        { value: 0, color: '#3E838C', gradientCenterColor: '#3E838C' },
+        { value: 0, color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
+        { value: 0, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
         { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
     ]);
     const [openClose, setOpenClose] = useState(false);
@@ -177,8 +177,8 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                             { value: (item5 / array.length), color: '#323131', gradientCenterColor: '#323131' },
                             { value: (item2 / array.length), color: '#474747', gradientCenterColor: '#474747' },
                             { value: (item0 / array.length), color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-                            { value: (item3 / array.length), color: '#ECE1C3', gradientCenterColor: '#ECE1C3' },
-                            { value: (item4 / array.length), color: '#3E838C', gradientCenterColor: '#3E838C' },
+                            { value: (item3 / array.length), color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
+                            { value: (item4 / array.length), color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
                             { value: (item1 / array.length), color: '#60625F', gradientCenterColor: '#60625F' },
                         ])
                         var arrayValores = [item0, item1, item2, item3, item4, item5]
@@ -189,8 +189,8 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                             { value: 0, color: '#323131', gradientCenterColor: '#323131' },
                             { value: 0, color: '#474747', gradientCenterColor: '#474747' },
                             { value: 0, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-                            { value: 0, color: '#ECE1C3', gradientCenterColor: '#ECE1C3' },
-                            { value: 0, color: '#3E838C', gradientCenterColor: '#3E838C' },
+                            { value: 0, color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
+                            { value: 0, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
                             { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
                         ])
                         setItems([]);
@@ -289,8 +289,8 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                     { value: (item5 / array.length), color: '#323131', gradientCenterColor: '#323131' },
                     { value: (item2 / array.length), color: '#474747', gradientCenterColor: '#474747' },
                     { value: (item0 / array.length), color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-                    { value: (item3 / array.length), color: '#ECE1C3', gradientCenterColor: '#ECE1C3' },
-                    { value: (item4 / array.length), color: '#3E838C', gradientCenterColor: '#3E838C' },
+                    { value: (item3 / array.length), color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
+                    { value: (item4 / array.length), color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
                     { value: (item1 / array.length), color: '#60625F', gradientCenterColor: '#60625F' },
                 ])
                 var arrayValores = [item0, item1, item2, item3, item4, item5]
@@ -301,8 +301,8 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                     { value: 0, color: '#323131', gradientCenterColor: '#323131' },
                     { value: 0, color: '#474747', gradientCenterColor: '#474747' },
                     { value: 0, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-                    { value: 0, color: '#ECE1C3', gradientCenterColor: '#ECE1C3' },
-                    { value: 0, color: '#3E838C', gradientCenterColor: '#3E838C' },
+                    { value: 0, color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
+                    { value: 0, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
                     { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
                 ])
                 setItems([]);
@@ -384,6 +384,11 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                             <Text style={styles.itemMenuText}>Sair</Text>
                         </View>
                     </TouchableOpacity>
+
+                <View style={styles.containerNome}>
+                <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
+                <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
+                </View>
 
                 </View>;
             }}
@@ -511,7 +516,7 @@ function DashBoard({ route, navigation }: any): JSX.Element {
 
                         }}>
                             {renderLegend('Alimentação', '#FFFFFF')}
-                            {renderLegend('Vestuário', '#ECE1C3')}
+                            {renderLegend('Vestuário', Globals.COLOR.LIGHT.COLOR1)}
 
 
                         </View>
@@ -519,7 +524,7 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                             flexDirection: 'column',
                         }}>
                             {renderLegend('Serviços', '#60625F')}
-                            {renderLegend('Entretenimento', '#3E838C')}
+                            {renderLegend('Entretenimento', Globals.COLOR.LIGHT.COLOR3)}
                         </View>
                         <View style={{
                             flexDirection: 'column',
@@ -664,7 +669,7 @@ const styles = StyleSheet.create({
 
     },
     decCat2: {
-        color: '#195E63',
+        color: Globals.COLOR.LIGHT.COLOR4,
         fontSize: 10.8889
     },
     valDate: {
@@ -685,7 +690,7 @@ const styles = StyleSheet.create({
     valDate2: {
         fontSize: 10.8889,
         textAlign: 'right',
-        color: '#195E63',
+        color: Globals.COLOR.LIGHT.COLOR4,
 
     }, dadosMenu: {
         fontFamily: Globals.FONT_FAMILY.REGULAR,
@@ -724,7 +729,21 @@ const styles = StyleSheet.create({
         color: Globals.COLOR.LIGHT.COLOR4,
         marginLeft: 15,
         lineHeight: 24
-    }
+    },
+    containerNome: {
+        position: 'absolute',
+        bottom: 15,
+        alignSelf:'center'
+    },
+    nomeApp: {
+        width: '100%',
+        textAlign: 'center',
+        fontFamily: Globals.FONT_FAMILY_NAME_APP,
+        fontWeight: '500',
+        fontSize: 17,
+        lineHeight: 25,
+        color: Globals.COLOR.BRANCO,
+    },
 });
 const renderImagem = (item: any) => {
     switch (item) {

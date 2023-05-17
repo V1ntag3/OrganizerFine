@@ -27,7 +27,6 @@ import fetch from 'cross-fetch';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from './LoadingScreen';
-
 type props = {
     navigation: any;
 }
@@ -45,7 +44,7 @@ function Login({ route, navigation }: any): JSX.Element {
         setEmailError(email == "" ? true : false)
         setSenhaError(senha == "" ? true : false)
 
-        if (!emailError && !senhaError) {
+        if (senha != "" && email != "" ) {
             setIsLoading(true)
             fetch(Globals.BASE_URL_API + 'login/', {
                 method: 'POST',
@@ -116,8 +115,8 @@ function Login({ route, navigation }: any): JSX.Element {
             </View>
             <NotebookSVG style={styles.notebookSVGStyle} width={103} height={103} />
             <View style={styles.containerNome}>
-                <Text style={styles.nomeApp}>ORGANIZER</Text>
-                <Text style={styles.nomeApp}>FINE</Text>
+                <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
+                <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
             </View>
             <PastaSVG style={styles.pastaSVGStyle} width={143} height={143} />
         </ScrollView>)
@@ -191,7 +190,7 @@ const styles = StyleSheet.create({
     nomeApp: {
         width: '100%',
         textAlign: 'center',
-        fontFamily: 'ABSTER',
+        fontFamily: Globals.FONT_FAMILY_NAME_APP,
         fontWeight: '500',
         fontSize: 17,
         lineHeight: 25,

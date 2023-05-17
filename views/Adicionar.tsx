@@ -29,23 +29,23 @@ import LoadingScreen from './LoadingScreen';
 
 type props = {
     navigation: any;
-    route:any
+    route: any
 
 }
 
-function Adicionar({ route, navigation } : any): JSX.Element {
-    const {setUserToken} = route.params
+function Adicionar({ route, navigation }: any): JSX.Element {
+    const { setUserToken } = route.params
 
     const removeData = async () => {
-        await AsyncStorage.clear().then(() => {setUserToken(null); navigation.navigate('Welcome') })
+        await AsyncStorage.clear().then(() => { setUserToken(null) })
     };
     const [selectedValue, setSelectedValue] = useState('');
 
     const renderPicker = () => {
         if (tipo != 0) {
             return (
-                <View style={{borderRadius:10,maxWidth: '90%',marginLeft: '5%', overflow: 'hidden',height: 49.65,marginTop:4, marginBottom:5 }}>
-                    <Picker 
+                <View style={{ borderRadius: 6.9, maxWidth: '90%', marginLeft: '5%', overflow: 'hidden', height: 49.65, marginTop: 4, marginBottom: 5 }}>
+                    <Picker
                         numberOfLines={3}
                         dropdownIconColor={'black'}
                         mode='dropdown'
@@ -53,7 +53,7 @@ function Adicionar({ route, navigation } : any): JSX.Element {
                         style={{
                             backgroundColor: 'white',
                             color: 'black',
-                            width:'100%',
+                            width: '100%',
                             fontSize: 1,
                         }}
                         onValueChange={(itemValue: any, itemIndex: any) => setSelectedValue(itemValue)}
@@ -88,7 +88,7 @@ function Adicionar({ route, navigation } : any): JSX.Element {
     const [valor, setValor] = useState('');
     const [descricao, setDescricao] = useState('')
     const [tipo, setTipo] = useState(1);
-    
+
     const [valorError, setValorError] = useState(false);
     const [descricaoError, setDescricaoError] = useState(false)
     const [selectedValueError, setSelectedValueError] = useState(false);
@@ -129,11 +129,11 @@ function Adicionar({ route, navigation } : any): JSX.Element {
     }, []);
     const mandarDados = () => {
 
-        setDescricaoError( descricao == "" ? true : false)
+        setDescricaoError(descricao == "" ? true : false)
         setSelectedValueError(selectedValue == "" ? true : false)
-        setValorError( valor == 0 ? true : false)
+        setValorError(valor == 0 ? true : false)
 
-        if(!descricaoError && !selectedValueError && !valorError){
+        if (!descricaoError && !selectedValueError && !valorError) {
             var tipo0 = JSON.stringify({
                 'about': descricao,
                 'value': (valor / 100),
@@ -143,7 +143,7 @@ function Adicionar({ route, navigation } : any): JSX.Element {
                 'about': descricao,
                 'value': (valor / 100),
                 'type': String(tipo),
-                'typeCat': selectedValue 
+                'typeCat': selectedValue
             })
             setIsLoading(true)
             fetch(Globals.BASE_URL_API + 'revenue_spending/', {
@@ -160,11 +160,11 @@ function Adicionar({ route, navigation } : any): JSX.Element {
                     return response.json();
                 }
             }
-            ).finally(()=>{
+            ).finally(() => {
                 setIsLoading(false)
             })
         }
-        
+
     }
     const renderLoad = () => {
         return (<>
@@ -173,7 +173,7 @@ function Adicionar({ route, navigation } : any): JSX.Element {
     }
     const renderTela = () => {
         return (<>
-          <Drawer style={{
+            <Drawer style={{
                 width: '100%',
                 height: '100%',
                 position: 'absolute',
@@ -220,8 +220,12 @@ function Adicionar({ route, navigation } : any): JSX.Element {
                                 <Text style={styles.itemMenuText}>Sair</Text>
                             </View>
                         </TouchableOpacity>
-
+                        <View style={styles.containerNomeMenu}>
+                            <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
+                            <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
+                        </View>
                     </View>;
+
                 }}
             >
                 <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -247,16 +251,16 @@ function Adicionar({ route, navigation } : any): JSX.Element {
                         placeholderTextColor={false ? '#FD6161' : 'black'}
                         onChangeText={(text) => setDescricao(text)}
                         placeholder="Descrição" />
-                                    <Text style={[styles.errorStyle, { display: descricaoError ? 'flex' : 'none' }]}  >Campo inválido</Text>
+                    <Text style={[styles.errorStyle, { display: descricaoError ? 'flex' : 'none' }]}  >Campo inválido</Text>
 
                     {
                         renderPicker()
                     }
-                                    <Text style={[styles.errorStyle, { display: selectedValueError ? 'flex' : 'none' }]}  >Campo inválido</Text>
+                    <Text style={[styles.errorStyle, { display: selectedValueError ? 'flex' : 'none' }]}  >Campo inválido</Text>
 
                     <MaskInput
                         value={valor}
-                        style={[styles.inputStyle,{marginTop:5}]}
+                        style={[styles.inputStyle, { marginTop: 5 }]}
                         placeholderTextColor={false ? '#FD6161' : 'black'}
                         selectionColor='black'
                         onChangeText={(masked, unmasked) => {
@@ -265,41 +269,41 @@ function Adicionar({ route, navigation } : any): JSX.Element {
                         keyboardType="numeric"
                         mask={Masks.BRL_CURRENCY}
                     />
-                                <Text style={[styles.errorStyle, { display: valorError ? 'flex' : 'none' }]}  >Campo inválido</Text>
+                    <Text style={[styles.errorStyle, { display: valorError ? 'flex' : 'none' }]}  >Campo inválido</Text>
 
 
                 </ScrollView>
-                <TouchableOpacity onPress={() => mandarDados()} style={{ width: 60, height: 60, alignSelf: 'center', position: 'absolute', bottom:30}}>
+                <TouchableOpacity onPress={() => mandarDados()} style={{ width: 60, height: 60, alignSelf: 'center', position: 'absolute', bottom: 30 }}>
+                    <View style={
+                        {
+                            width: 60,
+                            height: 60,
+                            borderRadius: 30,
+                            backgroundColor: Globals.COLOR.LIGHT.COLOR5
+                        }
+                    }>
                         <View style={
                             {
-                                width: 60,
-                                height: 60,
-                                borderRadius: 30,
-                                backgroundColor: Globals.COLOR.LIGHT.COLOR5
+                                marginTop: 13,
+                                marginLeft: 13
                             }
                         }>
-                            <View style={
-                                {
-                                    marginTop: 13,
-                                    marginLeft: 13
-                                }
-                            }>
-                                <AddSVG />
+                            <AddSVG />
 
-                            </View>
                         </View>
-                    </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
             </Drawer>
         </>)
     }
     return (
         <SafeAreaView style={styles.body}>
-              {
+            {
                 isLoading ? renderLoad() : (<></>)
             }
             {renderTela()}
 
-            
+
         </SafeAreaView>
     );
 }
@@ -370,7 +374,7 @@ const styles = StyleSheet.create({
     nomeApp: {
         width: '100%',
         textAlign: 'center',
-        fontFamily: 'ABSTER',
+        fontFamily: Globals.FONT_FAMILY_NAME_APP,
         fontWeight: '500',
         fontSize: 17,
         lineHeight: 25,
@@ -463,6 +467,11 @@ const styles = StyleSheet.create({
         color: Globals.COLOR.LIGHT.COLOR4,
         marginLeft: 15,
         lineHeight: 24
+    },
+    containerNomeMenu: {
+        position: 'absolute',
+        bottom: 15,
+        alignSelf: 'center'
     }
 });
 
