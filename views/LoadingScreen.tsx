@@ -56,7 +56,9 @@ const styles = StyleSheet.create({
     opacity:0.7,
     backgroundColor: Globals.COLOR.LIGHT.COLOR5,
     flex: 1,
-    zIndex:10000
+    height:Globals.HEIGHT,
+    width:Globals.WIDTH,
+    zIndex:100000, position:'absolute',top:0, left:0
   },
   containerNome: {
     marginVertical: Globals.HEIGHT * 0.4,

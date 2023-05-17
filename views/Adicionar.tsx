@@ -25,6 +25,7 @@ import LogoutSVG from '../componentes/SVGComponentes/logoutSVG';
 import MenuSVG from '../componentes/SVGComponentes/menuSVG';
 import MaskInput, { Masks } from 'react-native-mask-input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoadingScreen from './LoadingScreen';
 
 type props = {
     navigation: any;
@@ -43,24 +44,21 @@ function Adicionar({ route, navigation } : any): JSX.Element {
     const renderPicker = () => {
         if (tipo != 0) {
             return (
-                <View style={{}}>
-                    <Picker
-                        placeholder={'Categoria'}
+                <View style={{borderRadius:10,maxWidth: '90%',marginLeft: '5%', overflow: 'hidden',height: 49.65,marginTop:4, marginBottom:5 }}>
+                    <Picker 
                         numberOfLines={3}
                         dropdownIconColor={'black'}
                         mode='dropdown'
                         selectedValue={selectedValue}
                         style={{
                             backgroundColor: 'white',
-                            marginTop: 4,
                             color: 'black',
-                            maxWidth: '90%',
-                            marginLeft: '5%',
-                            fontSize: 1
+                            width:'100%',
+                            fontSize: 1,
                         }}
                         onValueChange={(itemValue: any, itemIndex: any) => setSelectedValue(itemValue)}
                     >
-                        <Picker.Item label="Selecione a categoria" value="" />
+                        <Picker.Item label="Categoria" value="" />
                         <Picker.Item label="Alimentação" value="0" />
                         <Picker.Item label="Serviço" value="1" />
                         <Picker.Item label="Eletrônico" value="2" />
@@ -76,25 +74,45 @@ function Adicionar({ route, navigation } : any): JSX.Element {
     }
     const [openClose, setOpenClose] = useState(false);
 
+    const [isLoading, setIsLoading] = useState(false)
+
     const moveMenu = () => {
         setOpenClose(openClose ? false : true)
     };
     // Dados
     const [token, setToken] = useState('')
 
-    const [nome, setNome] = useState('Marquin');
-    const [email, setEmail] = useState('marcos@gmail.com');
-    const [telefone, setTelefone] = useState('(86) 9 9 9851 - 4018');
+    const [nome, setNome] = useState();
+    const [email, setEmail] = useState();
+
     const [valor, setValor] = useState('');
     const [descricao, setDescricao] = useState('')
-    const [tipo, setTipo] = useState(null);
+    const [tipo, setTipo] = useState(1);
+    
+    const [valorError, setValorError] = useState(false);
+    const [descricaoError, setDescricaoError] = useState(false)
+    const [selectedValueError, setSelectedValueError] = useState(false);
 
     const readData = async () => {
         try {
             const value = await AsyncStorage.getItem('token', (err, result) => {
-                if (result == null) {
-                    navigation.navigate('Welcome')
-                }
+
+                fetch(Globals.BASE_URL_API + 'profile/', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Token ' + result
+                    },
+                }).then(response => {
+                    if (response.status == 401 || response.status == 403) { removeData() };
+                    return response.json();
+                }).then((json) => {
+                    setNome(json.first_name + ' ' + json.last_name)
+                    setEmail(json.email)
+                }).catch(error => {
+                    if (error.toString() == "TypeError: Network request failed") {
+                    }
+                }).finally(() => {
+                })
 
             })
 
@@ -110,38 +128,52 @@ function Adicionar({ route, navigation } : any): JSX.Element {
         readData();
     }, []);
     const mandarDados = () => {
-        var tipo0 = JSON.stringify({
-            'about': descricao,
-            'value': (valor / 100),
-            'type': String(tipo)
-        })
-        var tipo1 = JSON.stringify({
-            'about': descricao,
-            'value': (valor / 100),
-            'type': String(tipo),
-            'typeCat': selectedValue 
-        })
-        fetch(Globals.BASE_URL_API + 'revenue_spending/', {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-                'Authorization': 'Token ' + token
-            },
-            body: tipo == 0 ? tipo0 : tipo1
-        }).then(response => {
-            if (response.status == 401 || response.status == 403) { removeData() };
-            if (response.status == 200) {
-                navigation.navigate("DashBoard");
-                return response.json();
+
+        setDescricaoError( descricao == "" ? true : false)
+        setSelectedValueError(selectedValue == "" ? true : false)
+        setValorError( valor == 0 ? true : false)
+
+        if(!descricaoError && !selectedValueError && !valorError){
+            var tipo0 = JSON.stringify({
+                'about': descricao,
+                'value': (valor / 100),
+                'type': String(tipo)
+            })
+            var tipo1 = JSON.stringify({
+                'about': descricao,
+                'value': (valor / 100),
+                'type': String(tipo),
+                'typeCat': selectedValue 
+            })
+            setIsLoading(true)
+            fetch(Globals.BASE_URL_API + 'revenue_spending/', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': 'Token ' + token
+                },
+                body: tipo == 0 ? tipo0 : tipo1
+            }).then(response => {
+                if (response.status == 401 || response.status == 403) { removeData() };
+                if (response.status == 200) {
+                    navigation.navigate("DashBoard");
+                    return response.json();
+                }
             }
+            ).finally(()=>{
+                setIsLoading(false)
+            })
         }
-        ).then((json) => {
-            
-        });
+        
     }
-    return (
-        <SafeAreaView style={styles.body}>
-            <Drawer style={{
+    const renderLoad = () => {
+        return (<>
+            <LoadingScreen />
+        </>)
+    }
+    const renderTela = () => {
+        return (<>
+          <Drawer style={{
                 width: '100%',
                 height: '100%',
                 position: 'absolute',
@@ -167,7 +199,6 @@ function Adicionar({ route, navigation } : any): JSX.Element {
                             }}>
                                 <Text style={{ fontWeight: '700' }}>Olá</Text>, {nome}
                             </Text>
-                            <Text style={styles.dadosMenu}>{telefone}</Text>
                             <Text style={styles.dadosMenu}>{email}</Text>
                         </View>
 
@@ -216,13 +247,16 @@ function Adicionar({ route, navigation } : any): JSX.Element {
                         placeholderTextColor={false ? '#FD6161' : 'black'}
                         onChangeText={(text) => setDescricao(text)}
                         placeholder="Descrição" />
+                                    <Text style={[styles.errorStyle, { display: descricaoError ? 'flex' : 'none' }]}  >Campo inválido</Text>
 
                     {
                         renderPicker()
                     }
+                                    <Text style={[styles.errorStyle, { display: selectedValueError ? 'flex' : 'none' }]}  >Campo inválido</Text>
+
                     <MaskInput
-                        style={styles.inputStyle}
                         value={valor}
+                        style={[styles.inputStyle,{marginTop:5}]}
                         placeholderTextColor={false ? '#FD6161' : 'black'}
                         selectionColor='black'
                         onChangeText={(masked, unmasked) => {
@@ -231,7 +265,8 @@ function Adicionar({ route, navigation } : any): JSX.Element {
                         keyboardType="numeric"
                         mask={Masks.BRL_CURRENCY}
                     />
-            
+                                <Text style={[styles.errorStyle, { display: valorError ? 'flex' : 'none' }]}  >Campo inválido</Text>
+
 
                 </ScrollView>
                 <TouchableOpacity onPress={() => mandarDados()} style={{ width: 60, height: 60, alignSelf: 'center', position: 'absolute', bottom:30}}>
@@ -255,6 +290,16 @@ function Adicionar({ route, navigation } : any): JSX.Element {
                         </View>
                     </TouchableOpacity>
             </Drawer>
+        </>)
+    }
+    return (
+        <SafeAreaView style={styles.body}>
+              {
+                isLoading ? renderLoad() : (<></>)
+            }
+            {renderTela()}
+
+            
         </SafeAreaView>
     );
 }
@@ -282,7 +327,6 @@ const styles = StyleSheet.create({
         paddingBottom: 0,
         width: '100%',
         height: 49.65,
-        // borderRadius: 6.96875,
         maxWidth: '90%',
         marginLeft: 'auto',
         marginRight: 'auto',
@@ -291,9 +335,7 @@ const styles = StyleSheet.create({
         backgroundColor: Globals.COLOR.BRANCO,
         fontFamily: Globals.FONT_FAMILY.REGULAR,
         color: 'black',
-        // borderBottomColor: 'white',
-        // borderBottomWidth: 3,
-
+        borderRadius: 6.96875,
     },
     esqueciSenha: {
         paddingLeft: 3,
@@ -307,7 +349,7 @@ const styles = StyleSheet.create({
         fontFamily: Globals.FONT_FAMILY.MEDIUM
     },
     errorStyle: {
-        paddingLeft: 3,
+        paddingLeft: 7,
         width: '100%',
         maxWidth: 338.89,
         marginLeft: 'auto',
@@ -315,7 +357,7 @@ const styles = StyleSheet.create({
         color: '#FD6161',
         fontSize: 11,
         lineHeight: 12,
-        fontFamily: Globals.FONT_FAMILY.MEDIUM
+        fontFamily: Globals.FONT_FAMILY.MEDIUM,
     },
     containerInput: {
         paddingTop: Globals.HEIGHT * 0.3

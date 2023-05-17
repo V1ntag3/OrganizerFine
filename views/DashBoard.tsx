@@ -105,7 +105,6 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                     if (error.toString() == "TypeError: Network request failed") {
                     }
                 }).finally(() => {
-                    setIsLoading(false)
                 })
 
                 setIsLoading(true)
@@ -270,12 +269,9 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                     }
                     json[item].value = json[item].value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
 
-
                     var valor = parseInt(new Date() - new Date(json[item].date))
 
                     json[item].date = String(parseInt(valor / (1000 * 60 * 60 * 24))) + ' dias atrás'
-
-                    console.log(json[item])
 
                     if (json[item].typeCat != '') {
                         array.push(json[item])

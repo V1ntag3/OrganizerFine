@@ -16,33 +16,10 @@ import {
 import Globals from '../Globals';
 
 function SplashScreen(): JSX.Element {
-  const animatedValue = new Animated.Value(0)
-
-  useEffect(() => {
-    _start()
-  }, [animatedValue])
-
-
-
-  function _start() {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(animatedValue, {
-          toValue:1,
-          duration: 1000,
-          useNativeDriver: true
-        }),
-      Animated.timing(animatedValue, {
-        toValue:0,
-        duration: 1000,
-        useNativeDriver: true
-      })])
-    ).start()
-  }
   return (
     <SafeAreaView style={styles.body}>
 
-      <Animated.View style={[styles.containerNome, { opacity: animatedValue }]}>
+      <Animated.View style={[styles.containerNome]}>
         <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
         <Text style={Globals.APP_NAME_STYLE}></Text>
         <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>

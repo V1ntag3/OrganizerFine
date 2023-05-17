@@ -12,6 +12,7 @@ import {
     TextInput,
     TouchableOpacity,
     ScrollView,
+    Alert,
 
 } from 'react-native';
 import React from 'react';
@@ -31,85 +32,100 @@ type props = {
     navigation: any;
 }
 
-function Login({ route, navigation } : any): JSX.Element {
+function Login({ route, navigation }: any): JSX.Element {
     const [isLoading, setIsLoading] = useState(false)
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [emailError, setEmailError] = useState(false);
     const [senhaError, setSenhaError] = useState(false);
 
+    const [naoCadas, setNaoCadas] = useState(false);
+
     const logar = () => {
         setEmailError(email == "" ? true : false)
         setSenhaError(senha == "" ? true : false)
-        setIsLoading(true)
-        fetch(Globals.BASE_URL_API + 'login/', {
-            method: 'POST',
-            body: JSON.stringify({
-                username: email,
-                password: senha
-            }),
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-            },
-        })
-            .then((response) => response.json())
-            .then((json) => {
-                AsyncStorage.setItem('token', json.token);
-                const { setUserToken } = route.params 
-                setUserToken(json.token)
 
-            }).catch((error) => {
-            }).finally(() => {
-                setIsLoading(false)
-            });
+        if (!emailError && !senhaError) {
+            setIsLoading(true)
+            fetch(Globals.BASE_URL_API + 'login/', {
+                method: 'POST',
+                body: JSON.stringify({
+                    username: email,
+                    password: senha
+                }),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+            })
+                .then((response) => {
+                    if (response.status == 400) {
+                        setSenhaError(true)
+                        setEmailError(true)
+                        setEmail("")
+                        setSenha("")
+                    } else {
+                        setSenhaError(false)
+                        setSenhaError(false)
+                        setEmailError(false)
+                    }
+                    return response.json()
+                })
+                .then((json) => {
+                    AsyncStorage.setItem('token', json.token);
+                    const { setUserToken } = route.params
+                    setUserToken(json.token)
+
+                }).catch((error) => {
+                }).finally(() => {
+                    setIsLoading(false)
+                });
+        }
+
+
     }
     const renderLoad = () => {
-        return (<>
-
-            <LoadingScreen />
-
-        </>)
+        return (<><LoadingScreen /></>)
     }
-    const renderTela = () =>{
+    const renderTela = () => {
         return (<ScrollView contentContainerStyle={styles.scrollView}>
-                <TituloPagina title='Login' navigation={navigation} />
-                <FundoPagina />
-                <View style={[styles.containerInput, { zIndex: 0 }]}>
-                    <TextInput style={styles.inputStyle}
-                        selectionColor="black"
-                        maxLength={20}
-                        placeholderTextColor={emailError ? '#FD6161' : '#323941'}
-                        onChangeText={(text) => setEmail(text)}
-                        placeholder="Email" />
-                    <TextInput style={styles.inputStyle}
-                        secureTextEntry={true}
+            <TituloPagina title='Login' navigation={navigation} />
+            <FundoPagina />
+            <View style={[styles.containerInput, { zIndex: 0 }]}>
+                <TextInput style={styles.inputStyle}
+                    selectionColor="black"
+                    maxLength={20}
+                    placeholderTextColor={emailError ? '#FD6161' : '#323941'}
+                    onChangeText={(text) => setEmail(text)}
+                    placeholder="Email" />
+                <TextInput style={styles.inputStyle}
+                    secureTextEntry={true}
 
-                        placeholderTextColor={senhaError ? '#FD6161' : '#323941'}
-                        selectionColor="black"
-                        onChangeText={(text) => setSenha(text)}
-                        placeholder="Senha" />
-                    <Text style={[styles.errorStyle, { display: senhaError ? 'flex' : 'none' }]}  >Email e/ou Senha inválido(s)</Text>
-                    {/* <TouchableOpacity onPress={() => navigation.navigate('EsqueciSenha')} >
+                    placeholderTextColor={senhaError ? '#FD6161' : '#323941'}
+                    selectionColor="black"
+                    onChangeText={(text) => setSenha(text)}
+                    placeholder="Senha" />
+                <Text style={[styles.errorStyle, { display: senhaError ? 'flex' : 'none' }]}  >Email e/ou Senha inválido(s)</Text>
+                {/* <TouchableOpacity onPress={() => navigation.navigate('EsqueciSenha')} >
                         <View>
                             <Text style={[styles.esqueciSenha]} >esqueci a senha</Text>
                         </View>
                     </TouchableOpacity> */}
-                    <View style={styles.containerBotoes}>
-                        <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={() => logar()} title={"Login"} />
-                    </View>
+                <View style={styles.containerBotoes}>
+                    <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={() => logar()} title={"Login"} />
                 </View>
-                <NotebookSVG style={styles.notebookSVGStyle} width={103} height={103} />
-                <View style={styles.containerNome}>
-                    <Text style={styles.nomeApp}>ORGANIZER</Text>
-                    <Text style={styles.nomeApp}>FINE</Text>
-                </View>
-                <PastaSVG style={styles.pastaSVGStyle} width={143} height={143} />
-            </ScrollView>)
+            </View>
+            <NotebookSVG style={styles.notebookSVGStyle} width={103} height={103} />
+            <View style={styles.containerNome}>
+                <Text style={styles.nomeApp}>ORGANIZER</Text>
+                <Text style={styles.nomeApp}>FINE</Text>
+            </View>
+            <PastaSVG style={styles.pastaSVGStyle} width={143} height={143} />
+        </ScrollView>)
     }
     return (
         <SafeAreaView style={styles.body}>
-             {
-                isLoading ? renderLoad() : (<></>)
+            {
+                isLoading == true ? renderLoad() : (<></>)
             }
             {renderTela()}
         </SafeAreaView>
@@ -119,10 +135,11 @@ function Login({ route, navigation } : any): JSX.Element {
 const styles = StyleSheet.create({
     body: {
         backgroundColor: Globals.COLOR.LIGHT.COLOR2,
-        flex: 1
+        flex: 1,
+        height: Globals.HEIGHT
     },
     scrollView: {
-        minHeight: Globals.HEIGHT
+        minHeight: Globals.HEIGHT,
     },
     inputStyle: {
         alignItems: 'center',
@@ -141,7 +158,7 @@ const styles = StyleSheet.create({
         color: '#323941'
     },
     esqueciSenha: {
-        marginTop:10,
+        marginTop: 10,
         paddingLeft: 3,
         width: '100%',
         maxWidth: 338.89,
