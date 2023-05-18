@@ -11,13 +11,11 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    ScrollView,
-    Alert,
 } from 'react-native';
 import Globals from '../Globals';
 import { Picker } from '@react-native-picker/picker';
 import { useEffect, useState } from 'react';
-import AddSVG from '../componentes/SVGComponentes/addSVG';
+import LixeiraSVG from '../componentes/SVGComponentes/lixeiraSVG';
 import { Drawer } from 'react-native-drawer-layout';
 import FineSVG from '../componentes/SVGComponentes/fineSVG';
 import ConfigSVG from '../componentes/SVGComponentes/configSVG';
@@ -27,6 +25,9 @@ import MaskInput, { Masks } from 'react-native-mask-input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from './LoadingScreen';
 import UserSVG from '../componentes/SVGComponentes/userSVG';
+import { ScrollView } from 'react-native-gesture-handler';
+import EditarSVG from '../componentes/SVGComponentes/editarSVG';
+import SaveSVG from '../componentes/SVGComponentes/saveSVG';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 type props = {
@@ -35,9 +36,15 @@ type props = {
 
 }
 
-function Adicionar({ route, navigation }: any): JSX.Element {
-    const { setUserToken } = route.params
+function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
 
+    const [isEditable, setIsEditable] = useState(true)
+    const { setUserToken, element } = route.params
+
+    const [selectedValue, setSelectedValue] = useState(element.typeCat);
+    const [valor, setValor] = useState(element.value);
+    const [descricao, setDescricao] = useState(element.about)
+    const [tipo, setTipo] = useState(parseInt(element.type));
     const removeData = () => {
         setIsLoading(true)
         fetch(Globals.BASE_URL_API + 'logout/', {
@@ -56,8 +63,8 @@ function Adicionar({ route, navigation }: any): JSX.Element {
         })
 
     };
-    const [selectedValue, setSelectedValue] = useState('');
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
+
     const [items, setItems] = useState([
         { label: 'Alimentação', value: '0' },
         { label: 'Serviço', value: '1' },
@@ -66,6 +73,7 @@ function Adicionar({ route, navigation }: any): JSX.Element {
         { label: 'Entretenimento', value: '4' },
         { label: 'Outros', value: '5' }
     ]);
+
     const renderPicker = () => {
 
         if (tipo != 0) {
@@ -73,12 +81,13 @@ function Adicionar({ route, navigation }: any): JSX.Element {
                 <><View style={{ borderRadius: 6.9, maxWidth: '90%', marginLeft: '5%', height: 49.65, marginTop: 4, marginBottom: 5, zIndex: 100000 }}>
                     <DropDownPicker
                         placeholder='Categoria'
+                        disabled={isEditable}
                         arrowIconStyle={{
                             borderColor: 'white'
                         }}
                         dropDownContainerStyle={
-                            tipo == 0 ? { backgroundColor: '#73E650' } : { backgroundColor: '#E65A50', borderColor: 'transparent' }
-                        }
+                            tipo == 0 ? { backgroundColor: isEditable ? '#2FAD09' : '#73E650' } : { backgroundColor: isEditable ? '#AD1909' : '#E65A50' , borderColor:'transparent'}                         
+                         }
                         textStyle={{
                             fontFamily: Globals.FONT_FAMILY.REGULAR,
                             fontSize: 14,
@@ -92,7 +101,7 @@ function Adicionar({ route, navigation }: any): JSX.Element {
                             },
                             width: '100%',
                             borderColor: 'transparent'
-                        }, tipo == 0 ? { backgroundColor: '#73E650' } : { backgroundColor: '#E65A50' }]}
+                        }, tipo == 0 ? { backgroundColor: isEditable ? '#2FAD09' : '#73E650' } : { backgroundColor: isEditable ? '#AD1909' : '#E65A50' }]}
                         containerStyle={{
                             borderColor: 'transparent'
                         }}
@@ -121,9 +130,6 @@ function Adicionar({ route, navigation }: any): JSX.Element {
     const [nome, setNome] = useState();
     const [email, setEmail] = useState();
 
-    const [valor, setValor] = useState('');
-    const [descricao, setDescricao] = useState('')
-    const [tipo, setTipo] = useState(1);
 
     const [valorError, setValorError] = useState(false);
     const [descricaoError, setDescricaoError] = useState(false)
@@ -163,6 +169,30 @@ function Adicionar({ route, navigation }: any): JSX.Element {
     useEffect(() => {
         readData();
     }, []);
+
+    const deleteDados = () => {
+
+        setIsLoading(true)
+        fetch(Globals.BASE_URL_API + 'revenue_spending/' + element.id + '/', {
+            method: 'DELETE',
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': 'Token ' + token
+            }
+        }).then(response => {
+            if (response.status == 401 || response.status == 403) { removeData() };
+            if (response.status == 200) {
+                navigation.navigate("DashBoard");
+                return response.json();
+            }
+        }
+        ).finally(() => {
+            setIsLoading(false)
+        })
+
+
+    }
+
     const mandarDados = () => {
 
         setDescricaoError(descricao == "" ? true : false)
@@ -182,14 +212,15 @@ function Adicionar({ route, navigation }: any): JSX.Element {
                 'typeCat': selectedValue
             })
             setIsLoading(true)
-            fetch(Globals.BASE_URL_API + 'revenue_spending/', {
-                method: 'POST',
+            fetch(Globals.BASE_URL_API + 'revenue_spending/' + element.id + '/', {
+                method: 'PUT',
                 headers: {
                     "Content-Type": "application/json",
                     'Authorization': 'Token ' + token
                 },
                 body: tipo == 0 ? tipo0 : tipo1
             }).then(response => {
+
                 if (response.status == 401 || response.status == 403) { removeData() };
                 if (response.status == 200) {
                     navigation.navigate("DashBoard");
@@ -208,7 +239,8 @@ function Adicionar({ route, navigation }: any): JSX.Element {
         </>)
     }
     const renderTela = () => {
-        return (
+        return (<>
+
             <Drawer style={{
                 width: '100%',
                 height: '100%',
@@ -225,6 +257,7 @@ function Adicionar({ route, navigation }: any): JSX.Element {
                     return <View style={{
                         width: '100%', height: '100%', backgroundColor: Globals.COLOR.LIGHT.COLOR5,
                     }}>
+
                         <View style={styles.imagemUser}>
                             <View style={{ alignSelf: 'center', marginTop: 10 }}>
                                 <UserSVG />
@@ -267,80 +300,87 @@ function Adicionar({ route, navigation }: any): JSX.Element {
 
                 }}
             >
-                <ScrollView showsVerticalScrollIndicator={false} style={{maxHeight:Globals.HEIGHT }}>
+                   <ScrollView showsVerticalScrollIndicator={false} style={{maxHeight:Globals.HEIGHT }}>
                     <View style={{height:Globals.HEIGHT-25}}>
-                        <TouchableOpacity style={{ position: 'absolute', top: 20, left: 15, zIndex: 1000 }} onPress={moveMenu}>
-                            <MenuSVG />
-                        </TouchableOpacity>
-                        <Text style={styles.tituloView}>Adicionar</Text>
-                        <View style={{ width: '90%', alignSelf: 'center', flexDirection: 'row', marginTop: 30 }}>
-                            <TouchableOpacity onPress={() => { setTipo(0) }} style={[{ width: '50%', backgroundColor: Globals.COLOR_RECEITA, height: 60 }, {
-                                opacity: tipo == 0 ? 1 : 0.5
-                            }]}>
-                                <Text style={{ color: 'white', fontSize: 20, textAlign: 'center', paddingVertical: 16, fontFamily: Globals.FONT_FAMILY.BOLD }}>Receita</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => { setTipo(1) }} style={[{ width: '50%', backgroundColor: Globals.COLOR_GASTO, height: 60, }, {
-                                opacity: tipo == 1 ? 1 : 0.5
+                <TouchableOpacity style={{ position: 'absolute', top: 20, left: 15, zIndex: 1000 }} onPress={moveMenu}>
+                    <MenuSVG />
+                </TouchableOpacity>
+                {
+                    isEditable ? (<TouchableOpacity style={{ position: 'absolute', top: 20, right: 15, zIndex: 1000 }} onPress={() => setIsEditable(false)}>
+                        <EditarSVG />
+                    </TouchableOpacity>) : (<TouchableOpacity style={{ position: 'absolute', top: 20, right: 15, zIndex: 1000 }} onPress={() => mandarDados()}>
+                        <SaveSVG />
+                    </TouchableOpacity>)
+                }
 
-                            }]}>
-                                <Text style={{ color: 'white', fontSize: 20, textAlign: 'center', paddingVertical: 16, fontFamily: Globals.FONT_FAMILY.BOLD }}>Gasto</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <TextInput style={[styles.inputStyle, tipo == 0 ? { backgroundColor: '#73E650' } : { backgroundColor: '#E65A50' }]}
-                            selectionColor="white"
-                            placeholderTextColor={false ? Globals.COLOR_ERROR : 'white'}
-                            onChangeText={(text) => setDescricao(text)}
-                            placeholder="Descrição" />
-                        <Text style={[styles.errorStyle, { display: descricaoError ? 'flex' : 'none' }]}  >Campo inválido</Text>
+                <Text style={styles.tituloView}>Detalhar</Text>
+                <Text style={{ color: 'white', fontSize: 18, textAlign: 'center', fontFamily: Globals.FONT_FAMILY.SEMIBOLD, marginTop: -10 }}>Gasto</Text>
 
+
+
+
+
+                <TextInput style={[styles.inputStyle,  , tipo == 0 ? { backgroundColor: isEditable ? '#2FAD09' : '#73E650' } : { backgroundColor: isEditable ? '#AD1909' : '#E65A50' }]}
+                    editable={!isEditable}
+                    value={descricao}
+                    selectionColor="white"
+                    placeholderTextColor={descricaoError ? Globals.COLOR_ERROR : 'white'}
+                    onChangeText={(text) => setDescricao(text)}
+                    placeholder="Descrição" />
+                <Text style={[styles.errorStyle, { display: descricaoError ? 'flex' : 'none' }]}>Campo inválido</Text>
+
+                {
+                    renderPicker()
+                }
+
+                <Text style={[styles.errorStyle, { display: selectedValueError ? 'flex' : 'none' }]}  >Campo inválido</Text>
+
+                <MaskInput
+                    editable={!isEditable}
+                    value={valor}
+                    style={[styles.inputStyle, { zIndex: 100, marginTop: 5 }, tipo == 0 ? { backgroundColor: isEditable ? '#2FAD09' : '#73E650' } : { backgroundColor: isEditable ? '#AD1909' : '#E65A50' }]}
+                    placeholderTextColor={false ? Globals.COLOR_ERROR : 'white'}
+                    selectionColor='white'
+                    onChangeText={(masked, unmasked) => {
+                        setValor(unmasked);
+                    }}
+                    keyboardType="numeric"
+                    mask={Masks.BRL_CURRENCY}
+                />
+                <Text style={[styles.errorStyle, { display: valorError ? 'flex' : 'none' }]}  >Campo inválido</Text>
+
+                <TouchableOpacity onPress={() => deleteDados()} style={{ width: 60, height: 60, alignSelf: 'center', position: 'absolute', bottom: 30 }}>
+                    <View style={
                         {
-                            renderPicker()
+                            width: 60,
+                            height: 60,
+                            borderRadius: 30,
+                            backgroundColor: tipo == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO
                         }
-                        <Text style={[styles.errorStyle, { display: selectedValueError ? 'flex' : 'none' }]}  >Campo inválido</Text>
-
-                        <MaskInput
-                            value={valor}
-                            style={[styles.inputStyle, { marginTop: 5 }, tipo == 0 ? { backgroundColor: '#73E650' } : { backgroundColor: '#E65A50' }]}
-                            placeholderTextColor={false ? Globals.COLOR_ERROR : 'white'}
-                            selectionColor='white'
-                            onChangeText={(masked, unmasked) => {
-                                setValor(unmasked);
-                            }}
-                            keyboardType="numeric"
-                            mask={Masks.BRL_CURRENCY}
-                        />
-                        <Text style={[styles.errorStyle, { display: valorError ? 'flex' : 'none' }]}  >Campo inválido</Text>
-
-                        <TouchableOpacity onPress={() => mandarDados()} style={{ width: 60, height: 60, alignSelf: 'center', position: 'absolute', bottom: 30 }}>
-                            <View style={
-                                {
-                                    width: 60,
-                                    height: 60,
-                                    borderRadius: 30,
-                                    backgroundColor: Globals.COLOR.LIGHT.COLOR5
-                                }
-                            }>
-                                <View style={
-                                    {
-                                        marginTop: 13,
-                                        marginLeft: 13
-                                    }
-                                }>
-                                    <AddSVG />
-
-                                </View>
-                            </View>
-                        </TouchableOpacity>
-                        <View style={{ width: Globals.WIDTH * 1.4, height: 0.8 * Globals.HEIGHT, backgroundColor: tipo == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO, position: 'absolute', zIndex: -1, transform: [{ translateX: -50 }, { translateY: -100 }, { rotateZ: '45deg' }] }}>
+                    }>
+                        <View style={
+                            {
+                                alignSelf: 'center', marginTop: 15
+                            }
+                        }>
+                            <LixeiraSVG />
 
                         </View>
                     </View>
-                </ScrollView>
+                </TouchableOpacity>
+
+                <View style={{ width: Globals.WIDTH * 1.2, height: 0.7 * Globals.HEIGHT, backgroundColor: tipo == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO, position: 'absolute', zIndex: -1, transform: [{ translateX: -50 }, { translateY: -100 }, { rotateZ: '45deg' }] }}>
+
+                </View>
+                </View>
+                </ScrollView >
+
             </Drawer>
-        )
+        </>)
     }
     return (
         <SafeAreaView style={styles.body}>
+
             {
                 isLoading ? renderLoad() : (<></>)
             }
@@ -369,6 +409,7 @@ const styles = StyleSheet.create({
 
     },
     inputStyle: {
+        
         alignItems: 'center',
         paddingVertical: 10.75309,
         paddingHorizontal: 11.0905,
@@ -384,17 +425,6 @@ const styles = StyleSheet.create({
         fontFamily: Globals.FONT_FAMILY.REGULAR,
         color: 'white',
         borderRadius: 6.96875,
-    },
-    esqueciSenha: {
-        paddingLeft: 3,
-        width: '100%',
-        maxWidth: 338.89,
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        color: Globals.COLOR.BRANCO,
-        fontSize: 13,
-        lineHeight: 16,
-        fontFamily: Globals.FONT_FAMILY.MEDIUM
     },
     errorStyle: {
         paddingLeft: 7,
@@ -519,4 +549,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Adicionar;
+export default DetalharRevenueSpending;

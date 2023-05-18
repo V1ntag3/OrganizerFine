@@ -11,6 +11,9 @@ import {
     Text,
     ScrollView,
     TouchableOpacity,
+    RefreshControl,
+    Pressable,
+    FlatList,
 } from 'react-native';
 
 import React, { useEffect, useState } from 'react';
@@ -33,11 +36,6 @@ import FineSVG from '../componentes/SVGComponentes/fineSVG';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from './LoadingScreen';
 import UserSVG from '../componentes/SVGComponentes/userSVG';
-
-type props = {
-    navigation: any;
-    route: any
-}
 
 function DashBoard({ route, navigation }: any): JSX.Element {
     const [isLoading, setIsLoading] = useState(false)
@@ -62,15 +60,17 @@ function DashBoard({ route, navigation }: any): JSX.Element {
     const [valorMaiorPorc, setValorMaiorPorc] = useState('0%')
     const [valorMaiorNome, setValorMaiorNome] = useState('')
 
-    const renderItens = (itemRend: { id: React.Key | null | undefined; typeCat: any; about: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; value: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; date: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }[]) => {
+    const [selectedDateSe, setSelectedDateSe] = useState(new Date().toISOString().slice(0, 10));
 
-        if (itemRend.length > 0) {
-            return item.map((element: { id: React.Key | null | undefined; typeCat: any; about: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; value: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; date: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) => (
-                <View key={element.id} style={styles.card}>
+    const Item = (element: { typeCat: any; about: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; value: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; date: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) => (
+        <View style={{ backgroundColor: '#D9D9D9' }}>
+            <TouchableOpacity onPress={() => {
+                navigation.navigate('DetalharRevenueSpending', { element })
+            }}>
+                <View style={styles.card}>
                     <View style={styles.iconCard}>
                         {
                             renderImagem(element.typeCat)
-
                         }
                     </View>
                     <View style={styles.decCat}>
@@ -82,33 +82,164 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                         <Text style={styles.valDate2}>{element.date}</Text>
                     </View>
                 </View>
-            ))
+            </TouchableOpacity>
+        </View>
+    );
+    const renderItens = (itemRend: { id: React.Key | null | undefined; typeCat: any; about: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; value: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; date: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }[]) => {
+
+        if (itemRend.length > 0) {
+            return (<FlatList
+                style={{ height: Globals.HEIGHT * 0.5 }}
+                data={item}
+                renderItem={({ item }) => <Item about={item.about} date={item.date} typeCat={item.typeCat} value={item.value} />}
+                // contentContainerStyle={styles.scrollView} 
+                showsVerticalScrollIndicator={false}
+                // contentContainerStyle={{backgroundColor: "#D9D9D9" }}
+                refreshControl={
+                    <RefreshControl progressBackgroundColor={Globals.COLOR.LIGHT.COLOR1} colors={[Globals.COLOR.LIGHT.COLOR3]} refreshing={refreshing}
+                        onRefresh={onRefresh} />
+                }
+                ListHeaderComponent={
+                    (
+                        <>
+                            <TouchableOpacity style={{ position: 'absolute', top: 20, left: 15, zIndex: 1000 }} onPress={moveMenu}>
+                                <MenuSVG />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPressIn={() => { setShow(show == true ? false : true) }}>
+
+                                <View style={
+                                    {
+                                        position: 'absolute',
+                                        flexDirection: 'row',
+                                        top: 45,
+                                        marginRight: 'auto',
+                                        marginLeft: 'auto',
+                                        alignSelf: 'center'
+                                    }
+                                }>
+                                    <View>
+                                        <Text style={styles.selectData}>{mes}</Text>
+                                        <Text style={styles.selectData}>{ano}</Text>
+                                    </View>
+                                    <View style={{ marginTop: 3, marginLeft: 3 }}>
+                                        <BackRotSVG />
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+
+                            <Text style={styles.tituloView}>Finanças</Text>
+                            <View style={
+                                {
+                                    margin: 'auto',
+                                    width: '100%',
+                                    paddingHorizontal: (Globals.WIDTH * 0.5) - 90,
+                                    marginTop: 70
+                                }
+                            }>
+                                <PieChart
+                                    data={pieData}
+                                    donut
+                                    showGradient
+                                    sectionAutoFocus
+                                    radius={90}
+                                    innerRadius={50}
+                                    innerCircleColor={Globals.COLOR.LIGHT.COLOR4}
+                                    centerLabelComponent={() => {
+                                        return (
+                                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                                <Text
+                                                    style={{ fontSize: 22, color: Globals.COLOR.BRANCO, fontWeight: 'bold', fontFamily: Globals.FONT_FAMILY.BOLD }}>
+                                                    {valorMaiorPorc}
+                                                </Text>
+                                                <Text style={{ fontSize: 11, color: Globals.COLOR.BRANCO, fontFamily: Globals.FONT_FAMILY.REGULAR }}>{valorMaiorNome}</Text>
+                                            </View>
+                                        );
+                                    }}
+                                />
+                                <View
+                                    style={{
+
+                                        flexDirection: 'row',
+                                        marginHorizontal: -Globals.WIDTH * 0.20,
+                                        zIndex: 10
+
+                                    }}>
+                                    <View style={{
+                                        flexDirection: 'column',
+
+                                    }}>
+                                        {renderLegend('Alimentação', '#FFFFFF')}
+                                        {renderLegend('Vestuário', Globals.COLOR.LIGHT.COLOR1)}
+
+
+                                    </View>
+                                    <View style={{
+                                        flexDirection: 'column',
+                                    }}>
+                                        {renderLegend('Serviços', '#60625F')}
+                                        {renderLegend('Entretenimento', Globals.COLOR.LIGHT.COLOR3)}
+                                    </View>
+                                    <View style={{
+                                        flexDirection: 'column',
+                                    }}>
+
+                                        {renderLegend('Eletrônicos', '#474747')}
+                                        {renderLegend('Outros', '#323131')}
+                                    </View>
+                                </View>
+
+                            </View>
+                            <View style={styles.fundosGastos} >
+                                <View style={styles.dados}>
+                                    <View style={styles.totalizadores}>
+                                        <Text style={[styles.textTotalizadores, { color: Globals.COLOR_GASTO }]}>Gastos</Text>
+                                        <Text style={[styles.textTotalizadores, { color: Globals.COLOR_GASTO }]}>{gastos}</Text>
+                                    </View>
+                                    <View style={styles.linha}></View>
+                                    <View style={styles.totalizadores}>
+                                        <Text style={[styles.textTotalizadores, { color: Globals.COLOR_RECEITA }]}>Receitas</Text>
+                                        <Text style={[styles.textTotalizadores, { color: Globals.COLOR_RECEITA }]}>{receitas}</Text>
+                                    </View>
+                                </View>
+
+
+                            </View>
+
+                        </>
+                    )
+                }
+
+                keyExtractor={item => item.id}
+            />)
+
         } else {
-            return (<Text style={{ color: 'black', textAlign: 'center', fontFamily: Globals.FONT_FAMILY.BOLD, marginTop: 40 }}>Gastos não encontrados</Text>)
+            return (<Text style={{ color: Globals.COLOR.LIGHT.COLOR4, textAlign: 'center', fontFamily: Globals.FONT_FAMILY.BOLD, marginTop: 40 }}>Gastos não encontrados</Text>)
         }
     }
-    const readData = async () => {
+    const readData = async (isPageReload = false) => {
         try {
-
             const value = await AsyncStorage.getItem('token', (err, result) => {
-                fetch(Globals.BASE_URL_API + 'profile/', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Token ' + result
-                    },
-                }).then(response => {
-                    if (response.status == 401 || response.status == 403) { removeData() };
-                    return response.json();
-                }).then((json) => {
-                    setNome(json.first_name + ' ' + json.last_name)
-                    setEmail(json.email)
-                }).catch(error => {
-                    if (error.toString() == "TypeError: Network request failed") {
-                    }
-                }).finally(() => {
-                })
+                if (!isPageReload) {
+                    fetch(Globals.BASE_URL_API + 'profile/', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': 'Token ' + result
+                        },
+                    }).then(response => {
+                        if (response.status == 401 || response.status == 403) { removeData() };
+                        return response.json();
+                    }).then((json) => {
+                        setNome(json.first_name + ' ' + json.last_name)
+                        setEmail(json.email)
+                    }).catch(error => {
+                        if (error.toString() == "TypeError: Network request failed") {
+                        }
+                    }).finally(() => {
+                    })
 
-                setIsLoading(true)
+                    setIsLoading(true)
+                }
+
 
                 fetch(Globals.BASE_URL_API + 'revenue_spending/?month=' + mes + '&year=' + ano, {
                     method: 'GET',
@@ -201,6 +332,7 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                         setValorMaiorNome('')
                         setItems([]);
                     }
+                    if (isPageReload) setRefreshing(false)
                 }).catch(error => {
                     if (error.toString() == "TypeError: Network request failed") {
                     }
@@ -224,14 +356,16 @@ function DashBoard({ route, navigation }: any): JSX.Element {
             headers: {
                 'Authorization': 'Token ' + token
             },
-        }).then(response => {if(response.status == 204){
-            AsyncStorage.clear().then(() => { setUserToken(null) })
-        }}).catch(error => {
-           
+        }).then(response => {
+            if (response.status == 204) {
+                AsyncStorage.clear().then(() => { setUserToken(null) })
+            }
+        }).catch(error => {
+
         }).finally(() => {
             setIsLoading(false)
         })
-       
+
     };
 
     const handleDateSelect = (selectedDate: String) => {
@@ -341,6 +475,7 @@ function DashBoard({ route, navigation }: any): JSX.Element {
 
 
     useEffect(() => {
+
         readData();
 
         navigation.addListener('focus', () => {
@@ -348,10 +483,14 @@ function DashBoard({ route, navigation }: any): JSX.Element {
         });
 
     }, [navigation]);
+    const [refreshing, setRefreshing] = React.useState(false);
 
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        readData(true)
+    }, []);
     const renderTela = () => {
         return (<Drawer style={{
-
             width: '100%',
             height: '100%',
             position: 'absolute',
@@ -368,10 +507,10 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                     width: '100%', height: '100%', backgroundColor: Globals.COLOR.LIGHT.COLOR5,
                 }}>
                     <View style={styles.imagemUser}>
-                        <View style={{alignSelf:'center', marginTop:10}}>
-                            <UserSVG/>
+                        <View style={{ alignSelf: 'center', marginTop: 10 }}>
+                            <UserSVG />
                         </View>
-                        
+
                     </View>
                     <View style={{ marginLeft: 20, marginBottom: 30 }}>
                         <Text style={{
@@ -403,48 +542,59 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                         </View>
                     </TouchableOpacity>
 
-                <View style={styles.containerNome}>
-                <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
-                <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
-                </View>
+                    <View style={styles.containerNome}>
+                        <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
+                        <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
+                    </View>
 
                 </View>;
             }}
         >
 
             {show && (
-                <DatePicker
+
+                <><DatePicker
                     mode="monthYear"
                     isGregorian={true}
                     selectorStartingYear={2000}
+
+                    current={selectedDateSe}
+                    selected={selectedDateSe}
+
+
                     onMonthYearChange={(selectedDate) => {
-                        handleDateSelect(selectedDate)
-                    }
-                    }
-                    selectorEndingYear={3000}
+                        setSelectedDateSe(selectedDate.replace(' ', '-') + '-01');
+                        handleDateSelect(selectedDate);
+                    }}
+                    selectorEndingYear={new Date().getFullYear()}
                     style={{
                         position: 'absolute',
                         top: 50,
-                        zIndex: 10000,
+                        zIndex: 10001,
                         width: Globals.WIDTH * 0.9,
                         borderRadius: 25,
                         left: Globals.WIDTH * 0.05
                     }}
-                    options={
-                        {
-                            backgroundColor: Globals.COLOR.LIGHT.COLOR3,
-                            textHeaderColor: Globals.COLOR.BRANCO,
-                            textDefaultColor: Globals.COLOR.BRANCO,
-                            selectedTextColor: Globals.COLOR.BRANCO,
-                            mainColor: Globals.COLOR.LIGHT.COLOR2,
-                            defaultFont: Globals.FONT_FAMILY.REGULAR,
-                            textFontSize: 13,
-
-                        }
-                    }
-                />
+                    options={{
+                        backgroundColor: Globals.COLOR.LIGHT.COLOR3,
+                        textHeaderColor: Globals.COLOR.BRANCO,
+                        textDefaultColor: Globals.COLOR.BRANCO,
+                        selectedTextColor: Globals.COLOR.BRANCO,
+                        mainColor: Globals.COLOR.LIGHT.COLOR2,
+                        defaultFont: Globals.FONT_FAMILY.REGULAR,
+                        textFontSize: 13,
+                    }} />
+                    <Pressable style={{ height: Globals.HEIGHT, width: Globals.WIDTH, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 10000, position: 'absolute', top: 0 }} onPress={() => {
+                        setShow(false)
+                    }}>
+                    </Pressable>
+                </>
             )}
-            <TouchableOpacity style={{ zIndex: 10000, position: 'absolute', top: 20, right: 0 }} onPress={() => { navigation.navigate('Adicionar') }}>
+            <TouchableOpacity style={{ zIndex: 10000, position: 'absolute', top: 20, right: 0 }} onPress={() => {
+                navigation.navigate('Adicionar', {
+
+                })
+            }}>
                 <View style={
                     {
                         width: 50,
@@ -465,112 +615,15 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                 </View>
             </TouchableOpacity>
 
-            <ScrollView contentContainerStyle={styles.scrollView} showsVerticalScrollIndicator={false}>
 
-                <TouchableOpacity style={{ position: 'absolute', top: 20, left: 15, zIndex: 1000 }} onPress={moveMenu}>
-                    <MenuSVG />
-                </TouchableOpacity>
-                <TouchableOpacity onPressIn={() => { setShow(show == true ? false : true) }}>
-
-                    <View style={
-                        {
-                            position: 'absolute',
-                            flexDirection: 'row',
-                            top: 45,
-                            marginRight: 'auto',
-                            marginLeft: 'auto',
-                            alignSelf: 'center'
-                        }
-                    }>
-                        <View>
-                            <Text style={styles.selectData}>{mes}</Text>
-                            <Text style={styles.selectData}>{ano}</Text>
-                        </View>
-                        <View style={{ marginTop: 3, marginLeft: 3 }}>
-                            <BackRotSVG />
-                        </View>
-                    </View>
-                </TouchableOpacity>
-
-                <Text style={styles.tituloView}>Finanças</Text>
-                <View style={
-                    {
-                        margin: 'auto',
-                        width: '100%',
-                        paddingHorizontal: (Globals.WIDTH * 0.5) - 90,
-                        marginTop: 70
-                    }
-                }>
-                    <PieChart
-                        data={pieData}
-                        donut
-                        showGradient
-                        sectionAutoFocus
-                        radius={90}
-                        innerRadius={50}
-                        innerCircleColor={Globals.COLOR.LIGHT.COLOR4}
-                        centerLabelComponent={() => {
-                            return (
-                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text
-                                        style={{ fontSize: 22, color: Globals.COLOR.BRANCO, fontWeight: 'bold', fontFamily: Globals.FONT_FAMILY.BOLD }}>
-                                        {valorMaiorPorc}
-                                    </Text>
-                                    <Text style={{ fontSize: 14, color: Globals.COLOR.BRANCO, fontFamily: Globals.FONT_FAMILY.REGULAR }}>{valorMaiorNome}</Text>
-                                </View>
-                            );
-                        }}
-                    />
-                    <View
-                        style={{
-
-                            flexDirection: 'row',
-                            marginHorizontal: -Globals.WIDTH * 0.20,
-                            zIndex: 10
-
-                        }}>
-                        <View style={{
-                            flexDirection: 'column',
-
-                        }}>
-                            {renderLegend('Alimentação', '#FFFFFF')}
-                            {renderLegend('Vestuário', Globals.COLOR.LIGHT.COLOR1)}
+            {/* <ScrollView refreshControl={
+                <RefreshControl progressBackgroundColor={Globals.COLOR.LIGHT.COLOR1} colors={[Globals.COLOR.LIGHT.COLOR3]} refreshing={refreshing}
+                    onRefresh={onRefresh} />
+            }
+                contentContainerStyle={styles.scrollView} showsVerticalScrollIndicator={false}> */}
 
 
-                        </View>
-                        <View style={{
-                            flexDirection: 'column',
-                        }}>
-                            {renderLegend('Serviços', '#60625F')}
-                            {renderLegend('Entretenimento', Globals.COLOR.LIGHT.COLOR3)}
-                        </View>
-                        <View style={{
-                            flexDirection: 'column',
-                        }}>
-
-                            {renderLegend('Eletrônicos', '#474747')}
-                            {renderLegend('Outros', '#323131')}
-                        </View>
-                    </View>
-
-                </View>
-                <View style={styles.fundosGastos} >
-                    <View style={styles.dados}>
-                        <View style={styles.totalizadores}>
-                            <Text style={[styles.textTotalizadores, { color: Globals.COLOR_GASTO }]}>Gastos</Text>
-                            <Text style={[styles.textTotalizadores, { color: Globals.COLOR_GASTO }]}>{gastos}</Text>
-                        </View>
-                        <View style={styles.linha}></View>
-                        <View style={styles.totalizadores}>
-                            <Text style={[styles.textTotalizadores, { color: Globals.COLOR_RECEITA }]}>Receitas</Text>
-                            <Text style={[styles.textTotalizadores, { color: Globals.COLOR_RECEITA }]}>{receitas}</Text>
-                        </View>
-                    </View>
-                    {renderItens(item)}
-
-                </View>
-            </ScrollView>
-
+            {renderItens(item)}
         </Drawer>)
     }
     const renderLoad = () => {
@@ -586,6 +639,7 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                 isLoading ? renderLoad() : (<></>)
             }
             {renderTela()}
+
         </SafeAreaView>
     );
 
@@ -618,10 +672,9 @@ const styles = StyleSheet.create({
     ,
     fundosGastos: {
         backgroundColor: "#D9D9D9",
-        // backgroundColor: "#fff",
         borderTopRightRadius: 40,
         borderTopLeftRadius: 40,
-        minHeight: 0.40 * Globals.HEIGHT + 95,
+        maxHeight: 80,
         width: Globals.WIDTH,
         marginTop: 20
     },
@@ -751,7 +804,7 @@ const styles = StyleSheet.create({
     containerNome: {
         position: 'absolute',
         bottom: 15,
-        alignSelf:'center'
+        alignSelf: 'center'
     },
     nomeApp: {
         width: '100%',

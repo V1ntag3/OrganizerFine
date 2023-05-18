@@ -7,13 +7,14 @@ import PublicNavigator from './public/publicNavigator';
 import PrivateNavigator from './private/privateNavigator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SplashScreen from '../views/SplashScreen';
+import { LogBox } from 'react-native';
 
 const Stack = createNativeStackNavigator();
 
 function RootNavigator() {
+
   const [isLoading, setIsLoading] = React.useState(true);
   const [userToken, setUserToken] = React.useState(null);
-
 
   React.useEffect(() => {
 
@@ -31,6 +32,9 @@ function RootNavigator() {
     return <SplashScreen />;
   }
 
+  LogBox.ignoreLogs([
+    'Non-serializable values were found in the navigation state',
+  ]);
   return (
     <Stack.Navigator screenOptions={{
       headerShown: false

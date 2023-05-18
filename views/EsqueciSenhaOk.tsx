@@ -23,7 +23,7 @@ type props = {
 function EsqueciSenhaOk({ navigation }: props["navigation"]): JSX.Element {
     return (
         <SafeAreaView style={styles.body}>
-            <ScrollView contentContainerStyle={styles.scrollView} >
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollView} >
               
                 <View style={[styles.containerInput, { zIndex: 0 }]}>
                     <Text style={styles.textEsqueci}>

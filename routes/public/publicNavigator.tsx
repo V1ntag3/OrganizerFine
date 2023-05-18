@@ -7,25 +7,35 @@ import Welcome from '../../views/Welcome';
 import Login from '../../views/Login';
 import EsqueciSenha from '../../views/EsqueciSenha';
 import EsqueciSenhaOk from '../../views/EsqueciSenhaOk';
-import { LogBox } from 'react-native';
+import { Easing, LogBox } from 'react-native';
 
 
 const Stack = createNativeStackNavigator();
 
-function PublicNavigator({route}:any) {
-  LogBox.ignoreLogs([
-    'Non-serializable values were found in the navigation state',
-  ]);
+function PublicNavigator({ route }: any) {
+
   const { setUserToken } = route.params
 
   return (
-    <Stack.Navigator  screenOptions={{
+    <Stack.Navigator screenOptions={{
       headerShown: false
     }} initialRouteName='Welcome'>
 
-      <Stack.Screen name="Welcome" component={Welcome} />
-      <Stack.Screen name="Registrar" component={Registrar} initialParams={{setUserToken}} />
-      <Stack.Screen name="Login" component={Login} initialParams={{setUserToken}}/>
+      <Stack.Screen name="Welcome" component={Welcome} options={{
+        animationTypeForReplace: 'push',
+        animation: 'slide_from_right'
+      }
+      } />
+      <Stack.Screen name="Registrar" component={Registrar} initialParams={{ setUserToken }} options={{
+        animationTypeForReplace: 'push',
+        animation: 'slide_from_right',
+      }
+      } />
+      <Stack.Screen name="Login" component={Login} initialParams={{ setUserToken }} options={{
+        animationTypeForReplace: 'push',
+        animation: 'slide_from_right'
+      }
+      } />
       <Stack.Screen name="EsqueciSenha" component={EsqueciSenha} />
       <Stack.Screen name="EsqueciSenhaOk" component={EsqueciSenhaOk} />
 

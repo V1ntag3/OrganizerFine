@@ -32,6 +32,7 @@ type props = {
 }
 
 function Login({ route, navigation }: any): JSX.Element {
+    console.log('testandooo')
     const [isLoading, setIsLoading] = useState(false)
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
@@ -39,12 +40,15 @@ function Login({ route, navigation }: any): JSX.Element {
     const [senhaError, setSenhaError] = useState(false);
 
     const [naoCadas, setNaoCadas] = useState(false);
-
+    const isEmail = (email: String) => {
+        const emailRegex = /^([a-zA-Z][^<>\"!@[\]#$%¨&*()~^:;ç,\-´`=+{}º\|/\\?]{1,})@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        return emailRegex.test(String(email).toLowerCase())
+    }
     const logar = () => {
-        setEmailError(email == "" ? true : false)
+        setEmailError(email == "" || !isEmail(email) ? true : false)
         setSenhaError(senha == "" ? true : false)
-
-        if (senha != "" && email != "" ) {
+     
+        if (senha != "" && email != "" && isEmail(email)) {
             setIsLoading(true)
             fetch(Globals.BASE_URL_API + 'login/', {
                 method: 'POST',
@@ -57,24 +61,26 @@ function Login({ route, navigation }: any): JSX.Element {
                 },
             })
                 .then((response) => {
+
                     if (response.status == 400) {
                         setSenhaError(true)
                         setEmailError(true)
-                        setEmail("")
-                        setSenha("")
-                    } else {
-                        setSenhaError(false)
+                    } 
+                   
+                    if (response.status == 200) {
                         setSenhaError(false)
                         setEmailError(false)
+                        response.json().then(json => {
+                            AsyncStorage.setItem('token', json.token , () => {
+                                const { setUserToken } = route.params
+                                setUserToken(json.token)
+                            });
+                            
+                        })                      
                     }
-                    return response.json()
-                })
-                .then((json) => {
-                    AsyncStorage.setItem('token', json.token);
-                    const { setUserToken } = route.params
-                    setUserToken(json.token)
-
+                    
                 }).catch((error) => {
+
                 }).finally(() => {
                     setIsLoading(false)
                 });
@@ -86,7 +92,7 @@ function Login({ route, navigation }: any): JSX.Element {
         return (<><LoadingScreen /></>)
     }
     const renderTela = () => {
-        return (<ScrollView contentContainerStyle={styles.scrollView}>
+        return (<ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollView}>
             <TituloPagina title='Login' navigation={navigation} />
             <FundoPagina />
             <View style={[styles.containerInput, { zIndex: 0 }]}>
@@ -103,14 +109,14 @@ function Login({ route, navigation }: any): JSX.Element {
                     selectionColor="black"
                     onChangeText={(text) => setSenha(text)}
                     placeholder="Senha" />
-                <Text style={[styles.errorStyle, { display: senhaError ? 'flex' : 'none' }]}  >Email e/ou Senha inválido(s)</Text>
+                <Text style={[styles.errorStyle, { display: senhaError || emailError ? 'flex' : 'none' }]}  >Email e/ou Senha inválido(s)</Text>
                 {/* <TouchableOpacity onPress={() => navigation.navigate('EsqueciSenha')} >
                         <View>
                             <Text style={[styles.esqueciSenha]} >esqueci a senha</Text>
                         </View>
                     </TouchableOpacity> */}
                 <View style={styles.containerBotoes}>
-                    <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={() => logar()} title={"Login"} />
+                    <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={ logar } title={"Login"} />
                 </View>
             </View>
             <NotebookSVG style={styles.notebookSVGStyle} width={103} height={103} />

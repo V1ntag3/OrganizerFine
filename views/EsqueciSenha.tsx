@@ -40,7 +40,7 @@ function EsqueciSenha({ navigation }: props["navigation"]): JSX.Element {
     }
     return (
         <SafeAreaView style={styles.body}>
-            <ScrollView contentContainerStyle={styles.scrollView} >
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollView} >
                 <TituloPagina title='Esqueceu sua Senha?' navigation={navigation} />
                 <FundoPagina />
                 <View style={[styles.containerInput, { zIndex: 0 }]}>

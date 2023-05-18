@@ -27,8 +27,8 @@ type registrarProps = {
     route: any
 }
 
-
 function Registrar({ route, navigation }: any): JSX.Element {
+
     const [isLoading, setIsLoading] = useState(false)
     const [nome, setNome] = useState('');
     const [sobrenome, setSobrenome] = useState('');
@@ -44,15 +44,18 @@ function Registrar({ route, navigation }: any): JSX.Element {
 
     const { setUserToken } = route.params
 
+    const isEmail = (email: String) => {
+        const emailRegex = /^([a-zA-Z][^<>\"!@[\]#$%¨&*()~^:;ç,\-´`=+{}º\|/\\?]{1,})@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        return emailRegex.test(String(email).toLowerCase())
+    }
     const validarRegistrar = () => {
         setNomeError(nome == "" ? true : false)
         setsobreNomeError(sobrenome == "" ? true : false)
-        setEmailError(email == "" ? true : false)
+        setEmailError(email == "" || !isEmail(email) ? true : false)
         setSenhaError(senha == "" || (senha != confirm_senha) ? true : false)
-        setConfirmSenhaError(confirm_senha == "" ? true : false)
+        setConfirmSenhaError(confirm_senha == "" || (senha != confirm_senha) ? true : false)
 
-
-        if (nome != "" && sobrenome != "" && email != "" && senha != "" && confirm_senha != "" && (senha == confirm_senha)) {
+        if (nome != "" && sobrenome != "" && email != "" && senha != "" && confirm_senha != "" && (senha == confirm_senha) && isEmail(email)) {
             setIsLoading(true)
             fetch(Globals.BASE_URL_API + 'register/', {
                 method: 'POST',
@@ -73,10 +76,7 @@ function Registrar({ route, navigation }: any): JSX.Element {
                 AsyncStorage.setItem('token', json.token, () => {
                     setUserToken(json.token)
                     setIsLoading(false)
-
                 });
-
-
             });
 
         }
@@ -85,7 +85,7 @@ function Registrar({ route, navigation }: any): JSX.Element {
         return (<><LoadingScreen /></>)
     }
     const renderTela = () => {
-        return (<ScrollView contentContainerStyle={styles.scrollView}>
+        return (<ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollView}>
             <FundoPagina />
             <TituloPagina title='Registrar' navigation={navigation} />
             <View style={styles.containerInput}>
@@ -142,7 +142,7 @@ function Registrar({ route, navigation }: any): JSX.Element {
                 />
                 <Text style={[styles.errorStyle, { display: confirmSenhaError ? 'flex' : 'none' }]}  >Campo inválido</Text>
                 <View style={styles.containerBotoes}>
-                    <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={() => validarRegistrar()} title={"Registrar"} />
+                    <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={ validarRegistrar } title={"Registrar"} />
                 </View>
             </View>
             <NotebookSVG style={styles.notebookSVGStyle} width={103} height={103} />
