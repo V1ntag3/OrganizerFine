@@ -40,7 +40,7 @@ function RootNavigator() {
       headerShown: false
     }} >
 
-      {userToken != null ? ( <Stack.Screen name="PrivateNavigator" component={PrivateNavigator} initialParams={{ setUserToken }}/> ) : (<Stack.Screen name="PublicNavigator" component={PublicNavigator} initialParams={{ setUserToken }} />)}
+      {userToken != null ? (<Stack.Screen name="PrivateNavigator" component={PrivateNavigator} initialParams={{ setUserToken }} />) : (<Stack.Screen name="PublicNavigator" component={PublicNavigator} initialParams={{ setUserToken }} />)}
 
     </Stack.Navigator>
   );

@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
 import React from 'react';
 import {
   SafeAreaView,
@@ -15,12 +9,9 @@ import OfficeSVG from '../componentes/SVGComponentes/officeSVG';
 import ButtonGeneric from '../componentes/ButtonGeneric'
 import Globals from '../Globals';
 
-type welcomeProps = {
-  navigation: any;
-}
-
-function Welcome({ navigation }: welcomeProps["navigation"]): JSX.Element {
+function Welcome({ navigation }: any): JSX.Element {
   return (
+
     <SafeAreaView style={styles.body}>
       <View style={styles.retangulo}></View>
       <View style={styles.caixaTitulos}>
@@ -38,6 +29,7 @@ function Welcome({ navigation }: welcomeProps["navigation"]): JSX.Element {
       </View>
       <OfficeSVG style={styles.officeSVGStyle} width={Globals.HEIGHT * 0.29} height={Globals.HEIGHT * 0.29} />
     </SafeAreaView>
+
   );
 }
 

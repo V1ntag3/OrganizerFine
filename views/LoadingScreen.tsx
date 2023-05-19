@@ -1,10 +1,4 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-import React, { useEffect} from 'react';
+import { useEffect } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -28,17 +22,17 @@ function LoadingScreen(): JSX.Element {
     Animated.loop(
       Animated.sequence([
         Animated.timing(animatedValue, {
-          toValue:1,
+          toValue: 1,
           duration: 1000,
           useNativeDriver: true
         }),
-      Animated.timing(animatedValue, {
-        toValue:0,
-        duration: 1000,
-        useNativeDriver: true
-      })]),
+        Animated.timing(animatedValue, {
+          toValue: 0,
+          duration: 1000,
+          useNativeDriver: true
+        })]),
       {
-        iterations:6
+        iterations: 6
       }
     ).start()
   }
@@ -56,12 +50,12 @@ function LoadingScreen(): JSX.Element {
 
 const styles = StyleSheet.create({
   body: {
-    opacity:0.7,
+    opacity: 0.7,
     backgroundColor: Globals.COLOR.LIGHT.COLOR5,
     flex: 1,
-    height:Globals.HEIGHT,
-    width:Globals.WIDTH,
-    zIndex:100000, position:'absolute',top:0, left:0
+    height: Globals.HEIGHT,
+    width: Globals.WIDTH,
+    zIndex: 1000000, position: 'absolute', top: 0, left: 0
   },
   containerNome: {
     marginVertical: Globals.HEIGHT * 0.4,

@@ -1,21 +1,13 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
 import {
     SafeAreaView,
     StyleSheet,
     View,
     Text,
-    ScrollView,
     TouchableOpacity,
     RefreshControl,
     Pressable,
     FlatList,
 } from 'react-native';
-
 import React, { useEffect, useState } from 'react';
 import { PieChart } from "react-native-gifted-charts";
 import Globals from '../Globals';
@@ -59,10 +51,9 @@ function DashBoard({ route, navigation }: any): JSX.Element {
     const [openClose, setOpenClose] = useState(false);
     const [valorMaiorPorc, setValorMaiorPorc] = useState('0%')
     const [valorMaiorNome, setValorMaiorNome] = useState('')
-
     const [selectedDateSe, setSelectedDateSe] = useState(new Date().toISOString().slice(0, 10));
 
-    const Item = (element: { typeCat: any; about: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; value: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; date: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) => (
+    const Item = (element: { id: any, typeCat: any; about: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; value: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; date: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) => (
         <View style={{ backgroundColor: '#D9D9D9' }}>
             <TouchableOpacity onPress={() => {
                 navigation.navigate('DetalharRevenueSpending', { element })
@@ -85,136 +76,131 @@ function DashBoard({ route, navigation }: any): JSX.Element {
             </TouchableOpacity>
         </View>
     );
+    const renderHeaderFlat = () => {
+        return (<>
+            <TouchableOpacity style={{ position: 'absolute', top: 20, left: 15, zIndex: 1000 }} onPress={moveMenu}>
+                <MenuSVG />
+            </TouchableOpacity>
+            <TouchableOpacity onPressIn={() => { setShow(show == true ? false : true) }}>
+
+                <View style={
+                    {
+                        position: 'absolute',
+                        flexDirection: 'row',
+                        top: 45,
+                        marginRight: 'auto',
+                        marginLeft: 'auto',
+                        alignSelf: 'center'
+                    }
+                }>
+                    <View>
+                        <Text style={styles.selectData}>{mes}</Text>
+                        <Text style={styles.selectData}>{ano}</Text>
+                    </View>
+                    <View style={{ marginTop: 3, marginLeft: 3 }}>
+                        <BackRotSVG />
+                    </View>
+                </View>
+            </TouchableOpacity>
+
+            <Text style={styles.tituloView}>Finanças</Text>
+            <View style={
+                {
+                    margin: 'auto',
+                    width: '100%',
+                    paddingHorizontal: (Globals.WIDTH * 0.5) - 90,
+                    marginTop: 70
+                }
+            }>
+                <PieChart
+                    data={pieData}
+                    donut
+                    showGradient
+                    sectionAutoFocus
+                    radius={90}
+                    innerRadius={50}
+                    innerCircleColor={Globals.COLOR.LIGHT.COLOR4}
+                    centerLabelComponent={() => {
+                        return (
+                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                <Text
+                                    style={{ fontSize: 22, color: Globals.COLOR.BRANCO, fontWeight: 'bold', fontFamily: Globals.FONT_FAMILY.BOLD }}>
+                                    {valorMaiorPorc}
+                                </Text>
+                                <Text style={{ fontSize: 11, color: Globals.COLOR.BRANCO, fontFamily: Globals.FONT_FAMILY.REGULAR }}>{valorMaiorNome}</Text>
+                            </View>
+                        );
+                    }}
+                />
+                <View
+                    style={{
+
+                        flexDirection: 'row',
+                        marginHorizontal: -Globals.WIDTH * 0.20,
+                        zIndex: 10
+
+                    }}>
+                    <View style={{
+                        flexDirection: 'column',
+
+                    }}>
+                        {renderLegend('Alimentação', '#FFFFFF')}
+                        {renderLegend('Vestuário', Globals.COLOR.LIGHT.COLOR1)}
+
+
+                    </View>
+                    <View style={{
+                        flexDirection: 'column',
+                    }}>
+                        {renderLegend('Serviços', '#60625F')}
+                        {renderLegend('Entretenimento', Globals.COLOR.LIGHT.COLOR3)}
+                    </View>
+                    <View style={{
+                        flexDirection: 'column',
+                    }}>
+
+                        {renderLegend('Eletrônicos', '#474747')}
+                        {renderLegend('Outros', '#323131')}
+                    </View>
+                </View>
+            </View>
+            <View style={[styles.fundosGastos, item.length <= 0 ? { maxHeight: 'auto', height: '100%', minHeight: 600 } : {}]} >
+                <View style={styles.dados}>
+                    <View style={styles.totalizadores}>
+                        <Text style={[styles.textTotalizadores, { color: Globals.COLOR_GASTO }]}>Gastos</Text>
+                        <Text style={[styles.textTotalizadores, { color: Globals.COLOR_GASTO }]}>{gastos}</Text>
+                    </View>
+                    <View style={styles.linha}></View>
+                    <View style={styles.totalizadores}>
+                        <Text style={[styles.textTotalizadores, { color: Globals.COLOR_RECEITA }]}>Receitas</Text>
+                        <Text style={[styles.textTotalizadores, { color: Globals.COLOR_RECEITA }]}>{receitas}</Text>
+                    </View>
+                </View>
+                {
+
+                    item.length <= 0 && (<Text style={{ color: Globals.COLOR.LIGHT.COLOR4, textAlign: 'center', fontFamily: Globals.FONT_FAMILY.BOLD, marginTop: 40 }}>Gastos não encontrados</Text>)
+                }
+            </View>
+        </>)
+
+    }
     const renderItens = (itemRend: { id: React.Key | null | undefined; typeCat: any; about: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; value: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; date: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }[]) => {
-
-        if (itemRend.length > 0) {
-            return (<FlatList
-                style={{ height: Globals.HEIGHT * 0.5 }}
-                data={item}
-                renderItem={({ item }) => <Item about={item.about} date={item.date} typeCat={item.typeCat} value={item.value} />}
-                // contentContainerStyle={styles.scrollView} 
-                showsVerticalScrollIndicator={false}
-                // contentContainerStyle={{backgroundColor: "#D9D9D9" }}
-                refreshControl={
-                    <RefreshControl progressBackgroundColor={Globals.COLOR.LIGHT.COLOR1} colors={[Globals.COLOR.LIGHT.COLOR3]} refreshing={refreshing}
-                        onRefresh={onRefresh} />
-                }
-                ListHeaderComponent={
-                    (
-                        <>
-                            <TouchableOpacity style={{ position: 'absolute', top: 20, left: 15, zIndex: 1000 }} onPress={moveMenu}>
-                                <MenuSVG />
-                            </TouchableOpacity>
-                            <TouchableOpacity onPressIn={() => { setShow(show == true ? false : true) }}>
-
-                                <View style={
-                                    {
-                                        position: 'absolute',
-                                        flexDirection: 'row',
-                                        top: 45,
-                                        marginRight: 'auto',
-                                        marginLeft: 'auto',
-                                        alignSelf: 'center'
-                                    }
-                                }>
-                                    <View>
-                                        <Text style={styles.selectData}>{mes}</Text>
-                                        <Text style={styles.selectData}>{ano}</Text>
-                                    </View>
-                                    <View style={{ marginTop: 3, marginLeft: 3 }}>
-                                        <BackRotSVG />
-                                    </View>
-                                </View>
-                            </TouchableOpacity>
-
-                            <Text style={styles.tituloView}>Finanças</Text>
-                            <View style={
-                                {
-                                    margin: 'auto',
-                                    width: '100%',
-                                    paddingHorizontal: (Globals.WIDTH * 0.5) - 90,
-                                    marginTop: 70
-                                }
-                            }>
-                                <PieChart
-                                    data={pieData}
-                                    donut
-                                    showGradient
-                                    sectionAutoFocus
-                                    radius={90}
-                                    innerRadius={50}
-                                    innerCircleColor={Globals.COLOR.LIGHT.COLOR4}
-                                    centerLabelComponent={() => {
-                                        return (
-                                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                                <Text
-                                                    style={{ fontSize: 22, color: Globals.COLOR.BRANCO, fontWeight: 'bold', fontFamily: Globals.FONT_FAMILY.BOLD }}>
-                                                    {valorMaiorPorc}
-                                                </Text>
-                                                <Text style={{ fontSize: 11, color: Globals.COLOR.BRANCO, fontFamily: Globals.FONT_FAMILY.REGULAR }}>{valorMaiorNome}</Text>
-                                            </View>
-                                        );
-                                    }}
-                                />
-                                <View
-                                    style={{
-
-                                        flexDirection: 'row',
-                                        marginHorizontal: -Globals.WIDTH * 0.20,
-                                        zIndex: 10
-
-                                    }}>
-                                    <View style={{
-                                        flexDirection: 'column',
-
-                                    }}>
-                                        {renderLegend('Alimentação', '#FFFFFF')}
-                                        {renderLegend('Vestuário', Globals.COLOR.LIGHT.COLOR1)}
+        return (<FlatList
+            style={{ height: Globals.HEIGHT * 0.5 }}
+            data={item}
+            renderItem={({ item }) => <Item id={item.id} about={item.about} date={item.date} typeCat={item.typeCat} value={item.value} />}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+                <RefreshControl progressBackgroundColor={Globals.COLOR.LIGHT.COLOR1} colors={[Globals.COLOR.LIGHT.COLOR3]} refreshing={refreshing}
+                    onRefresh={onRefresh} />
+            }
+            ListHeaderComponent={renderHeaderFlat()}
+            keyExtractor={item => item.id}
+        />)
 
 
-                                    </View>
-                                    <View style={{
-                                        flexDirection: 'column',
-                                    }}>
-                                        {renderLegend('Serviços', '#60625F')}
-                                        {renderLegend('Entretenimento', Globals.COLOR.LIGHT.COLOR3)}
-                                    </View>
-                                    <View style={{
-                                        flexDirection: 'column',
-                                    }}>
+        // return
 
-                                        {renderLegend('Eletrônicos', '#474747')}
-                                        {renderLegend('Outros', '#323131')}
-                                    </View>
-                                </View>
-
-                            </View>
-                            <View style={styles.fundosGastos} >
-                                <View style={styles.dados}>
-                                    <View style={styles.totalizadores}>
-                                        <Text style={[styles.textTotalizadores, { color: Globals.COLOR_GASTO }]}>Gastos</Text>
-                                        <Text style={[styles.textTotalizadores, { color: Globals.COLOR_GASTO }]}>{gastos}</Text>
-                                    </View>
-                                    <View style={styles.linha}></View>
-                                    <View style={styles.totalizadores}>
-                                        <Text style={[styles.textTotalizadores, { color: Globals.COLOR_RECEITA }]}>Receitas</Text>
-                                        <Text style={[styles.textTotalizadores, { color: Globals.COLOR_RECEITA }]}>{receitas}</Text>
-                                    </View>
-                                </View>
-
-
-                            </View>
-
-                        </>
-                    )
-                }
-
-                keyExtractor={item => item.id}
-            />)
-
-        } else {
-            return (<Text style={{ color: Globals.COLOR.LIGHT.COLOR4, textAlign: 'center', fontFamily: Globals.FONT_FAMILY.BOLD, marginTop: 40 }}>Gastos não encontrados</Text>)
-        }
     }
     const readData = async (isPageReload = false) => {
         try {
@@ -227,17 +213,16 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                         },
                     }).then(response => {
                         if (response.status == 401 || response.status == 403) { removeData() };
-                        return response.json();
-                    }).then((json) => {
-                        setNome(json.first_name + ' ' + json.last_name)
-                        setEmail(json.email)
+                        response.json().then((json) => {
+                            setNome(json.first_name + ' ' + json.last_name)
+                            setEmail(json.email)
+                        })
                     }).catch(error => {
                         if (error.toString() == "TypeError: Network request failed") {
                         }
                     }).finally(() => {
+                        setIsLoading(true)
                     })
-
-                    setIsLoading(true)
                 }
 
 
@@ -247,92 +232,86 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                         'Authorization': 'Token ' + result
                     },
                 }).then(response => {
-                    if (response.status == 401 || response.status == 403) { removeData() };
-                    return response.json();
-                }).then((json) => {
-                    setShow(false)
-                    if (json != 0 && json.detail == null) {
-                        var array: any = []
-                        var gastos: number = 0
-                        var receitas: number = 0
-                        var item0 = 0, item1 = 0, item2 = 0, item3 = 0, item4 = 0, item5 = 0
-                        for (var item in json) {
-                            switch (json[item].typeCat) {
-                                case '0':
-                                    item0++
-                                    break
-                                case '1':
-                                    item1++
-                                    break
-                                case '2':
-                                    item2++
-                                    break
-                                case '3':
-                                    item3++
-                                    break
-                                case '4':
-                                    item4++
-                                    break
-                                case '5':
-                                    item5++
-                                    break
+                    if (response.status == 401 || response.status == 403) { removeData() }
+                    if (response.status == 200) {
+                        response.json().then((json) => {
+                            setShow(false)
+                            if (json != 0 && json.detail == null) {
+                                var array: any = []
+                                var gastos: number = 0
+                                var receitas: number = 0
+                                var item0 = 0, item1 = 0, item2 = 0, item3 = 0, item4 = 0, item5 = 0
+
+                                for (var item in json) {
+                                    switch (json[item].typeCat) {
+                                        case '0':
+                                            item0++
+                                            break
+                                        case '1':
+                                            item1++
+                                            break
+                                        case '2':
+                                            item2++
+                                            break
+                                        case '3':
+                                            item3++
+                                            break
+                                        case '4':
+                                            item4++
+                                            break
+                                        case '5':
+                                            item5++
+                                            break
+                                    }
+
+                                    if (json[item].type == '0') {
+                                        receitas += json[item].value
+                                    }
+                                    if (json[item].type == '1') {
+                                        gastos += json[item].value
+                                    }
+
+                                    json[item].value = json[item].value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+                                    var valor = parseInt(new Date() - new Date(json[item].date))
+                                    json[item].date = String(parseInt(valor / (1000 * 60 * 60 * 24))) + ' dias atrás'
+                                    if (json[item].typeCat != '') {
+                                        array.push(json[item])
+                                    }
+                                }
+                                setGastos(gastos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+                                setReceitas(receitas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+                                setItems(array)
+                                setPieData([
+                                    { value: (item5 / array.length), color: '#323131', gradientCenterColor: '#323131' },
+                                    { value: (item2 / array.length), color: '#474747', gradientCenterColor: '#474747' },
+                                    { value: (item0 / array.length), color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
+                                    { value: (item3 / array.length), color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
+                                    { value: (item4 / array.length), color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
+                                    { value: (item1 / array.length), color: '#60625F', gradientCenterColor: '#60625F' },
+                                ])
+                                var arrayValores = [item0, item1, item2, item3, item4, item5]
+                                setValorMaiorPorc(String(parseInt((Math.max(...arrayValores) / array.length) * 100)) + '%')
+                                setValorMaiorNome(renderNome(String(arrayValores.indexOf(Math.max(...arrayValores)))))
+                            } else {
+                                setPieData([
+                                    { value: 0, color: '#323131', gradientCenterColor: '#323131' },
+                                    { value: 0, color: '#474747', gradientCenterColor: '#474747' },
+                                    { value: 0, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
+                                    { value: 0, color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
+                                    { value: 0, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
+                                    { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
+                                ])
+                                setItems([]);
+                                setGastos('R$ 0,00');
+                                setReceitas('R$ 0,00');
+                                setValorMaiorPorc('0%')
+                                setValorMaiorNome('')
+                                setItems([]);
                             }
-
-                            if (json[item].type == '0') {
-                                receitas += json[item].value
-                            }
-
-                            if (json[item].type == '1') {
-                                gastos += json[item].value
-                            }
-                            json[item].value = json[item].value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
-
-
-                            var valor = parseInt(new Date() - new Date(json[item].date))
-
-                            json[item].date = String(parseInt(valor / (1000 * 60 * 60 * 24))) + ' dias atrás'
-
-                            if (json[item].typeCat != '') {
-                                array.push(json[item])
-                            }
-
-
-                        }
-
-                        setGastos(gastos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-                        setReceitas(receitas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-
-
-                        setItems(array)
-
-                        setPieData([
-                            { value: (item5 / array.length), color: '#323131', gradientCenterColor: '#323131' },
-                            { value: (item2 / array.length), color: '#474747', gradientCenterColor: '#474747' },
-                            { value: (item0 / array.length), color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-                            { value: (item3 / array.length), color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
-                            { value: (item4 / array.length), color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
-                            { value: (item1 / array.length), color: '#60625F', gradientCenterColor: '#60625F' },
-                        ])
-                        var arrayValores = [item0, item1, item2, item3, item4, item5]
-                        setValorMaiorPorc(String(parseInt((Math.max(...arrayValores) / array.length) * 100)) + '%')
-                        setValorMaiorNome(renderNome(String(arrayValores.indexOf(Math.max(...arrayValores)))))
-                    } else {
-                        setPieData([
-                            { value: 0, color: '#323131', gradientCenterColor: '#323131' },
-                            { value: 0, color: '#474747', gradientCenterColor: '#474747' },
-                            { value: 0, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-                            { value: 0, color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
-                            { value: 0, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
-                            { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
-                        ])
-                        setItems([]);
-                        setGastos('R$ 0,00');
-                        setReceitas('R$ 0,00');
-                        setValorMaiorPorc('0%')
-                        setValorMaiorNome('')
-                        setItems([]);
+                            if (isPageReload) setRefreshing(false)
+                        })
                     }
-                    if (isPageReload) setRefreshing(false)
+
                 }).catch(error => {
                     if (error.toString() == "TypeError: Network request failed") {
                     }
@@ -340,13 +319,12 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                     setIsLoading(false)
                 })
             })
-
             if (value !== null) {
                 setToken(value);
             }
         } catch (e) {
         }
-    };
+    }
     const { setUserToken } = route.params
 
     const removeData = () => {
@@ -381,6 +359,7 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                 'Authorization': 'Token ' + token
             },
         }).then(response => response.json()).then((json) => {
+            console.log(json)
             if (json != 0) {
                 var array: any = []
                 var gastos: number = 0
@@ -458,8 +437,8 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                 setReceitas('R$ 0,00');
                 setValorMaiorPorc('0%')
                 setValorMaiorNome('')
-                setItems([]);
             }
+
         }).catch(error => {
             if (error.toString() == "TypeError: Network request failed") {
                 setShow(false)
@@ -475,13 +454,10 @@ function DashBoard({ route, navigation }: any): JSX.Element {
 
 
     useEffect(() => {
-
         readData();
-
         navigation.addListener('focus', () => {
             readData();
         });
-
     }, [navigation]);
     const [refreshing, setRefreshing] = React.useState(false);
 
@@ -523,18 +499,28 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                         <Text style={styles.dadosMenu}>{email}</Text>
                     </View>
 
-                    <TouchableOpacity onPress={() => { setOpenClose(false); navigation.navigate('DashBoard') }}>
+                    <TouchableOpacity onPress={() => {
+                        setOpenClose(false); setTimeout(() => {
+                            navigation.navigate('DashBoard')
+                        }, 400);
+                    }}>
                         <View style={styles.itemMenu}>
                             <FineSVG />
                             <Text style={styles.itemMenuText}>Finanças</Text>
                         </View>
                     </TouchableOpacity>
+                    <TouchableOpacity onPress={() => {
+                        setOpenClose(false);
+                        setTimeout(() => {
+                            navigation.navigate('Configuracao')
+                        }, 400);
+                    }}>
 
-                    <View style={styles.itemMenu}>
-                        <ConfigSVG />
-                        <Text style={styles.itemMenuText}>Configurações</Text>
-                    </View>
-
+                        <View style={styles.itemMenu}>
+                            <ConfigSVG />
+                            <Text style={styles.itemMenuText}>Configurações</Text>
+                        </View>
+                    </TouchableOpacity>
                     <TouchableOpacity onPress={() => { setOpenClose(false); removeData() }}>
                         <View style={[styles.itemMenu, { paddingLeft: 17 }]}>
                             <LogoutSVG />
@@ -602,7 +588,7 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                         borderTopLeftRadius: 10,
                         borderBottomLeftRadius: 10,
                         backgroundColor: Globals.COLOR.LIGHT.COLOR2,
-                        zIndex: 1000
+                        zIndex: 100
                     }
                 }>
                     <View style={{
@@ -614,15 +600,6 @@ function DashBoard({ route, navigation }: any): JSX.Element {
 
                 </View>
             </TouchableOpacity>
-
-
-            {/* <ScrollView refreshControl={
-                <RefreshControl progressBackgroundColor={Globals.COLOR.LIGHT.COLOR1} colors={[Globals.COLOR.LIGHT.COLOR3]} refreshing={refreshing}
-                    onRefresh={onRefresh} />
-            }
-                contentContainerStyle={styles.scrollView} showsVerticalScrollIndicator={false}> */}
-
-
             {renderItens(item)}
         </Drawer>)
     }
@@ -650,9 +627,6 @@ const styles = StyleSheet.create({
     body: {
         backgroundColor: Globals.COLOR.LIGHT.COLOR4,
         flex: 1
-    },
-    scrollView: {
-        minHeight: Globals.HEIGHT,
     },
     tituloView: {
         fontWeight: '600',
@@ -694,9 +668,7 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         lineHeight: 23,
         textAlign: 'center'
-
-    }
-    ,
+    },
     linha: {
         width: 2,
         borderWidth: 1,

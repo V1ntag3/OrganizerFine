@@ -1,10 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-import React, { useEffect, useRef, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -32,7 +25,7 @@ const styles = StyleSheet.create({
   body: {
     backgroundColor: Globals.COLOR.LIGHT.COLOR5,
     flex: 1,
-    zIndex:10000
+    zIndex: 10000
   },
   containerNome: {
     marginVertical: Globals.HEIGHT * 0.4,

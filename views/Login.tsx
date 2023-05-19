@@ -1,20 +1,12 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
 import {
     SafeAreaView,
     StyleSheet,
     View,
     Text,
     TextInput,
-    TouchableOpacity,
     ScrollView,
-    Alert,
-
-} from 'react-native';
+}
+    from 'react-native';
 import React from 'react';
 import ButtonGeneric from '../componentes/ButtonGeneric'
 import TituloPagina from '../componentes/TituloPaginaLoginRegistrar'
@@ -24,30 +16,26 @@ import { useState } from 'react';
 import FundoPagina from '../componentes/FundoPaginaLoginRegistrar';
 import Globals from '../Globals';
 import fetch from 'cross-fetch';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from './LoadingScreen';
-type props = {
-    navigation: any;
-}
 
 function Login({ route, navigation }: any): JSX.Element {
-    console.log('testandooo')
     const [isLoading, setIsLoading] = useState(false)
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [emailError, setEmailError] = useState(false);
     const [senhaError, setSenhaError] = useState(false);
 
-    const [naoCadas, setNaoCadas] = useState(false);
     const isEmail = (email: String) => {
         const emailRegex = /^([a-zA-Z][^<>\"!@[\]#$%¨&*()~^:;ç,\-´`=+{}º\|/\\?]{1,})@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         return emailRegex.test(String(email).toLowerCase())
     }
+
     const logar = () => {
+
         setEmailError(email == "" || !isEmail(email) ? true : false)
         setSenhaError(senha == "" ? true : false)
-     
+
         if (senha != "" && email != "" && isEmail(email)) {
             setIsLoading(true)
             fetch(Globals.BASE_URL_API + 'login/', {
@@ -59,73 +47,68 @@ function Login({ route, navigation }: any): JSX.Element {
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
                 },
-            })
-                .then((response) => {
-
-                    if (response.status == 400) {
-                        setSenhaError(true)
-                        setEmailError(true)
-                    } 
-                   
-                    if (response.status == 200) {
-                        setSenhaError(false)
-                        setEmailError(false)
-                        response.json().then(json => {
-                            AsyncStorage.setItem('token', json.token , () => {
-                                const { setUserToken } = route.params
-                                setUserToken(json.token)
-                            });
-                            
-                        })                      
-                    }
-                    
-                }).catch((error) => {
-
-                }).finally(() => {
-                    setIsLoading(false)
-                });
+            }).then((response) => {
+                if (response.status == 400) {
+                    setSenhaError(true)
+                    setEmailError(true)
+                }
+                if (response.status == 200) {
+                    setSenhaError(false)
+                    setEmailError(false)
+                    response.json().then(json => {
+                        AsyncStorage.setItem('token', json.token, () => {
+                            const { setUserToken } = route.params
+                            setUserToken(json.token)
+                        });
+                    })
+                }
+            }).catch((error) => { }).finally(() => {
+                setIsLoading(false)
+            });
         }
-
-
     }
+
     const renderLoad = () => {
         return (<><LoadingScreen /></>)
     }
-    const renderTela = () => {
-        return (<ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollView}>
-            <TituloPagina title='Login' navigation={navigation} />
-            <FundoPagina />
-            <View style={[styles.containerInput, { zIndex: 0 }]}>
-                <TextInput style={styles.inputStyle}
-                    selectionColor="black"
-                    maxLength={20}
-                    placeholderTextColor={emailError ? Globals.COLOR_ERROR : '#323941'}
-                    onChangeText={(text) => setEmail(text)}
-                    placeholder="Email" />
-                <TextInput style={styles.inputStyle}
-                    secureTextEntry={true}
 
-                    placeholderTextColor={senhaError ? Globals.COLOR_ERROR : '#323941'}
-                    selectionColor="black"
-                    onChangeText={(text) => setSenha(text)}
-                    placeholder="Senha" />
-                <Text style={[styles.errorStyle, { display: senhaError || emailError ? 'flex' : 'none' }]}  >Email e/ou Senha inválido(s)</Text>
-                {/* <TouchableOpacity onPress={() => navigation.navigate('EsqueciSenha')} >
+    const renderTela = () => {
+
+        return (
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollView}>
+                <TituloPagina title='Login' navigation={navigation} />
+                <FundoPagina />
+                <View style={[styles.containerInput, { zIndex: 0 }]}>
+                    <TextInput style={styles.inputStyle}
+                        selectionColor="black"
+                        maxLength={20}
+                        placeholderTextColor={emailError ? Globals.COLOR_ERROR : '#323941'}
+                        onChangeText={(text) => setEmail(text)}
+                        placeholder="Email" />
+                    <TextInput style={styles.inputStyle}
+                        secureTextEntry={true}
+
+                        placeholderTextColor={senhaError ? Globals.COLOR_ERROR : '#323941'}
+                        selectionColor="black"
+                        onChangeText={(text) => setSenha(text)}
+                        placeholder="Senha" />
+                    <Text style={[styles.errorStyle, { display: senhaError || emailError ? 'flex' : 'none' }]}  >Email e/ou Senha inválido(s)</Text>
+                    {/* <TouchableOpacity onPress={() => navigation.navigate('EsqueciSenha')} >
                         <View>
                             <Text style={[styles.esqueciSenha]} >esqueci a senha</Text>
                         </View>
                     </TouchableOpacity> */}
-                <View style={styles.containerBotoes}>
-                    <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={ logar } title={"Login"} />
+                    <View style={styles.containerBotoes}>
+                        <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={logar} title={"Login"} />
+                    </View>
                 </View>
-            </View>
-            <NotebookSVG style={styles.notebookSVGStyle} width={103} height={103} />
-            <View style={styles.containerNome}>
-                <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
-                <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
-            </View>
-            <PastaSVG style={styles.pastaSVGStyle} width={143} height={143} />
-        </ScrollView>)
+                <NotebookSVG style={styles.notebookSVGStyle} width={103} height={103} />
+                <View style={styles.containerNome}>
+                    <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
+                    <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
+                </View>
+                <PastaSVG style={styles.pastaSVGStyle} width={143} height={143} />
+            </ScrollView>)
     }
     return (
         <SafeAreaView style={styles.body}>

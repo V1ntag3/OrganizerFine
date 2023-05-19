@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
 import {
     SafeAreaView,
     StyleSheet,
@@ -11,11 +5,9 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    ScrollView,
-    Alert,
+    ScrollView
 } from 'react-native';
 import Globals from '../Globals';
-import { Picker } from '@react-native-picker/picker';
 import { useEffect, useState } from 'react';
 import AddSVG from '../componentes/SVGComponentes/addSVG';
 import { Drawer } from 'react-native-drawer-layout';
@@ -28,12 +20,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from './LoadingScreen';
 import UserSVG from '../componentes/SVGComponentes/userSVG';
 import DropDownPicker from 'react-native-dropdown-picker';
-
-type props = {
-    navigation: any;
-    route: any
-
-}
 
 function Adicionar({ route, navigation }: any): JSX.Element {
     const { setUserToken } = route.params
@@ -106,9 +92,8 @@ function Adicionar({ route, navigation }: any): JSX.Element {
                 </View></>
             );
         }
-
     }
-    const [openClose, setOpenClose] = useState(false);
+    const [openClose, setOpenClose] = useState(false)
 
     const [isLoading, setIsLoading] = useState(false)
 
@@ -241,18 +226,28 @@ function Adicionar({ route, navigation }: any): JSX.Element {
                             <Text style={styles.dadosMenu}>{email}</Text>
                         </View>
 
-                        <TouchableOpacity onPress={() => { setOpenClose(false); navigation.navigate('DashBoard') }}>
+                        <TouchableOpacity onPress={() => {
+                            setOpenClose(false); setTimeout(() => {
+                                navigation.navigate('DashBoard')
+                            }, 400);
+                        }}>
                             <View style={styles.itemMenu}>
                                 <FineSVG />
                                 <Text style={styles.itemMenuText}>Finanças</Text>
                             </View>
                         </TouchableOpacity>
+                        <TouchableOpacity onPress={() => {
+                            setOpenClose(false);
+                            setTimeout(() => {
+                                navigation.navigate('Configuracao')
+                            }, 400);
+                        }}>
 
-                        <View style={styles.itemMenu}>
-                            <ConfigSVG />
-                            <Text style={styles.itemMenuText}>Configurações</Text>
-                        </View>
-
+                            <View style={styles.itemMenu}>
+                                <ConfigSVG />
+                                <Text style={styles.itemMenuText}>Configurações</Text>
+                            </View>
+                        </TouchableOpacity>
                         <TouchableOpacity onPress={() => { setOpenClose(false); removeData() }}>
                             <View style={[styles.itemMenu, { paddingLeft: 17 }]}>
                                 <LogoutSVG />
@@ -267,8 +262,8 @@ function Adicionar({ route, navigation }: any): JSX.Element {
 
                 }}
             >
-                <ScrollView showsVerticalScrollIndicator={false} style={{maxHeight:Globals.HEIGHT }}>
-                    <View style={{height:Globals.HEIGHT-25}}>
+                <ScrollView showsVerticalScrollIndicator={false} style={{ maxHeight: Globals.HEIGHT }}>
+                    <View style={{ height: Globals.HEIGHT - 25 }}>
                         <TouchableOpacity style={{ position: 'absolute', top: 20, left: 15, zIndex: 1000 }} onPress={moveMenu}>
                             <MenuSVG />
                         </TouchableOpacity>
@@ -331,7 +326,7 @@ function Adicionar({ route, navigation }: any): JSX.Element {
                                 </View>
                             </View>
                         </TouchableOpacity>
-                        <View style={{ width: Globals.WIDTH * 1.4, height: 0.8 * Globals.HEIGHT, backgroundColor: tipo == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO, position: 'absolute', zIndex: -1, transform: [{ translateX: -50 }, { translateY: -100 }, { rotateZ: '45deg' }] }}>
+                        <View style={{ width: Globals.WIDTH * 1.3, height: 0.7 * Globals.HEIGHT, backgroundColor: tipo == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO, position: 'absolute', zIndex: -1, transform: [{ translateX: -50 }, { translateY: -120 }, { rotateZ: '45deg' }] }}>
 
                         </View>
                     </View>

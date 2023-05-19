@@ -9,34 +9,46 @@ import {
     StyleSheet,
     View,
     Text,
+    TouchableOpacity,
+    ScrollView,
     TextInput,
-    TouchableOpacity
 } from 'react-native';
 import Globals from '../Globals';
 import { useEffect, useState } from 'react';
-import LixeiraSVG from '../componentes/SVGComponentes/lixeiraSVG';
 import { Drawer } from 'react-native-drawer-layout';
 import FineSVG from '../componentes/SVGComponentes/fineSVG';
 import ConfigSVG from '../componentes/SVGComponentes/configSVG';
 import LogoutSVG from '../componentes/SVGComponentes/logoutSVG';
 import MenuSVG from '../componentes/SVGComponentes/menuSVG';
-import MaskInput, { Masks } from 'react-native-mask-input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from './LoadingScreen';
 import UserSVG from '../componentes/SVGComponentes/userSVG';
-import { ScrollView } from 'react-native-gesture-handler';
 import EditarSVG from '../componentes/SVGComponentes/editarSVG';
 import SaveSVG from '../componentes/SVGComponentes/saveSVG';
-import DropDownPicker from 'react-native-dropdown-picker';
+import { set } from 'react-native-reanimated';
 
-function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
-
+function Conguracao({ route, navigation }: any): JSX.Element {
+    // Variáveis
+    const { setUserToken } = route.params
     const [isEditable, setIsEditable] = useState(true)
-    const { setUserToken, element } = route.params
-    const [selectedValue, setSelectedValue] = useState(element.typeCat);
-    const [valor, setValor] = useState(element.value);
-    const [descricao, setDescricao] = useState(element.about)
-    const [tipo, setTipo] = useState(parseInt(element.type));
+    const [openClose, setOpenClose] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+    const [token, setToken] = useState('')
+    const [nome, setNome] = useState()
+    const [email, setEmail] = useState()
+
+    const [nomeNew, setNomeNew] = useState('');
+    const [sobrenome, setSobrenome] = useState('');
+    const [emailNew, setEmailNew] = useState('');
+    const [senha, setSenha] = useState('');
+    const [confirm_senha, setConfSenha] = useState('');
+
+    const [nomeError, setNomeError] = useState(false);
+    const [sobreNomeError, setsobreNomeError] = useState(false);
+    const [emailError, setEmailError] = useState(false);
+    const [senhaError, setSenhaError] = useState(false);
+    const [confirmSenhaError, setConfirmSenhaError] = useState(false);
+
     const removeData = () => {
         setIsLoading(true)
         fetch(Globals.BASE_URL_API + 'logout/', {
@@ -53,79 +65,11 @@ function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
         }).finally(() => {
             setIsLoading(false)
         })
-
     };
-    const [open, setOpen] = useState(false);
-
-    const [items, setItems] = useState([
-        { label: 'Alimentação', value: '0' },
-        { label: 'Serviço', value: '1' },
-        { label: 'Eletrônico', value: '2' },
-        { label: 'Vestuário', value: '3' },
-        { label: 'Entretenimento', value: '4' },
-        { label: 'Outros', value: '5' }
-    ]);
-
-    const renderPicker = () => {
-
-        if (tipo != 0) {
-            return (
-                <><View style={{ borderRadius: 6.9, maxWidth: '90%', marginLeft: '5%', height: 49.65, marginTop: 4, marginBottom: 5, zIndex: 100000 }}>
-                    <DropDownPicker
-                        placeholder='Categoria'
-                        disabled={isEditable}
-                        arrowIconStyle={{
-                            borderColor: 'white'
-                        }}
-                        dropDownContainerStyle={
-                            tipo == 0 ? { backgroundColor: isEditable ? '#2FAD09' : '#73E650' } : { backgroundColor: isEditable ? '#AD1909' : '#E65A50', borderColor: 'transparent' }
-                        }
-                        textStyle={{
-                            fontFamily: Globals.FONT_FAMILY.REGULAR,
-                            fontSize: 14,
-                            color: 'white'
-                        }}
-                        style={[{
-                            shadowColor: 'rgba(0,0,0,0.5)',
-                            shadowOffset: {
-                                width: 10,
-                                height: -10,
-                            },
-                            width: '100%',
-                            borderColor: 'transparent'
-                        }, tipo == 0 ? { backgroundColor: isEditable ? '#2FAD09' : '#73E650' } : { backgroundColor: isEditable ? '#AD1909' : '#E65A50' }]}
-                        containerStyle={{
-                            borderColor: 'transparent'
-                        }}
-                        open={open}
-                        value={selectedValue}
-                        items={items}
-                        setOpen={setOpen}
-                        setValue={setSelectedValue}
-                        setItems={setItems} />
-
-                </View></>
-            );
-        }
-
-    }
-    const [openClose, setOpenClose] = useState(false);
-
-    const [isLoading, setIsLoading] = useState(false)
 
     const moveMenu = () => {
         setOpenClose(openClose ? false : true)
     };
-    // Dados
-    const [token, setToken] = useState('')
-
-    const [nome, setNome] = useState();
-    const [email, setEmail] = useState();
-
-
-    const [valorError, setValorError] = useState(false);
-    const [descricaoError, setDescricaoError] = useState(false)
-    const [selectedValueError, setSelectedValueError] = useState(false);
 
     const readData = async () => {
         try {
@@ -142,6 +86,11 @@ function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
                 }).then((json) => {
                     setNome(json.first_name + ' ' + json.last_name)
                     setEmail(json.email)
+
+                    setNomeNew(json.first_name)
+                    setSobrenome(json.last_name)
+                    setEmailNew(json.email)
+
                 }).catch(error => {
                     if (error.toString() == "TypeError: Network request failed") {
                     }
@@ -157,78 +106,57 @@ function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
             navigation.navigate('Welcome')
         }
     };
+    const isEmail = (email: String) => {
+        const emailRegex = /^([a-zA-Z][^<>\"!@[\]#$%¨&*()~^:;ç,\-´`=+{}º\|/\\?]{1,})@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        return emailRegex.test(String(email).toLowerCase())
+    }
+    const mandarDados = () => {
+        setNomeError(nome == "" ? true : false)
+        setsobreNomeError(sobrenome == "" ? true : false)
+        setEmailError(email == "" || !isEmail(emailNew) ? true : false)
+        setSenhaError(senha == "" || (senha != confirm_senha) ? true : false)
+        setConfirmSenhaError(confirm_senha == "" || (senha != confirm_senha) ? true : false)
+
+        if (nome != "" && sobrenome != "" && email != "" && senha != "" && confirm_senha != "" && (senha == confirm_senha) && isEmail(email)) {
+            setIsLoading(true)
+            fetch(Globals.BASE_URL_API + 'profile/', {
+                method: 'PUT',
+                headers: {
+                        'Authorization': 'Token ' + token,
+                        "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    'username': email,
+                    'first_name': nome,
+                    'last_name': sobrenome,
+                    'email': email,
+                    'password': senha
+                })
+            }).then(response => {
+                if(response.status == 200){
+                    removeData()
+                }
+                return response.json();
+            }
+            ).catch(error => {
+                console.log(error)
+            });
+
+        }
+    }
 
     useEffect(() => {
         readData();
     }, []);
 
-    const deleteDados = () => {
-        setIsLoading(true)
-        fetch(Globals.BASE_URL_API + 'revenue_spending/' + String(element['id']) + '/', {
-            method: 'DELETE',
-            headers: {
-                'Authorization': 'Token ' + token
-            }
-        }).then(response => {
-            if (response.status == 401 || response.status == 403) { removeData() };
-            if (response.status == 204) {
-                navigation.navigate("DashBoard");
-                return response.json();
-            }
-        }
-        ).finally(() => {
-            setIsLoading(false)
-        })
-
-
-    }
-
-    const mandarDados = () => {
-
-        setDescricaoError(descricao == "" ? true : false)
-        setSelectedValueError(selectedValue == "" ? true : false)
-        setValorError(valor == 0 ? true : false)
-
-        if (!descricaoError && !selectedValueError && !valorError) {
-            var tipo0 = JSON.stringify({
-                'about': descricao,
-                'value': (valor.replaceAll('R', '').replaceAll('$', '').replaceAll('.', '').replaceAll(',', '').replaceAll(' ', '') / 100)
-            })
-            var tipo1 = JSON.stringify({
-                'about': descricao,
-                'value': (valor.replaceAll('R', '').replaceAll('$', '').replaceAll('.', '').replaceAll(',', '').replaceAll(' ', '') / 100),
-                'typeCat': selectedValue
-            })
-            setIsLoading(true)
-
-            fetch(Globals.BASE_URL_API + 'revenue_spending/' + String(element['id']) + '/', {
-                method: 'PUT',
-                headers: {
-                    "Content-Type": "application/json",
-                    'Authorization': 'Token ' + token
-                },
-                body: tipo == 0 ? tipo0 : tipo1
-            }).then(response => {
-                if (response.status == 401 || response.status == 403) { removeData() };
-                if (response.status == 200) {
-                    navigation.navigate("DashBoard");
-                    return response.json();
-                }
-            }
-            ).finally(() => {
-                setIsLoading(false)
-            })
-        }
-
-    }
     const renderLoad = () => {
         return (<>
             <LoadingScreen />
         </>)
     }
-    const renderTela = () => {
-        return (<>
 
+    const renderTela = () => {
+        return (
             <Drawer style={{
                 width: '100%',
                 height: '100%',
@@ -245,7 +173,6 @@ function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
                     return <View style={{
                         width: '100%', height: '100%', backgroundColor: Globals.COLOR.LIGHT.COLOR5,
                     }}>
-
                         <View style={styles.imagemUser}>
                             <View style={{ alignSelf: 'center', marginTop: 10 }}>
                                 <UserSVG />
@@ -284,6 +211,7 @@ function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
                                 <Text style={styles.itemMenuText}>Configurações</Text>
                             </View>
                         </TouchableOpacity>
+
                         <TouchableOpacity onPress={() => { setOpenClose(false); removeData() }}>
                             <View style={[styles.itemMenu, { paddingLeft: 17 }]}>
                                 <LogoutSVG />
@@ -294,10 +222,8 @@ function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
                             <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
                             <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
                         </View>
-                    </View>;
-
-                }}
-            >
+                    </View>
+                }} >
                 <ScrollView showsVerticalScrollIndicator={false} style={{ maxHeight: Globals.HEIGHT }}>
                     <View style={{ height: Globals.HEIGHT - 25 }}>
                         <TouchableOpacity style={{ position: 'absolute', top: 20, left: 15, zIndex: 1000 }} onPress={moveMenu}>
@@ -310,75 +236,64 @@ function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
                                 <SaveSVG />
                             </TouchableOpacity>)
                         }
+                        <Text style={styles.tituloView}>Configuração</Text>
 
-                        <Text style={styles.tituloView}>Detalhar</Text>
-                        <Text style={{ color: 'white', fontSize: 18, textAlign: 'center', fontFamily: Globals.FONT_FAMILY.SEMIBOLD, marginTop: -10 }}>Gasto</Text>
-
-
-
-
-
-                        <TextInput style={[styles.inputStyle, , tipo == 0 ? { backgroundColor: isEditable ? '#2FAD09' : '#73E650' } : { backgroundColor: isEditable ? '#AD1909' : '#E65A50' }]}
-                            editable={!isEditable}
-                            value={descricao}
+                        <TextInput style={[styles.inputStyle, isEditable ? { backgroundColor: Globals.COLOR.LIGHT.COLOR5 } : { backgroundColor: Globals.COLOR.LIGHT.COLOR1 }, {marginTop:Globals.HEIGHT * 0.10}]}
+                            value={nomeNew}
                             selectionColor="white"
-                            placeholderTextColor={descricaoError ? Globals.COLOR_ERROR : 'white'}
-                            onChangeText={(text) => setDescricao(text)}
-                            placeholder="Descrição" />
-                        <Text style={[styles.errorStyle, { display: descricaoError ? 'flex' : 'none' }]}>Campo inválido</Text>
+                            maxLength={20}
+                            placeholderTextColor={nomeError ? Globals.COLOR_ERROR : 'white'}
+                            onChangeText={text => { setNomeNew(text) }}
+                            placeholder="Nome" />
+                        <Text style={[styles.errorStyle, { display: nomeError ? 'flex' : 'none' }]} >Campo inválido</Text>
 
+                        <TextInput style={[styles.inputStyle, isEditable ? { backgroundColor: Globals.COLOR.LIGHT.COLOR5 } : { backgroundColor: Globals.COLOR.LIGHT.COLOR1 }]}
+                            value={sobrenome}
+                            selectionColor="white"
+                            maxLength={20}
+                            placeholderTextColor={sobreNomeError ? Globals.COLOR_ERROR : 'white'}
+                            onChangeText={text => { setSobrenome(text) }}
+                            placeholder="Sobrenome" />
+                        <Text style={[styles.errorStyle, { display: sobreNomeError ? 'flex' : 'none' }]} >Campo inválido</Text>
+
+                        <TextInput style={[styles.inputStyle, isEditable ? { backgroundColor: Globals.COLOR.LIGHT.COLOR5 } : { backgroundColor: Globals.COLOR.LIGHT.COLOR1 }]}
+                            value={emailNew}
+                            selectionColor="white"
+                            maxLength={20}
+                            placeholderTextColor={emailError ? Globals.COLOR_ERROR : 'white'}
+                            onChangeText={text => { setEmailNew(text) }}
+                            placeholder="Email" />
+                        <Text style={[styles.errorStyle, { display: emailError ? 'flex' : 'none' }]}  >Campo inválido</Text>
                         {
-                            renderPicker()
+                            !isEditable && (
+                                <>
+                                    <TextInput style={[styles.inputStyle, isEditable ? { backgroundColor: Globals.COLOR.LIGHT.COLOR5 } : { backgroundColor: Globals.COLOR.LIGHT.COLOR1 }]}
+                                        selectionColor="white"
+                                        maxLength={20}
+                                        placeholderTextColor={senhaError ? Globals.COLOR_ERROR : 'white'}
+                                        onChangeText={text => { setSenha(text); }}
+                                        placeholder="Senha" />
+                                    <Text style={[styles.errorStyle, { display: senhaError ? 'flex' : 'none' }]}>Campo inválido</Text>
+                                    <TextInput style={[styles.inputStyle, isEditable ? { backgroundColor: Globals.COLOR.LIGHT.COLOR5 } : { backgroundColor: Globals.COLOR.LIGHT.COLOR1 }]}
+                                        selectionColor="white"
+                                        maxLength={20}
+                                        placeholderTextColor={confirmSenhaError ? Globals.COLOR_ERROR : 'white'}
+                                        onChangeText={text => { setConfSenha(text); }}
+                                        placeholder="Confirmar senha" />
+                                    <Text style={[styles.errorStyle, { display: confirmSenhaError ? 'flex' : 'none' }]}>Campo inválido</Text>
+                                </>
+
+                            )
                         }
 
-                        <Text style={[styles.errorStyle, { display: selectedValueError ? 'flex' : 'none' }]}  >Campo inválido</Text>
-
-                        <MaskInput
-                            editable={!isEditable}
-                            value={valor}
-                            style={[styles.inputStyle, { zIndex: 100, marginTop: 5 }, tipo == 0 ? { backgroundColor: isEditable ? '#2FAD09' : '#73E650' } : { backgroundColor: isEditable ? '#AD1909' : '#E65A50' }]}
-                            placeholderTextColor={false ? Globals.COLOR_ERROR : 'white'}
-                            selectionColor='white'
-                            onChangeText={(masked, unmasked) => {
-                                setValor(unmasked);
-                            }}
-                            keyboardType="numeric"
-                            mask={Masks.BRL_CURRENCY}
-                        />
-                        <Text style={[styles.errorStyle, { display: valorError ? 'flex' : 'none' }]}  >Campo inválido</Text>
-
-                        <TouchableOpacity onPress={() => deleteDados()} style={{ width: 60, height: 60, alignSelf: 'center', position: 'absolute', bottom: 30 }}>
-                            <View style={
-                                {
-                                    width: 60,
-                                    height: 60,
-                                    borderRadius: 30,
-                                    backgroundColor: tipo == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO
-                                }
-                            }>
-                                <View style={
-                                    {
-                                        alignSelf: 'center', marginTop: 15
-                                    }
-                                }>
-                                    <LixeiraSVG />
-
-                                </View>
-                            </View>
-                        </TouchableOpacity>
-
-                        <View style={{ width: Globals.WIDTH * 1.3, height: 0.7 * Globals.HEIGHT, backgroundColor: tipo == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO, position: 'absolute', zIndex: -1, transform: [{ translateX: -50 }, { translateY: -120 }, { rotateZ: '45deg' }] }}>
-
-                        </View>
                     </View>
-                </ScrollView >
-
+                </ScrollView>
             </Drawer>
-        </>)
+        )
     }
+
     return (
         <SafeAreaView style={styles.body}>
-
             {
                 isLoading ? renderLoad() : (<></>)
             }
@@ -407,7 +322,6 @@ const styles = StyleSheet.create({
 
     },
     inputStyle: {
-
         alignItems: 'center',
         paddingVertical: 10.75309,
         paddingHorizontal: 11.0905,
@@ -415,14 +329,24 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 49.65,
         maxWidth: '90%',
-        marginLeft: 'auto',
-        marginRight: 'auto',
+        alignSelf: 'center',
         marginVertical: 8,
         marginBottom: 5,
         backgroundColor: Globals.COLOR.BRANCO,
         fontFamily: Globals.FONT_FAMILY.REGULAR,
         color: 'white',
         borderRadius: 6.96875,
+    },
+    esqueciSenha: {
+        paddingLeft: 3,
+        width: '100%',
+        maxWidth: 338.89,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        color: Globals.COLOR.BRANCO,
+        fontSize: 13,
+        lineHeight: 16,
+        fontFamily: Globals.FONT_FAMILY.MEDIUM
     },
     errorStyle: {
         paddingLeft: 7,
@@ -547,4 +471,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default DetalharRevenueSpending;
+export default Conguracao;
