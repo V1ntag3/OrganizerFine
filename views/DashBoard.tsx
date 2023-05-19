@@ -78,6 +78,7 @@ function DashBoard({ route, navigation }: any): JSX.Element {
     );
     const renderHeaderFlat = () => {
         return (<>
+
             <TouchableOpacity style={{ position: 'absolute', top: 20, left: 15, zIndex: 1000 }} onPress={moveMenu}>
                 <MenuSVG />
             </TouchableOpacity>
@@ -164,7 +165,8 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                     </View>
                 </View>
             </View>
-            <View style={[styles.fundosGastos, item.length <= 0 ? { maxHeight: 'auto', height: '100%', minHeight: 600 } : {}]} >
+
+            <View style={[styles.fundosGastos, item.length <= 0 ? { maxHeight: 'auto', height: '100%', minHeight: Globals.HEIGHT * 0.38 } : {}]} >
                 <View style={styles.dados}>
                     <View style={styles.totalizadores}>
                         <Text style={[styles.textTotalizadores, { color: Globals.COLOR_GASTO }]}>Gastos</Text>
@@ -177,7 +179,6 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                     </View>
                 </View>
                 {
-
                     item.length <= 0 && (<Text style={{ color: Globals.COLOR.LIGHT.COLOR4, textAlign: 'center', fontFamily: Globals.FONT_FAMILY.BOLD, marginTop: 40 }}>Gastos não encontrados</Text>)
                 }
             </View>
@@ -204,27 +205,26 @@ function DashBoard({ route, navigation }: any): JSX.Element {
     }
     const readData = async (isPageReload = false) => {
         try {
-            const value = await AsyncStorage.getItem('token', (err, result) => {
-                if (!isPageReload) {
-                    fetch(Globals.BASE_URL_API + 'profile/', {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': 'Token ' + result
-                        },
-                    }).then(response => {
-                        if (response.status == 401 || response.status == 403) { removeData() };
-                        response.json().then((json) => {
-                            setNome(json.first_name + ' ' + json.last_name)
-                            setEmail(json.email)
-                        })
-                    }).catch(error => {
-                        if (error.toString() == "TypeError: Network request failed") {
-                        }
-                    }).finally(() => {
-                        setIsLoading(true)
-                    })
-                }
 
+            const value = await AsyncStorage.getItem('token', (err, result) => {
+                fetch(Globals.BASE_URL_API + 'profile/', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Token ' + result
+                    },
+                }).then(response => {
+                    if (response.status == 401 || response.status == 403) { removeData() };
+                    return response.json();
+                }).then((json) => {
+                    setNome(json.first_name + ' ' + json.last_name)
+                    setEmail(json.email)
+                }).catch(error => {
+                    if (error.toString() == "TypeError: Network request failed") {
+                    }
+                }).finally(() => {
+                })
+
+                setIsLoading(true)
 
                 fetch(Globals.BASE_URL_API + 'revenue_spending/?month=' + mes + '&year=' + ano, {
                     method: 'GET',
@@ -232,86 +232,91 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                         'Authorization': 'Token ' + result
                     },
                 }).then(response => {
-                    if (response.status == 401 || response.status == 403) { removeData() }
-                    if (response.status == 200) {
-                        response.json().then((json) => {
-                            setShow(false)
-                            if (json != 0 && json.detail == null) {
-                                var array: any = []
-                                var gastos: number = 0
-                                var receitas: number = 0
-                                var item0 = 0, item1 = 0, item2 = 0, item3 = 0, item4 = 0, item5 = 0
-
-                                for (var item in json) {
-                                    switch (json[item].typeCat) {
-                                        case '0':
-                                            item0++
-                                            break
-                                        case '1':
-                                            item1++
-                                            break
-                                        case '2':
-                                            item2++
-                                            break
-                                        case '3':
-                                            item3++
-                                            break
-                                        case '4':
-                                            item4++
-                                            break
-                                        case '5':
-                                            item5++
-                                            break
-                                    }
-
-                                    if (json[item].type == '0') {
-                                        receitas += json[item].value
-                                    }
-                                    if (json[item].type == '1') {
-                                        gastos += json[item].value
-                                    }
-
-                                    json[item].value = json[item].value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
-                                    var valor = parseInt(new Date() - new Date(json[item].date))
-                                    json[item].date = String(parseInt(valor / (1000 * 60 * 60 * 24))) + ' dias atrás'
-                                    if (json[item].typeCat != '') {
-                                        array.push(json[item])
-                                    }
-                                }
-                                setGastos(gastos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-                                setReceitas(receitas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-                                setItems(array)
-                                setPieData([
-                                    { value: (item5 / array.length), color: '#323131', gradientCenterColor: '#323131' },
-                                    { value: (item2 / array.length), color: '#474747', gradientCenterColor: '#474747' },
-                                    { value: (item0 / array.length), color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-                                    { value: (item3 / array.length), color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
-                                    { value: (item4 / array.length), color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
-                                    { value: (item1 / array.length), color: '#60625F', gradientCenterColor: '#60625F' },
-                                ])
-                                var arrayValores = [item0, item1, item2, item3, item4, item5]
-                                setValorMaiorPorc(String(parseInt((Math.max(...arrayValores) / array.length) * 100)) + '%')
-                                setValorMaiorNome(renderNome(String(arrayValores.indexOf(Math.max(...arrayValores)))))
-                            } else {
-                                setPieData([
-                                    { value: 0, color: '#323131', gradientCenterColor: '#323131' },
-                                    { value: 0, color: '#474747', gradientCenterColor: '#474747' },
-                                    { value: 0, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-                                    { value: 0, color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
-                                    { value: 0, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
-                                    { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
-                                ])
-                                setItems([]);
-                                setGastos('R$ 0,00');
-                                setReceitas('R$ 0,00');
-                                setValorMaiorPorc('0%')
-                                setValorMaiorNome('')
-                                setItems([]);
+                    if (response.status == 401 || response.status == 403) { removeData() };
+                    return response.json();
+                }).then((json) => {
+                    setShow(false)
+                    if (json != 0 && json.detail == null) {
+                        var array: any = []
+                        var gastos: number = 0
+                        var receitas: number = 0
+                        var item0 = 0, item1 = 0, item2 = 0, item3 = 0, item4 = 0, item5 = 0
+                        for (var item in json) {
+                            switch (json[item].typeCat) {
+                                case '0':
+                                    item0++
+                                    break
+                                case '1':
+                                    item1++
+                                    break
+                                case '2':
+                                    item2++
+                                    break
+                                case '3':
+                                    item3++
+                                    break
+                                case '4':
+                                    item4++
+                                    break
+                                case '5':
+                                    item5++
+                                    break
                             }
-                            if (isPageReload) setRefreshing(false)
-                        })
-                    }
 
+                            if (json[item].type == '0') {
+                                receitas += json[item].value
+                            }
+
+                            if (json[item].type == '1') {
+                                gastos += json[item].value
+                            }
+                            json[item].value = json[item].value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+
+
+                            var valor = parseInt(new Date() - new Date(json[item].date))
+
+                            json[item].date = String(parseInt(valor / (1000 * 60 * 60 * 24))) + ' dias atrás'
+
+                            if (json[item].typeCat != '') {
+                                array.push(json[item])
+                            }
+
+
+                        }
+
+                        setGastos(gastos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+                        setReceitas(receitas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+
+
+                        setItems(array)
+
+                        setPieData([
+                            { value: (item5 / array.length), color: '#323131', gradientCenterColor: '#323131' },
+                            { value: (item2 / array.length), color: '#474747', gradientCenterColor: '#474747' },
+                            { value: (item0 / array.length), color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
+                            { value: (item3 / array.length), color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
+                            { value: (item4 / array.length), color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
+                            { value: (item1 / array.length), color: '#60625F', gradientCenterColor: '#60625F' },
+                        ])
+                        var arrayValores = [item0, item1, item2, item3, item4, item5]
+                        setValorMaiorPorc(String(parseInt((Math.max(...arrayValores) / array.length) * 100)) + '%')
+                        setValorMaiorNome(renderNome(String(arrayValores.indexOf(Math.max(...arrayValores)))))
+                    } else {
+                        setPieData([
+                            { value: 0, color: '#323131', gradientCenterColor: '#323131' },
+                            { value: 0, color: '#474747', gradientCenterColor: '#474747' },
+                            { value: 0, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
+                            { value: 0, color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
+                            { value: 0, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
+                            { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
+                        ])
+                        setItems([]);
+                        setGastos('R$ 0,00');
+                        setReceitas('R$ 0,00');
+                        setValorMaiorPorc('0%')
+                        setValorMaiorNome('')
+                        setItems([]);
+                    }
                 }).catch(error => {
                     if (error.toString() == "TypeError: Network request failed") {
                     }
@@ -319,12 +324,13 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                     setIsLoading(false)
                 })
             })
+
             if (value !== null) {
                 setToken(value);
             }
         } catch (e) {
         }
-    }
+    };
     const { setUserToken } = route.params
 
     const removeData = () => {
@@ -359,7 +365,6 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                 'Authorization': 'Token ' + token
             },
         }).then(response => response.json()).then((json) => {
-            console.log(json)
             if (json != 0) {
                 var array: any = []
                 var gastos: number = 0
@@ -437,8 +442,8 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                 setReceitas('R$ 0,00');
                 setValorMaiorPorc('0%')
                 setValorMaiorNome('')
+                setItems([]);
             }
-
         }).catch(error => {
             if (error.toString() == "TypeError: Network request failed") {
                 setShow(false)
@@ -447,7 +452,6 @@ function DashBoard({ route, navigation }: any): JSX.Element {
             setIsLoading(false)
         })
     }
-
     const moveMenu = () => {
         setOpenClose(openClose ? false : true)
     };
