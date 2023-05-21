@@ -18,8 +18,10 @@ import Globals from '../Globals';
 import fetch from 'cross-fetch';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from './LoadingScreen';
+import * as Animatable from 'react-native-animatable'
 
 function Login({ route, navigation }: any): JSX.Element {
+
     const [isLoading, setIsLoading] = useState(false)
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
@@ -41,7 +43,7 @@ function Login({ route, navigation }: any): JSX.Element {
             fetch(Globals.BASE_URL_API + 'login/', {
                 method: 'POST',
                 body: JSON.stringify({
-                    username: email,
+                    username: email.toLowerCase(),
                     password: senha
                 }),
                 headers: {
@@ -79,28 +81,33 @@ function Login({ route, navigation }: any): JSX.Element {
                 <TituloPagina title='Login' navigation={navigation} />
                 <FundoPagina />
                 <View style={[styles.containerInput, { zIndex: 0 }]}>
-                    <TextInput style={styles.inputStyle}
-                        selectionColor="black"
-                        maxLength={20}
-                        placeholderTextColor={emailError ? Globals.COLOR_ERROR : '#323941'}
-                        onChangeText={(text) => setEmail(text)}
-                        placeholder="Email" />
-                    <TextInput style={styles.inputStyle}
-                        secureTextEntry={true}
-
-                        placeholderTextColor={senhaError ? Globals.COLOR_ERROR : '#323941'}
-                        selectionColor="black"
-                        onChangeText={(text) => setSenha(text)}
-                        placeholder="Senha" />
+                    <Animatable.View delay={100}
+                        useNativeDriver={true} animation='fadeInLeft' duration={300}>
+                        <TextInput
+                            style={styles.inputStyle}
+                            selectionColor="black"
+                            placeholderTextColor={emailError ? Globals.COLOR_ERROR : '#323941'}
+                            onChangeText={(text) => setEmail(text)}
+                            placeholder="Email" />
+                    </Animatable.View>
+                    <Animatable.View delay={300}
+                        useNativeDriver={true} animation='fadeInLeft' duration={300}>
+                        <TextInput style={styles.inputStyle}
+                            secureTextEntry={true}
+                            placeholderTextColor={senhaError ? Globals.COLOR_ERROR : '#323941'}
+                            selectionColor="black"
+                            onChangeText={(text) => setSenha(text)}
+                            placeholder="Senha" />
+                    </Animatable.View>
                     <Text style={[styles.errorStyle, { display: senhaError || emailError ? 'flex' : 'none' }]}  >Email e/ou Senha inválido(s)</Text>
                     {/* <TouchableOpacity onPress={() => navigation.navigate('EsqueciSenha')} >
                         <View>
                             <Text style={[styles.esqueciSenha]} >esqueci a senha</Text>
                         </View>
                     </TouchableOpacity> */}
-                    <View style={styles.containerBotoes}>
+                    <Animatable.View delay={500} useNativeDriver={true} animation='fadeInLeft' duration={300} style={styles.containerBotoes}>
                         <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={logar} title={"Login"} />
-                    </View>
+                    </Animatable.View>
                 </View>
                 <NotebookSVG style={styles.notebookSVGStyle} width={103} height={103} />
                 <View style={styles.containerNome}>
@@ -128,6 +135,7 @@ const styles = StyleSheet.create({
     },
     scrollView: {
         minHeight: Globals.HEIGHT,
+        maxHeight: Globals.HEIGHT
     },
     inputStyle: {
         alignItems: 'center',

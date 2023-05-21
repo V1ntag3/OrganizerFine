@@ -10,7 +10,8 @@ import {
     View,
     Text,
     TextInput,
-    TouchableOpacity
+    TouchableOpacity,
+    Modal
 } from 'react-native';
 import Globals from '../Globals';
 import { useEffect, useState } from 'react';
@@ -20,7 +21,6 @@ import FineSVG from '../componentes/SVGComponentes/fineSVG';
 import ConfigSVG from '../componentes/SVGComponentes/configSVG';
 import LogoutSVG from '../componentes/SVGComponentes/logoutSVG';
 import MenuSVG from '../componentes/SVGComponentes/menuSVG';
-import MaskInput, { Masks } from 'react-native-mask-input';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from './LoadingScreen';
 import UserSVG from '../componentes/SVGComponentes/userSVG';
@@ -28,13 +28,19 @@ import { ScrollView } from 'react-native-gesture-handler';
 import EditarSVG from '../componentes/SVGComponentes/editarSVG';
 import SaveSVG from '../componentes/SVGComponentes/saveSVG';
 import DropDownPicker from 'react-native-dropdown-picker';
+import EditSVG from '../componentes/SVGComponentes/editSVG';
+import DeleteTrashSVG from '../componentes/SVGComponentes/deleteTrashSVG';
+import CurrencyInput from 'react-native-currency-input';
+import * as Animatable from 'react-native-animatable'
+import LogoutSadSVG from '../componentes/SVGComponentes/logoutSadSVG';
 
 function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
+    const [modalVisibleS, setModalVisibleS] = useState(false)
 
     const [isEditable, setIsEditable] = useState(true)
     const { setUserToken, element } = route.params
     const [selectedValue, setSelectedValue] = useState(element.typeCat);
-    const [valor, setValor] = useState(element.value);
+    const [valor, setValor] = useState(element.value.replaceAll('R', '').replaceAll('$', '').replaceAll('.', '').replaceAll(',', '').replaceAll(' ', '') / 100);
     const [descricao, setDescricao] = useState(element.about)
     const [tipo, setTipo] = useState(parseInt(element.type));
     const removeData = () => {
@@ -73,12 +79,17 @@ function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
                 <><View style={{ borderRadius: 6.9, maxWidth: '90%', marginLeft: '5%', height: 49.65, marginTop: 4, marginBottom: 5, zIndex: 100000 }}>
                     <DropDownPicker
                         placeholder='Categoria'
+                        placeholderStyle={{ color: selectedValueError ? Globals.COLOR_ERROR : 'white' }}
                         disabled={isEditable}
                         arrowIconStyle={{
                             borderColor: 'white'
                         }}
-                        dropDownContainerStyle={
-                            tipo == 0 ? { backgroundColor: isEditable ? '#2FAD09' : '#73E650' } : { backgroundColor: isEditable ? '#AD1909' : '#E65A50', borderColor: 'transparent' }
+
+                        dropDownContainerStyle={[
+                            tipo == 0 ? { backgroundColor: isEditable ? '#2FAD09' : '#73E650' } : { backgroundColor: isEditable ? '#AD1909' : '#E65A50', borderColor: 'transparent' }                            , {
+                                minHeight: 240
+                            }
+                        ]
                         }
                         textStyle={{
                             fontFamily: Globals.FONT_FAMILY.REGULAR,
@@ -163,6 +174,7 @@ function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
     }, []);
 
     const deleteDados = () => {
+        setModalVisibleD(false)
         setIsLoading(true)
         fetch(Globals.BASE_URL_API + 'revenue_spending/' + String(element['id']) + '/', {
             method: 'DELETE',
@@ -184,19 +196,20 @@ function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
     }
 
     const mandarDados = () => {
+        setModalVisibleE(false)
 
         setDescricaoError(descricao == "" ? true : false)
         setSelectedValueError(selectedValue == "" ? true : false)
-        setValorError(valor == 0 ? true : false)
+        setValorError(valor <= 0 ? true : false)
 
-        if (!descricaoError && !selectedValueError && !valorError) {
+        if (descricao != "" && tipo == 0 ? true : selectedValue != "" && valor >= 0) {
             var tipo0 = JSON.stringify({
                 'about': descricao,
-                'value': (valor.replaceAll('R', '').replaceAll('$', '').replaceAll('.', '').replaceAll(',', '').replaceAll(' ', '') / 100)
+                'value': valor
             })
             var tipo1 = JSON.stringify({
                 'about': descricao,
-                'value': (valor.replaceAll('R', '').replaceAll('$', '').replaceAll('.', '').replaceAll(',', '').replaceAll(' ', '') / 100),
+                'value': valor,
                 'typeCat': selectedValue
             })
             setIsLoading(true)
@@ -226,6 +239,9 @@ function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
             <LoadingScreen />
         </>)
     }
+    const [modalVisibleE, setModalVisibleE] = useState(false)
+    const [modalVisibleD, setModalVisibleD] = useState(false)
+
     const renderTela = () => {
         return (<>
 
@@ -284,7 +300,7 @@ function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
                                 <Text style={styles.itemMenuText}>Configurações</Text>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { setOpenClose(false); removeData() }}>
+                        <TouchableOpacity onPress={() => { setOpenClose(false); setModalVisibleS(true) }}>
                             <View style={[styles.itemMenu, { paddingLeft: 17 }]}>
                                 <LogoutSVG />
                                 <Text style={styles.itemMenuText}>Sair</Text>
@@ -299,14 +315,14 @@ function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
                 }}
             >
                 <ScrollView showsVerticalScrollIndicator={false} style={{ maxHeight: Globals.HEIGHT }}>
-                    <View style={{ height: Globals.HEIGHT - 25 }}>
+                    <View style={{ height: Globals.HEIGHT - 25,  }}>
                         <TouchableOpacity style={{ position: 'absolute', top: 20, left: 15, zIndex: 1000 }} onPress={moveMenu}>
                             <MenuSVG />
                         </TouchableOpacity>
                         {
                             isEditable ? (<TouchableOpacity style={{ position: 'absolute', top: 20, right: 15, zIndex: 1000 }} onPress={() => setIsEditable(false)}>
                                 <EditarSVG />
-                            </TouchableOpacity>) : (<TouchableOpacity style={{ position: 'absolute', top: 20, right: 15, zIndex: 1000 }} onPress={() => mandarDados()}>
+                            </TouchableOpacity>) : (<TouchableOpacity style={{ position: 'absolute', top: 20, right: 15, zIndex: 1000 }} onPress={() => setModalVisibleE(true)}>
                                 <SaveSVG />
                             </TouchableOpacity>)
                         }
@@ -317,62 +333,205 @@ function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
 
 
 
+                        <Animatable.View delay={200}
+                            useNativeDriver={true} animation='fadeInLeft' duration={300} >
+                            <TextInput style={[styles.inputStyle, tipo == 0 ? { backgroundColor: isEditable ? '#2FAD09' : '#73E650' } : { backgroundColor: isEditable ? '#AD1909' : '#E65A50' }]}
+                                editable={!isEditable}
+                                value={descricao}
+                                selectionColor="white"
+                                placeholderTextColor={descricaoError ? Globals.COLOR_ERROR : 'white'}
+                                onChangeText={(text) => setDescricao(text)}
+                                placeholder="Descrição" />
+                            <Text style={[styles.errorStyle, { display: descricaoError ? 'flex' : 'none' }]}>Campo inválido</Text>
+                        </Animatable.View>
+                        <Animatable.View style={{ zIndex: 11 }} delay={400}
+                            useNativeDriver={true} animation='fadeInLeft' duration={300} >
+                            {
+                                renderPicker()
+                            }
 
-                        <TextInput style={[styles.inputStyle, , tipo == 0 ? { backgroundColor: isEditable ? '#2FAD09' : '#73E650' } : { backgroundColor: isEditable ? '#AD1909' : '#E65A50' }]}
-                            editable={!isEditable}
-                            value={descricao}
-                            selectionColor="white"
-                            placeholderTextColor={descricaoError ? Globals.COLOR_ERROR : 'white'}
-                            onChangeText={(text) => setDescricao(text)}
-                            placeholder="Descrição" />
-                        <Text style={[styles.errorStyle, { display: descricaoError ? 'flex' : 'none' }]}>Campo inválido</Text>
-
-                        {
-                            renderPicker()
-                        }
-
-                        <Text style={[styles.errorStyle, { display: selectedValueError ? 'flex' : 'none' }]}  >Campo inválido</Text>
-
-                        <MaskInput
-                            editable={!isEditable}
-                            value={valor}
-                            style={[styles.inputStyle, { zIndex: 100, marginTop: 5 }, tipo == 0 ? { backgroundColor: isEditable ? '#2FAD09' : '#73E650' } : { backgroundColor: isEditable ? '#AD1909' : '#E65A50' }]}
-                            placeholderTextColor={false ? Globals.COLOR_ERROR : 'white'}
-                            selectionColor='white'
-                            onChangeText={(masked, unmasked) => {
-                                setValor(unmasked);
-                            }}
-                            keyboardType="numeric"
-                            mask={Masks.BRL_CURRENCY}
-                        />
-                        <Text style={[styles.errorStyle, { display: valorError ? 'flex' : 'none' }]}  >Campo inválido</Text>
-
-                        <TouchableOpacity onPress={() => deleteDados()} style={{ width: 60, height: 60, alignSelf: 'center', position: 'absolute', bottom: 30 }}>
-                            <View style={
-                                {
-                                    width: 60,
-                                    height: 60,
-                                    borderRadius: 30,
-                                    backgroundColor: tipo == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO
-                                }
-                            }>
+                            <Text style={[styles.errorStyle, { display: selectedValueError ? 'flex' : 'none' }]}  >Campo inválido</Text>
+                        </Animatable.View>
+                        <Animatable.View style={{ zIndex: 10 }} delay={600}
+                            useNativeDriver={true} animation='fadeInLeft' duration={300} >
+                            <CurrencyInput
+                                editable={!isEditable}
+                                value={valor}
+                                onChangeValue={setValor}
+                                prefix="R$ "
+                                delimiter="."
+                                separator=","
+                                precision={2}
+                                minValue={0}
+                                style={[styles.inputStyle, { color: valorError ? Globals.COLOR_ERROR : 'white' }, { marginTop: 5 }, tipo == 0 ? { backgroundColor: isEditable ? '#2FAD09' : '#73E650' } : { backgroundColor: isEditable ? '#AD1909' : '#E65A50' }]}
+                                selectionColor='white'
+                                keyboardType="numeric"
+                            />
+                            <Text style={[styles.errorStyle, { display: valorError ? 'flex' : 'none' }]}  >Campo inválido</Text>
+                        </Animatable.View>
+                        <Animatable.View style={{ width: 60, height: 60, alignSelf: 'center', position: 'absolute', bottom: 30 }} delay={1200}
+                            useNativeDriver={true} animation='fadeIn' duration={300} >
+                            <TouchableOpacity onPress={() => setModalVisibleD(true)} style={{ width: 60, height: 60, alignSelf: 'center', position: 'absolute', bottom: 30 }}>
                                 <View style={
                                     {
-                                        alignSelf: 'center', marginTop: 15
+                                        width: 60,
+                                        height: 60,
+                                        borderRadius: 30,
+                                        backgroundColor: tipo == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO
                                     }
                                 }>
-                                    <LixeiraSVG />
+                                    <View style={
+                                        {
+                                            alignSelf: 'center', marginTop: 15
+                                        }
+                                    }>
+                                        <LixeiraSVG />
 
+                                    </View>
                                 </View>
-                            </View>
-                        </TouchableOpacity>
+                            </TouchableOpacity>
+                        </Animatable.View>
+                        <Animatable.View useNativeDriver={true} animation={{
+                            from: {
+                                transform: [{ translateX: -150 }, { translateY: -150 }, { rotateZ: '60deg' }]
+                            },
+                            to: {
+                                transform: [{ translateX: -50 }, { translateY: -95 }, { rotateZ: '60deg' }]
+                            },
+                        }} delay={100} duration={2000} style={{ width: Globals.WIDTH * 1.3, height: 0.8 * Globals.HEIGHT, backgroundColor: tipo == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO, position: 'absolute', zIndex: -1 }}>
 
-                        <View style={{ width: Globals.WIDTH * 1.3, height: 0.7 * Globals.HEIGHT, backgroundColor: tipo == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO, position: 'absolute', zIndex: -1, transform: [{ translateX: -50 }, { translateY: -120 }, { rotateZ: '45deg' }] }}>
+                        </Animatable.View>
+                    </View>
+                    <Modal
+                        animationType="fade"
+                        transparent={true}
+
+                        visible={modalVisibleE}
+                        onRequestClose={() => {
+                            setModalVisibleE(!modalVisibleE);
+                        }}>
+                        <View style={{
+                            backgroundColor: Globals.COLOR.LIGHT.COLOR2,
+                            paddingHorizontal: 20,
+                            paddingVertical: 20,
+                            width: 320,
+                            alignSelf: 'center',
+                            marginTop: 40,
+                            borderRadius: 15,
+                            shadowColor: "#000",
+                            shadowOffset: {
+                                width: 0,
+                                height: 12,
+                            },
+                            shadowOpacity: 0.58,
+                            shadowRadius: 16.00,
+
+                            elevation: 24,
+                        }}>
+                            <Text style={{ color: 'white', fontFamily: Globals.FONT_FAMILY.BOLD, fontSize: 20 }}>Editar {tipo == 0 ? 'receita' : 'gasto'}</Text>
+                            <EditSVG style={{ width: 250, height: 250, alignSelf: 'center' }} />
+
+                            <Text style={{ color: 'white', fontFamily: Globals.FONT_FAMILY.REGULAR, fontSize: 16, marginBottom: 30 }}>Tem certeza que deseja alterar as informações?</Text>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <TouchableOpacity style={{ backgroundColor: Globals.COLOR.LIGHT.COLOR4, paddingHorizontal: 5, paddingVertical: 10, width: '45%', borderRadius: 20 }} onPress={mandarDados}>
+                                    <Text style={{ color: 'white', fontFamily: Globals.FONT_FAMILY.SEMIBOLD, textAlign: 'center' }}>Sim</Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity style={{ backgroundColor: Globals.COLOR.LIGHT.COLOR3, paddingHorizontal: 5, paddingVertical: 10, width: '45%', borderRadius: 20 }} onPress={() => setModalVisibleE(false)}>
+                                    <Text style={{ color: 'white', fontFamily: Globals.FONT_FAMILY.SEMIBOLD, textAlign: 'center' }} >Não agora</Text>
+                                </TouchableOpacity>
+                            </View>
 
                         </View>
-                    </View>
-                </ScrollView >
 
+                    </Modal>
+                    <Modal
+                        animationType="fade"
+                        transparent={true}
+
+                        visible={modalVisibleD}
+                        onRequestClose={() => {
+                            setModalVisibleD(!modalVisibleD);
+                        }}>
+                        <View style={{
+                            backgroundColor: Globals.COLOR.LIGHT.COLOR2,
+                            paddingHorizontal: 20,
+                            paddingVertical: 20,
+                            width: 320,
+                            alignSelf: 'center',
+                            marginTop: 40,
+                            borderRadius: 15,
+                            shadowColor: "#000",
+                            shadowOffset: {
+                                width: 0,
+                                height: 12,
+                            },
+                            shadowOpacity: 0.58,
+                            shadowRadius: 16.00,
+
+                            elevation: 24,
+                        }}>
+                            <Text style={{ color: 'white', fontFamily: Globals.FONT_FAMILY.BOLD, fontSize: 20 }}>Deletar {tipo == 0 ? 'receita' : 'gasto'}</Text>
+                            <DeleteTrashSVG style={{ width: 250, height: 250, alignSelf: 'center' }} />
+
+                            <Text style={{ color: 'white', fontFamily: Globals.FONT_FAMILY.REGULAR, fontSize: 16, marginBottom: 30 }}>Tem certeza que deseja deletar as informações?</Text>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <TouchableOpacity style={{ backgroundColor: Globals.COLOR.LIGHT.COLOR4, paddingHorizontal: 5, paddingVertical: 10, width: '45%', borderRadius: 20 }} onPress={() => deleteDados()}>
+                                    <Text style={{ color: 'white', fontFamily: Globals.FONT_FAMILY.SEMIBOLD, textAlign: 'center' }}>Deletar</Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity style={{ backgroundColor: Globals.COLOR.LIGHT.COLOR3, paddingHorizontal: 5, paddingVertical: 10, width: '45%', borderRadius: 20 }} onPress={() => setModalVisibleD(false)}>
+                                    <Text style={{ color: 'white', fontFamily: Globals.FONT_FAMILY.SEMIBOLD, textAlign: 'center' }} >Não agora</Text>
+                                </TouchableOpacity>
+                            </View>
+
+                        </View>
+
+                    </Modal>
+                </ScrollView >
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+
+                    visible={modalVisibleS}
+                    onRequestClose={() => {
+                        setModalVisibleS(!modalVisibleS);
+                    }}>
+                    <View style={{
+                        backgroundColor: Globals.COLOR.LIGHT.COLOR2,
+                        paddingHorizontal: 20,
+                        paddingVertical: 20,
+                        width: 320,
+                        alignSelf: 'center',
+                        marginTop: 40,
+                        borderRadius: 15,
+                        shadowColor: "#000",
+                        shadowOffset: {
+                            width: 0,
+                            height: 12,
+                        },
+                        shadowOpacity: 0.58,
+                        shadowRadius: 16.00,
+
+                        elevation: 24,
+                    }}>
+                        <Text style={{ color: 'white', fontFamily: Globals.FONT_FAMILY.BOLD, fontSize: 20 }}>Isso não é um adeus</Text>
+                        <LogoutSadSVG style={{ width: 250, height: 250, alignSelf: 'center' }} />
+
+                        <Text style={{ color: 'white', fontFamily: Globals.FONT_FAMILY.REGULAR, fontSize: 16, marginBottom: 30 }}>{Globals.TEXT_LOGOUT}</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <TouchableOpacity style={{ backgroundColor: Globals.COLOR.LIGHT.COLOR4, paddingHorizontal: 5, paddingVertical: 10, width: '45%', borderRadius: 20 }} onPress={removeData}>
+                                <Text style={{ color: 'white', fontFamily: Globals.FONT_FAMILY.SEMIBOLD, textAlign: 'center' }}>Sair...</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={{ backgroundColor: Globals.COLOR.LIGHT.COLOR3, paddingHorizontal: 5, paddingVertical: 10, width: '45%', borderRadius: 20 }} onPress={() => setModalVisibleS(false)}>
+                                <Text style={{ color: 'white', fontFamily: Globals.FONT_FAMILY.SEMIBOLD, textAlign: 'center' }} >Não agora</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                    </View>
+
+                </Modal>
             </Drawer>
         </>)
     }
@@ -427,9 +586,9 @@ const styles = StyleSheet.create({
     errorStyle: {
         paddingLeft: 7,
         width: '100%',
-        maxWidth: 338.89,
-        marginLeft: 'auto',
-        marginRight: 'auto',
+        maxWidth:'90%',
+        alignSelf:'center',
+        marginLeft:-15,
         color: Globals.COLOR_ERROR,
         fontSize: 11,
         lineHeight: 12,
@@ -510,13 +669,13 @@ const styles = StyleSheet.create({
         lineHeight: 20,
     },
     imagemUser: {
-        width: Globals.WIDTH * 0.4,
-        height: Globals.WIDTH * 0.4,
+        width: 150,
+        height: 150,
+        alignSelf:'center',
         backgroundColor: Globals.COLOR.LIGHT.COLOR1,
         borderColor: Globals.COLOR.LIGHT.COLOR4,
         borderRadius: Globals.WIDTH * 0.20,
         borderWidth: 4,
-        marginHorizontal: Globals.WIDTH * 0.25,
         marginTop: 40,
         marginBottom: 10
     },

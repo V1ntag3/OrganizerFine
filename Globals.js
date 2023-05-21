@@ -43,7 +43,7 @@ export default {
             // COLOR3:'#32a632',
             // COLOR4:'#1f991f',
             // COLOR5:'#008000' 
-
+            
             COLOR1:'#dac7ff',
             COLOR2:'#ac8bee',
             COLOR3:'#916dd5',
@@ -76,7 +76,8 @@ export default {
         'Novembro',
         'Dezembro',
     ],
-    COLOR_ERROR:'#FF6962',
+    COLOR_ERROR:'#FA0501',
     COLOR_GASTO: '#FF6962',
-    COLOR_RECEITA:'#77DD78'
+    COLOR_RECEITA:'#77DD78',
+    TEXT_LOGOUT:"Não gostou de utilizar nosso App? Qualquer insatisfação pode nos contatar..."
   };

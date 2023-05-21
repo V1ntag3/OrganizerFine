@@ -8,25 +8,33 @@ import {
 import OfficeSVG from '../componentes/SVGComponentes/officeSVG';
 import ButtonGeneric from '../componentes/ButtonGeneric'
 import Globals from '../Globals';
-
+import * as Animatable from 'react-native-animatable'
 function Welcome({ navigation }: any): JSX.Element {
+
   return (
 
     <SafeAreaView style={styles.body}>
-      <View style={styles.retangulo}></View>
-      <View style={styles.caixaTitulos}>
+      <Animatable.View useNativeDriver={true} animation={{
+        from: {
+          transform: [{ translateX: -(Globals.WIDTH / 2 - (Globals.WIDTH * 1.53 / 2) + Globals.WIDTH * 0.03) }, { translateY: -(Globals.WIDTH / 2 - (Globals.HEIGHT * 0.71 / 2) - (Globals.HEIGHT * 0.04)) }, { rotate: '-26.71deg' }],
+        },
+        to: {
+          transform: [{ translateX: (Globals.WIDTH / 2 - (Globals.WIDTH * 1.53 / 2) + Globals.WIDTH * 0.03) }, { translateY: Globals.WIDTH / 2 - (Globals.HEIGHT * 0.71 / 2) - (Globals.HEIGHT * 0.04) }, { rotate: '-26.71deg' }],
+        },
+      }} delay={100} duration={2000} style={styles.retangulo}></Animatable.View>
+      <Animatable.View delay={1000} useNativeDriver={true} animation='fadeInDown' duration={1000} style={styles.caixaTitulos}>
         <Text style={styles.titulo1}>SEJA BEM VINDO(A),</Text>
         <Text style={styles.titulo2}>ORGANIZE SUAS FINANÇAS CONOSCO</Text>
-      </View>
-      <View style={styles.containerNome}>
+      </Animatable.View>
+      <Animatable.View delay={100} useNativeDriver={true} animation='flipInY' duration={1000} style={styles.containerNome}>
         <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
         <Text style={Globals.APP_NAME_STYLE}></Text>
         <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
-      </View>
-      <View style={styles.containerBotoes}>
+      </Animatable.View>
+      <Animatable.View delay={100} useNativeDriver={true} animation='fadeInDown' duration={1000} style={styles.containerBotoes}>
         <ButtonGeneric onPress={() => navigation.navigate('Login')} styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} title={"Login"} />
         <ButtonGeneric onPress={() => navigation.navigate('Registrar')} styleButton={[styles.botaoBranco, styles.botaoGrande]} styleText={[styles.textBotaoBranco, styles.textoBotaoGrande]} title={"Registrar"} />
-      </View>
+      </Animatable.View>
       <OfficeSVG style={styles.officeSVGStyle} width={Globals.HEIGHT * 0.29} height={Globals.HEIGHT * 0.29} />
     </SafeAreaView>
 
@@ -43,9 +51,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: Globals.WIDTH * 1.53,
     height: Globals.HEIGHT * 0.80,
-    left: Globals.WIDTH / 2 - (Globals.WIDTH * 1.53 / 2) + Globals.WIDTH * 0.03,
-    top: Globals.WIDTH / 2 - (Globals.HEIGHT * 0.71 / 2) - (Globals.HEIGHT * 0.04),
-    transform: [{ rotate: '-26.71deg' }],
   },
   caixaTitulos: {
     marginTop: 15,
@@ -89,7 +94,8 @@ const styles = StyleSheet.create({
     bottom: -20
   },
   containerBotoes: {
-    width: '100%'
+    width: '100%',
+    zIndex: 1000
   },
   botaoGrande: {
     alignItems: 'center',

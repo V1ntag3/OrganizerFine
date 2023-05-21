@@ -24,13 +24,13 @@ function EsqueciSenhaOk({ navigation }: props["navigation"]): JSX.Element {
     return (
         <SafeAreaView style={styles.body}>
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollView} >
-              
+
                 <View style={[styles.containerInput, { zIndex: 0 }]}>
                     <Text style={styles.textEsqueci}>
-                    Sua senha foi enviada com sucesso                  
-                      </Text>
+                        Sua senha foi enviada com sucesso
+                    </Text>
 
-                      <OkSVG style={styles.okSVGStyle} width={300} height={300} />
+                    <OkSVG style={styles.okSVGStyle} width={300} height={300} />
 
 
                     <View style={styles.containerBotoes}>
@@ -39,8 +39,8 @@ function EsqueciSenhaOk({ navigation }: props["navigation"]): JSX.Element {
                 </View>
 
                 <View style={styles.containerNome}>
-                <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
-                <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
+                    <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
+                    <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
                 </View>
 
 
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     scrollView: {
-        height:Globals.HEIGHT
+        height: Globals.HEIGHT
     },
     inputStyle: {
         alignItems: 'center',
@@ -71,11 +71,11 @@ const styles = StyleSheet.create({
         marginVertical: 8,
         marginBottom: 4,
         backgroundColor: Globals.COLOR.BRANCO,
-        fontFamily:Globals.FONT_FAMILY.REGULAR,
+        fontFamily: Globals.FONT_FAMILY.REGULAR,
         color: '#323941',
-        marginTop:40
+        marginTop: 40
     },
-    esqueciSenha:{
+    esqueciSenha: {
         paddingLeft: 3,
         width: '100%',
         maxWidth: 338.89,
@@ -127,18 +127,18 @@ const styles = StyleSheet.create({
         width: '100%',
         marginBottom: 100
     },
-    textEsqueci:{
-        textAlign:'left',
+    textEsqueci: {
+        textAlign: 'left',
         width: '100%',
         maxWidth: 338.89,
         marginLeft: 'auto',
         marginRight: 'auto',
         marginVertical: 8,
-        fontFamily:Globals.FONT_FAMILY.REGULAR,
-        fontSize:34,
-        fontWeight:'700',
-        lineHeight:52,
-        color:Globals.COLOR.BRANCO
+        fontFamily: Globals.FONT_FAMILY.REGULAR,
+        fontSize: 34,
+        fontWeight: '700',
+        lineHeight: 52,
+        color: Globals.COLOR.BRANCO
     },
     botaoGrande: {
         alignItems: 'center',
@@ -171,8 +171,8 @@ const styles = StyleSheet.create({
         color: Globals.COLOR.LIGHT.COLOR3,
     },
     okSVGStyle: {
-       marginLeft: Globals.WIDTH * 0.25,
-       marginVertical:Globals.HEIGHT * 0.084 
+        marginLeft: Globals.WIDTH * 0.25,
+        marginVertical: Globals.HEIGHT * 0.084
     },
     notebookSVGStyle: {
         position: 'absolute',

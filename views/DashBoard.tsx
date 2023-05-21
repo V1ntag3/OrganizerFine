@@ -7,8 +7,9 @@ import {
     RefreshControl,
     Pressable,
     FlatList,
+    Modal,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { PieChart } from "react-native-gifted-charts";
 import Globals from '../Globals';
 import DatePicker from 'react-native-modern-datepicker';
@@ -28,19 +29,28 @@ import FineSVG from '../componentes/SVGComponentes/fineSVG';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from './LoadingScreen';
 import UserSVG from '../componentes/SVGComponentes/userSVG';
+import * as Animatable from 'react-native-animatable'
+import LogoutSadSVG from '../componentes/SVGComponentes/logoutSadSVG';
 
 function DashBoard({ route, navigation }: any): JSX.Element {
     const [isLoading, setIsLoading] = useState(false)
-    const [token, setToken] = useState('')
+    const token = useRef('')
     const [gastos, setGastos] = useState('R$ 0,00');
     const [receitas, setReceitas] = useState('R$ 0,00');
     const [item, setItems] = useState([])
-    const [nome, setNome] = useState('Marquin');
-    const [email, setEmail] = useState('marcos@gmail.com');
-    const [mes, setMes] = useState(Globals.MONTH[parseInt(new Date().getMonth().toString())])
-    const [ano, setAno] = useState(String(new Date().getFullYear()));
+    const [nome, setNome] = useState('');
+    const [email, setEmail] = useState('');
+
     const [show, setShow] = useState(false);
-    const [pieData, setPieData] = useState([
+
+    const [openClose, setOpenClose] = useState(false);
+    const [valorMaiorPorc, setValorMaiorPorc] = useState('0%')
+    const [valorMaiorNome, setValorMaiorNome] = useState('')
+    const [selectedDateSe, setSelectedDateSe] = useState(new Date().toISOString().slice(0, 10));
+
+    const [modalVisible, setModalVisible] = useState(false)
+
+    const pieData = useRef([
         { value: 0, color: '#323131', gradientCenterColor: '#323131' },
         { value: 0, color: '#474747', gradientCenterColor: '#474747' },
         { value: 0, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
@@ -48,13 +58,8 @@ function DashBoard({ route, navigation }: any): JSX.Element {
         { value: 0, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
         { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
     ]);
-    const [openClose, setOpenClose] = useState(false);
-    const [valorMaiorPorc, setValorMaiorPorc] = useState('0%')
-    const [valorMaiorNome, setValorMaiorNome] = useState('')
-    const [selectedDateSe, setSelectedDateSe] = useState(new Date().toISOString().slice(0, 10));
-
     const Item = (element: { id: any, typeCat: any; about: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; value: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; date: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) => (
-        <View style={{ backgroundColor: '#D9D9D9' }}>
+        <View key={element.id} style={{ backgroundColor: '#D9D9D9' }}>
             <TouchableOpacity onPress={() => {
                 navigation.navigate('DetalharRevenueSpending', { element })
             }}>
@@ -76,9 +81,9 @@ function DashBoard({ route, navigation }: any): JSX.Element {
             </TouchableOpacity>
         </View>
     );
+
     const renderHeaderFlat = () => {
         return (<>
-
             <TouchableOpacity style={{ position: 'absolute', top: 20, left: 15, zIndex: 1000 }} onPress={moveMenu}>
                 <MenuSVG />
             </TouchableOpacity>
@@ -89,8 +94,6 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                         position: 'absolute',
                         flexDirection: 'row',
                         top: 45,
-                        marginRight: 'auto',
-                        marginLeft: 'auto',
                         alignSelf: 'center'
                     }
                 }>
@@ -107,45 +110,45 @@ function DashBoard({ route, navigation }: any): JSX.Element {
             <Text style={styles.tituloView}>Finanças</Text>
             <View style={
                 {
-                    margin: 'auto',
-                    width: '100%',
-                    paddingHorizontal: (Globals.WIDTH * 0.5) - 90,
-                    marginTop: 70
+                    marginTop: 70,
                 }
             }>
-                <PieChart
-                    data={pieData}
-                    donut
-                    showGradient
-                    sectionAutoFocus
-                    radius={90}
-                    innerRadius={50}
-                    innerCircleColor={Globals.COLOR.LIGHT.COLOR4}
-                    centerLabelComponent={() => {
-                        return (
-                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                <Text
-                                    style={{ fontSize: 22, color: Globals.COLOR.BRANCO, fontWeight: 'bold', fontFamily: Globals.FONT_FAMILY.BOLD }}>
-                                    {valorMaiorPorc}
-                                </Text>
-                                <Text style={{ fontSize: 11, color: Globals.COLOR.BRANCO, fontFamily: Globals.FONT_FAMILY.REGULAR }}>{valorMaiorNome}</Text>
-                            </View>
-                        );
-                    }}
-                />
+                <View style={{  alignSelf:'center',marginLeft:20 }}>
+                    <PieChart
+                        data={pieData.current}
+                        donut
+                        showGradient
+                        sectionAutoFocus
+                        radius={90}
+                        innerRadius={50}
+                        innerCircleColor={Globals.COLOR.LIGHT.COLOR4}
+                        centerLabelComponent={() => {
+                            return (
+                                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                    <Text
+                                        style={{ fontSize: 22, color: Globals.COLOR.BRANCO, fontWeight: 'bold', fontFamily: Globals.FONT_FAMILY.BOLD }}>
+                                        {valorMaiorPorc}
+                                    </Text>
+                                    <Text style={{ fontSize: 11, color: Globals.COLOR.BRANCO, fontFamily: Globals.FONT_FAMILY.REGULAR }}>{valorMaiorNome}</Text>
+                                </View>
+                            );
+                        }}
+                    />
+                </View>
                 <View
                     style={{
 
                         flexDirection: 'row',
-                        marginHorizontal: -Globals.WIDTH * 0.20,
-                        zIndex: 10
+                        zIndex: 10,
+                        alignSelf:'center',
+                        marginLeft:20
 
                     }}>
                     <View style={{
                         flexDirection: 'column',
 
                     }}>
-                        {renderLegend('Alimentação', '#FFFFFF')}
+                        {renderLegend('Alimentação', '#323131')}
                         {renderLegend('Vestuário', Globals.COLOR.LIGHT.COLOR1)}
 
 
@@ -153,20 +156,19 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                     <View style={{
                         flexDirection: 'column',
                     }}>
-                        {renderLegend('Serviços', '#60625F')}
+                        {renderLegend('Serviços', '#474747')}
                         {renderLegend('Entretenimento', Globals.COLOR.LIGHT.COLOR3)}
                     </View>
                     <View style={{
                         flexDirection: 'column',
                     }}>
 
-                        {renderLegend('Eletrônicos', '#474747')}
-                        {renderLegend('Outros', '#323131')}
+                        {renderLegend('Eletrônicos','#FFFFFF' )}
+                        {renderLegend('Outros', '#60625F')}
                     </View>
                 </View>
             </View>
-
-            <View style={[styles.fundosGastos, item.length <= 0 ? { maxHeight: 'auto', height: '100%', minHeight: Globals.HEIGHT * 0.38 } : {}]} >
+            <Animatable.View useNativeDriver={true} animation='fadeInUp' style={[styles.fundosGastos, item.length <= 0 ? { maxHeight: 'auto', height: '100%', minHeight: Globals.HEIGHT * 0.38 } : {}]} >
                 <View style={styles.dados}>
                     <View style={styles.totalizadores}>
                         <Text style={[styles.textTotalizadores, { color: Globals.COLOR_GASTO }]}>Gastos</Text>
@@ -178,159 +180,169 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                         <Text style={[styles.textTotalizadores, { color: Globals.COLOR_RECEITA }]}>{receitas}</Text>
                     </View>
                 </View>
-                {
-                    item.length <= 0 && (<Text style={{ color: Globals.COLOR.LIGHT.COLOR4, textAlign: 'center', fontFamily: Globals.FONT_FAMILY.BOLD, marginTop: 40 }}>Gastos não encontrados</Text>)
-                }
-            </View>
+
+            </Animatable.View>
         </>)
 
     }
     const renderItens = (itemRend: { id: React.Key | null | undefined; typeCat: any; about: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; value: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; date: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }[]) => {
         return (<FlatList
-            style={{ height: Globals.HEIGHT * 0.5 }}
+            refreshControl={<RefreshControl progressBackgroundColor={Globals.COLOR.LIGHT.COLOR1} colors={[Globals.COLOR.LIGHT.COLOR3]} refreshing={refreshing}
+                onRefresh={onRefresh} />}
+            contentContainerStyle={{
+                minHeight: Globals.HEIGHT * 0.4, backgroundColor: Globals.COLOR.LIGHT.COLOR4
+            }}
+            disableVirtualization={false}
+
+            style={{ backgroundColor: '#D9D9D9' }}
             data={item}
             renderItem={({ item }) => <Item id={item.id} about={item.about} date={item.date} typeCat={item.typeCat} value={item.value} />}
             showsVerticalScrollIndicator={false}
-            refreshControl={
-                <RefreshControl progressBackgroundColor={Globals.COLOR.LIGHT.COLOR1} colors={[Globals.COLOR.LIGHT.COLOR3]} refreshing={refreshing}
-                    onRefresh={onRefresh} />
-            }
             ListHeaderComponent={renderHeaderFlat()}
-            keyExtractor={item => item.id}
-        />)
+            keyExtractor={(item: { id: any; }) => item.id}
 
 
-        // return
-
+        />
+        )
     }
-    const readData = async (isPageReload = false) => {
+    const readData = async (isPageReload = false, anoR = null, mesR = null) => {
         try {
-
             const value = await AsyncStorage.getItem('token', (err, result) => {
-                fetch(Globals.BASE_URL_API + 'profile/', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Token ' + result
-                    },
-                }).then(response => {
-                    if (response.status == 401 || response.status == 403) { removeData() };
-                    return response.json();
-                }).then((json) => {
-                    setNome(json.first_name + ' ' + json.last_name)
-                    setEmail(json.email)
-                }).catch(error => {
-                    if (error.toString() == "TypeError: Network request failed") {
-                    }
-                }).finally(() => {
-                })
-
-                setIsLoading(true)
-
-                fetch(Globals.BASE_URL_API + 'revenue_spending/?month=' + mes + '&year=' + ano, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Token ' + result
-                    },
-                }).then(response => {
-                    if (response.status == 401 || response.status == 403) { removeData() };
-                    return response.json();
-                }).then((json) => {
-                    setShow(false)
-                    if (json != 0 && json.detail == null) {
-                        var array: any = []
-                        var gastos: number = 0
-                        var receitas: number = 0
-                        var item0 = 0, item1 = 0, item2 = 0, item3 = 0, item4 = 0, item5 = 0
-                        for (var item in json) {
-                            switch (json[item].typeCat) {
-                                case '0':
-                                    item0++
-                                    break
-                                case '1':
-                                    item1++
-                                    break
-                                case '2':
-                                    item2++
-                                    break
-                                case '3':
-                                    item3++
-                                    break
-                                case '4':
-                                    item4++
-                                    break
-                                case '5':
-                                    item5++
-                                    break
-                            }
-
-                            if (json[item].type == '0') {
-                                receitas += json[item].value
-                            }
-
-                            if (json[item].type == '1') {
-                                gastos += json[item].value
-                            }
-                            json[item].value = json[item].value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
-
-
-                            var valor = parseInt(new Date() - new Date(json[item].date))
-
-                            json[item].date = String(parseInt(valor / (1000 * 60 * 60 * 24))) + ' dias atrás'
-
-                            if (json[item].typeCat != '') {
-                                array.push(json[item])
-                            }
-
-
+                if (!isPageReload) {
+                    fetch(Globals.BASE_URL_API + 'profile/', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': 'Token ' + result
+                        },
+                    }).then(response => {
+                        if (response.status == 401 || response.status == 403) { removeData() };
+                        response.json().then((json) => {
+                            setNome(json.first_name + ' ' + json.last_name)
+                            setEmail(json.email)
+                        })
+                    }).catch(error => {
+                        if (error.toString() == "TypeError: Network request failed") {
                         }
+                    }).finally(() => {
 
-                        setGastos(gastos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-                        setReceitas(receitas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+                    })
+                    setIsLoading(true)
+                }
 
+                var mesRealM = mesR == null ? mesReal.current : mesR
+                var anoRealM = anoR == null ? anoReal.current : anoR
 
-                        setItems(array)
+                fetch(Globals.BASE_URL_API + 'revenue_spending/?month=' + mesRealM + '&year=' + anoRealM, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Token ' + result
+                    },
+                }).then(response => {
+                    if (response.status == 401 || response.status == 403) { removeData() }
+                    if (response.status == 200) {
+                        response.json().then((json) => {
+                            setShow(false)
+                            if (json != 0 && json.detail == null) {
+                                var array: any = []
+                                var gastos: number = 0
+                                var receitas: number = 0
+                                var item0 = 0, item1 = 0, item2 = 0, item3 = 0, item4 = 0, item5 = 0
+                                for (var item in json) {
+                                    switch (json[item].typeCat) {
+                                        case '0':
+                                            item0++
+                                            break
+                                        case '1':
+                                            item1++
+                                            break
+                                        case '2':
+                                            item2++
+                                            break
+                                        case '3':
+                                            item3++
+                                            break
+                                        case '4':
+                                            item4++
+                                            break
+                                        case '5':
+                                            item5++
+                                            break
+                                    }
 
-                        setPieData([
-                            { value: (item5 / array.length), color: '#323131', gradientCenterColor: '#323131' },
-                            { value: (item2 / array.length), color: '#474747', gradientCenterColor: '#474747' },
-                            { value: (item0 / array.length), color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-                            { value: (item3 / array.length), color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
-                            { value: (item4 / array.length), color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
-                            { value: (item1 / array.length), color: '#60625F', gradientCenterColor: '#60625F' },
-                        ])
-                        var arrayValores = [item0, item1, item2, item3, item4, item5]
-                        setValorMaiorPorc(String(parseInt((Math.max(...arrayValores) / array.length) * 100)) + '%')
-                        setValorMaiorNome(renderNome(String(arrayValores.indexOf(Math.max(...arrayValores)))))
-                    } else {
-                        setPieData([
-                            { value: 0, color: '#323131', gradientCenterColor: '#323131' },
-                            { value: 0, color: '#474747', gradientCenterColor: '#474747' },
-                            { value: 0, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-                            { value: 0, color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
-                            { value: 0, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
-                            { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
-                        ])
-                        setItems([]);
-                        setGastos('R$ 0,00');
-                        setReceitas('R$ 0,00');
-                        setValorMaiorPorc('0%')
-                        setValorMaiorNome('')
-                        setItems([]);
+                                    if (json[item].type == '0') {
+                                        receitas += json[item].value
+                                    }
+
+                                    if (json[item].type == '1') {
+                                        gastos += json[item].value
+                                    }
+                                    json[item].value = json[item].value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+
+                                    var valor = parseInt(new Date() - new Date(json[item].date))
+
+                                    json[item].date = String(parseInt(valor / (1000 * 60 * 60 * 24))) + ' dias atrás'
+
+                                    if (json[item].typeCat != '') {
+                                        array.push(json[item])
+                                    }
+
+                                }
+
+                                setGastos(gastos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+                                setReceitas(receitas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+                                var arrayValores = [item0, item1, item2, item3, item4, item5]
+                                pieData.current = [
+                                    { value: item0, color: '#323131', gradientCenterColor: '#323131' },
+                                    { value: item1, color: '#474747', gradientCenterColor: '#474747' },
+                                    { value: item2, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
+                                    { value: item3, color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
+                                    { value: item4, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
+                                    { value: item5, color: '#60625F', gradientCenterColor: '#60625F' },
+                                ]
+                                if (item0 == 0 && item1 == 0 && item2 == 0 && item3 == 0 && item4 == 0 && item5 == 0) {
+                                    setItems([])
+                                    setValorMaiorPorc('0%')
+                                    setValorMaiorNome('')
+                                }
+                                else {
+                                    setItems(array)
+                                    setValorMaiorPorc(String(parseInt((Math.max(...arrayValores) / array.length) * 100)) + '%')
+                                    setValorMaiorNome(renderNome(String(arrayValores.indexOf(Math.max(...arrayValores)))))
+                                }
+
+                            } else {
+                                pieData.current = [
+                                    { value: 0, color: '#323131', gradientCenterColor: '#323131' },
+                                    { value: 0, color: '#474747', gradientCenterColor: '#474747' },
+                                    { value: 0, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
+                                    { value: 0, color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
+                                    { value: 0, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
+                                    { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
+                                ]
+                                setItems([]);
+                                setGastos('R$ 0,00');
+                                setReceitas('R$ 0,00');
+                                setValorMaiorPorc('0%')
+                                setValorMaiorNome('')
+                            }
+
+                        })
                     }
+
                 }).catch(error => {
                     if (error.toString() == "TypeError: Network request failed") {
                     }
                 }).finally(() => {
+                    if (isPageReload) setRefreshing(false)
                     setIsLoading(false)
                 })
             })
-
             if (value !== null) {
-                setToken(value);
+                token.current = value
             }
         } catch (e) {
         }
-    };
+    }
     const { setUserToken } = route.params
 
     const removeData = () => {
@@ -338,7 +350,7 @@ function DashBoard({ route, navigation }: any): JSX.Element {
         fetch(Globals.BASE_URL_API + 'logout/', {
             method: 'POST',
             headers: {
-                'Authorization': 'Token ' + token
+                'Authorization': 'Token ' + token.current
             },
         }).then(response => {
             if (response.status == 204) {
@@ -351,124 +363,36 @@ function DashBoard({ route, navigation }: any): JSX.Element {
         })
 
     };
-
     const handleDateSelect = (selectedDate: String) => {
-        var anoItem = selectedDate.slice(0, 4).toString()
+
+        setMes(Globals.MONTH[parseInt(selectedDate.toString().slice(4, 7)) - 1])
         setAno(selectedDate.slice(0, 4).toString())
-        var mesItem = Globals.MONTH[parseInt(selectedDate.toString().slice(4, 7)) - 1]
-        setMes(mesItem)
+        mesReal.current = Globals.MONTH[parseInt(selectedDate.toString().slice(4, 7)) - 1]
+        anoReal.current = selectedDate.slice(0, 4).toString()
+        readData(false, selectedDate.slice(0, 4).toString(), Globals.MONTH[parseInt(selectedDate.toString().slice(4, 7)) - 1])
         setShow(false)
-        setIsLoading(true)
-        fetch(Globals.BASE_URL_API + 'revenue_spending/?month=' + mesItem + '&year=' + anoItem, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Token ' + token
-            },
-        }).then(response => response.json()).then((json) => {
-            if (json != 0) {
-                var array: any = []
-                var gastos: number = 0
-                var receitas: number = 0
-                var item0 = 0, item1 = 0, item2 = 0, item3 = 0, item4 = 0, item5 = 0
-                for (var item in json) {
-                    switch (json[item].typeCat) {
-                        case '0':
-                            item0++
-                            break
-                        case '1':
-                            item1++
-                            break
-                        case '2':
-                            item2++
-                            break
-                        case '3':
-                            item3++
-                            break
-                        case '4':
-                            item4++
-                            break
-                        case '5':
-                            item5++
-                            break
-                    }
 
-                    if (json[item].type == '0') {
-                        receitas += json[item].value
-                    }
-
-                    if (json[item].type == '1') {
-                        gastos += json[item].value
-                    }
-                    json[item].value = json[item].value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
-
-                    var valor = parseInt(new Date() - new Date(json[item].date))
-
-                    json[item].date = String(parseInt(valor / (1000 * 60 * 60 * 24))) + ' dias atrás'
-
-                    if (json[item].typeCat != '') {
-                        array.push(json[item])
-                    }
-
-                }
-
-                setGastos(gastos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-                setReceitas(receitas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-
-
-                setItems(array)
-
-                setPieData([
-                    { value: (item5 / array.length), color: '#323131', gradientCenterColor: '#323131' },
-                    { value: (item2 / array.length), color: '#474747', gradientCenterColor: '#474747' },
-                    { value: (item0 / array.length), color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-                    { value: (item3 / array.length), color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
-                    { value: (item4 / array.length), color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
-                    { value: (item1 / array.length), color: '#60625F', gradientCenterColor: '#60625F' },
-                ])
-                var arrayValores = [item0, item1, item2, item3, item4, item5]
-                setValorMaiorPorc(String(parseInt((Math.max(...arrayValores) / array.length) * 100)) + '%')
-                setValorMaiorNome(renderNome(String(arrayValores.indexOf(Math.max(...arrayValores)))))
-            } else {
-                setPieData([
-                    { value: 0, color: '#323131', gradientCenterColor: '#323131' },
-                    { value: 0, color: '#474747', gradientCenterColor: '#474747' },
-                    { value: 0, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-                    { value: 0, color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
-                    { value: 0, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
-                    { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
-                ])
-                setItems([]);
-                setGastos('R$ 0,00');
-                setReceitas('R$ 0,00');
-                setValorMaiorPorc('0%')
-                setValorMaiorNome('')
-                setItems([]);
-            }
-        }).catch(error => {
-            if (error.toString() == "TypeError: Network request failed") {
-                setShow(false)
-            }
-        }).finally(() => {
-            setIsLoading(false)
-        })
     }
+
     const moveMenu = () => {
         setOpenClose(openClose ? false : true)
     };
 
 
     useEffect(() => {
-        readData();
         navigation.addListener('focus', () => {
             readData();
         });
     }, [navigation]);
-    const [refreshing, setRefreshing] = React.useState(false);
 
-    const onRefresh = React.useCallback(() => {
+
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(() => {
         setRefreshing(true);
         readData(true)
     }, []);
+
     const renderTela = () => {
         return (<Drawer style={{
             width: '100%',
@@ -490,7 +414,6 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                         <View style={{ alignSelf: 'center', marginTop: 10 }}>
                             <UserSVG />
                         </View>
-
                     </View>
                     <View style={{ marginLeft: 20, marginBottom: 30 }}>
                         <Text style={{
@@ -525,7 +448,7 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                             <Text style={styles.itemMenuText}>Configurações</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => { setOpenClose(false); removeData() }}>
+                    <TouchableOpacity onPress={() => { setOpenClose(false); setModalVisible(true) }}>
                         <View style={[styles.itemMenu, { paddingLeft: 17 }]}>
                             <LogoutSVG />
                             <Text style={styles.itemMenuText}>Sair</Text>
@@ -547,24 +470,19 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                     mode="monthYear"
                     isGregorian={true}
                     selectorStartingYear={2000}
-
+                    minimumDate='2023-04-01'
+                    maximumDate={selectedDateSe}
                     current={selectedDateSe}
                     selected={selectedDateSe}
-
-
-                    onMonthYearChange={(selectedDate) => {
-                        setSelectedDateSe(selectedDate.replace(' ', '-') + '-01');
-                        handleDateSelect(selectedDate);
-                    }}
+                    onMonthYearChange={selectedDate => handleDateSelect(selectedDate)}
                     selectorEndingYear={new Date().getFullYear()}
                     style={{
                         position: 'absolute',
                         top: 50,
                         zIndex: 10001,
-                        width: Globals.WIDTH * 0.9,
+                        width: 330,
                         borderRadius: 25,
-                        left: Globals.WIDTH * 0.05
-                    }}
+                        alignSelf:'center'                    }}
                     options={{
                         backgroundColor: Globals.COLOR.LIGHT.COLOR3,
                         textHeaderColor: Globals.COLOR.BRANCO,
@@ -580,21 +498,34 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                     </Pressable>
                 </>
             )}
-            <TouchableOpacity style={{ zIndex: 10000, position: 'absolute', top: 20, right: 0 }} onPress={() => {
+            <TouchableOpacity style={{ zIndex: 9999, position: 'absolute', top: 20, right: 0 }} onPress={() => {
                 navigation.navigate('Adicionar', {
 
                 })
             }}>
-                <View style={
-                    {
-                        width: 50,
-                        height: 40,
-                        borderTopLeftRadius: 10,
-                        borderBottomLeftRadius: 10,
-                        backgroundColor: Globals.COLOR.LIGHT.COLOR2,
-                        zIndex: 100
-                    }
-                }>
+                <Animatable.View
+                    useNativeDriver={true}
+                    animation={{
+                        from: {
+                            transform: [{ translateX: 20 }],
+                        },
+                        to: {
+                            transform: [{ translateX: 0 }],
+                        }
+                    }}
+                    easing='ease-in-out'
+                    delay={0}
+                    duration={1000}
+                    style={
+                        {
+                            width: 50,
+                            height: 40,
+                            borderTopLeftRadius: 10,
+                            borderBottomLeftRadius: 10,
+                            backgroundColor: Globals.COLOR.LIGHT.COLOR2,
+                            zIndex: 100
+                        }
+                    }>
                     <View style={{
                         marginTop: 3.5,
                         marginLeft: 6
@@ -602,22 +533,72 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                         <AddSVG />
                     </View>
 
-                </View>
+                </Animatable.View>
             </TouchableOpacity>
             {renderItens(item)}
+            {
+                item.length <= 0 && (<Animatable.View useNativeDriver={true} animation='fadeInUp' style={{ position: 'absolute', bottom: Globals.HEIGHT * 0.13, alignSelf: 'center' }}>
+                    <Text style={{ color: Globals.COLOR.LIGHT.COLOR4, textAlign: 'center', fontFamily: Globals.FONT_FAMILY.BOLD, }}>Gastos não encontrados</Text>
+
+                </Animatable.View>)
+            }
+            <Modal
+                animationType="fade"
+                transparent={true}
+
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(!modalVisible);
+                }}>
+                <View style={{
+                    backgroundColor: Globals.COLOR.LIGHT.COLOR2,
+                    paddingHorizontal: 20,
+                    paddingVertical: 20,
+                    width: 320,
+                    alignSelf: 'center',
+                    marginTop: 40,
+                    borderRadius: 15,
+                    shadowColor: "#000",
+                    shadowOffset: {
+                        width: 0,
+                        height: 12,
+                    },
+                    shadowOpacity: 0.58,
+                    shadowRadius: 16.00,
+
+                    elevation: 24,
+                }}>
+                    <Text style={{ color: 'white', fontFamily: Globals.FONT_FAMILY.BOLD, fontSize: 20 }}>Isso não é um adeus</Text>
+                    <LogoutSadSVG style={{ width: 250, height: 250, alignSelf: 'center' }} />
+
+                    <Text style={{ color: 'white', fontFamily: Globals.FONT_FAMILY.REGULAR, fontSize: 16, marginBottom: 30 }}>{Globals.TEXT_LOGOUT}</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <TouchableOpacity style={{ backgroundColor: Globals.COLOR.LIGHT.COLOR4, paddingHorizontal: 5, paddingVertical: 10, width: '45%', borderRadius: 20 }} onPress={removeData}>
+                            <Text style={{ color: 'white', fontFamily: Globals.FONT_FAMILY.SEMIBOLD, textAlign: 'center' }}>Sair...</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{ backgroundColor: Globals.COLOR.LIGHT.COLOR3, paddingHorizontal: 5, paddingVertical: 10, width: '45%', borderRadius: 20 }} onPress={() => setModalVisible(false)}>
+                            <Text style={{ color: 'white', fontFamily: Globals.FONT_FAMILY.SEMIBOLD, textAlign: 'center' }} >Não agora</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
+
+            </Modal>
         </Drawer>)
     }
-    const renderLoad = () => {
-        return (<>
+    const [mes, setMes] = useState(Globals.MONTH[parseInt(new Date().getMonth().toString())])
+    const [ano, setAno] = useState(String(new Date().getFullYear()));
 
-            <LoadingScreen />
-
-        </>)
-    }
+    const mesReal = useRef(Globals.MONTH[parseInt(new Date().getMonth().toString())])
+    const anoReal = useRef(String(new Date().getFullYear()));
+    useEffect(() => {
+        readData();
+    }, [mes]);
     return (
         <SafeAreaView style={styles.body}>
             {
-                isLoading ? renderLoad() : (<></>)
+                isLoading ? <LoadingScreen /> : (<></>)
             }
             {renderTela()}
 
@@ -682,12 +663,11 @@ const styles = StyleSheet.create({
     }
     ,
     card: {
+        alignSelf:'center',
         backgroundColor: Globals.COLOR.BRANCO,
         width: '100%',
-        maxWidth: 338.89,
+        maxWidth: '90%',
         height: 66,
-        marginLeft: 'auto',
-        marginRight: 'auto',
         borderRadius: 5,
         paddingHorizontal: 10,
         paddingVertical: 13,
@@ -739,7 +719,8 @@ const styles = StyleSheet.create({
         textAlign: 'right',
         color: Globals.COLOR.LIGHT.COLOR4,
 
-    }, dadosMenu: {
+    },
+    dadosMenu: {
         fontFamily: Globals.FONT_FAMILY.REGULAR,
         fontWeight: '500',
         fontSize: 14,
@@ -747,13 +728,13 @@ const styles = StyleSheet.create({
         lineHeight: 20,
     },
     imagemUser: {
-        width: Globals.WIDTH * 0.4,
-        height: Globals.WIDTH * 0.4,
+        width: 150,
+        height: 150,
+        alignSelf:'center',
         backgroundColor: Globals.COLOR.LIGHT.COLOR1,
         borderColor: Globals.COLOR.LIGHT.COLOR4,
         borderRadius: Globals.WIDTH * 0.20,
         borderWidth: 4,
-        marginHorizontal: Globals.WIDTH * 0.25,
         marginTop: 40,
         marginBottom: 10
     },

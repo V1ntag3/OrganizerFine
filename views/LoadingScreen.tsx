@@ -30,10 +30,7 @@ function LoadingScreen(): JSX.Element {
           toValue: 0,
           duration: 1000,
           useNativeDriver: true
-        })]),
-      {
-        iterations: 6
-      }
+        })])
     ).start()
   }
   return (

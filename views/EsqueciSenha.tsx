@@ -61,8 +61,8 @@ function EsqueciSenha({ navigation }: props["navigation"]): JSX.Element {
                 </View>
 
                 <View style={styles.containerNome}>
-                <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
-                <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
+                    <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
+                    <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
                 </View>
 
                 <EsqueciSVG style={styles.footerSVGStyle} width={0.25 * Globals.HEIGHT} height={0.25 * Globals.HEIGHT} />

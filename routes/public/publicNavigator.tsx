@@ -1,14 +1,11 @@
 import * as React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-// Screens
 import Registrar from '../../views/Registrar';
 import Welcome from '../../views/Welcome';
 import Login from '../../views/Login';
 import EsqueciSenha from '../../views/EsqueciSenha';
 import EsqueciSenhaOk from '../../views/EsqueciSenhaOk';
-import { Easing, LogBox } from 'react-native';
-
 
 const Stack = createNativeStackNavigator();
 
@@ -21,11 +18,7 @@ function PublicNavigator({ route }: any) {
       headerShown: false
     }} initialRouteName='Welcome'>
 
-      <Stack.Screen name="Welcome" component={Welcome} options={{
-        animationTypeForReplace: 'push',
-        animation: 'slide_from_right'
-      }
-      } />
+      <Stack.Screen name="Welcome" component={Welcome}/>
       <Stack.Screen name="Registrar" component={Registrar} initialParams={{ setUserToken }} options={{
         animationTypeForReplace: 'push',
         animation: 'slide_from_right',
