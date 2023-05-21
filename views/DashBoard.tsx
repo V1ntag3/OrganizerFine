@@ -250,22 +250,22 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                                 for (var item in json) {
                                     switch (json[item].typeCat) {
                                         case '0':
-                                            item0++
+                                            item0 =+ json[item].value
                                             break
                                         case '1':
-                                            item1++
+                                            item1 =+ json[item].value
                                             break
                                         case '2':
-                                            item2++
+                                            item2 =+ json[item].value
                                             break
                                         case '3':
-                                            item3++
+                                            item3 =+ json[item].value
                                             break
                                         case '4':
-                                            item4++
+                                            item4 =+ json[item].value
                                             break
                                         case '5':
-                                            item5++
+                                            item5 =+ json[item].value
                                             break
                                     }
 
@@ -306,7 +306,7 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                                 }
                                 else {
                                     setItems(array)
-                                    setValorMaiorPorc(String(parseInt((Math.max(...arrayValores) / array.length) * 100)) + '%')
+                                    setValorMaiorPorc(String(parseInt((Math.max(...arrayValores) / gastos) * 100)) + '%')
                                     setValorMaiorNome(renderNome(String(arrayValores.indexOf(Math.max(...arrayValores)))))
                                 }
 
