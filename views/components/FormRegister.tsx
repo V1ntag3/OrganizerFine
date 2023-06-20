@@ -92,7 +92,7 @@ function FormRegister({ load, token }: any): JSX.Element {
                         onChangeText={text => { setNome(text) }}
 
                     />
-                    <Text style={[styles.errorStyle, { display: nomeError ? 'flex' : 'none' }]} >Campo inválido</Text>
+                    <Text style={[styles.errorStyle, { display: nomeError ? 'flex' : 'none' }]}>Campo inválido</Text>
                 </Animatable.View>
                 <Animatable.View delay={300}
                     useNativeDriver={true} animation='fadeInLeft' duration={300}>
@@ -169,9 +169,8 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 49.65,
         borderRadius: 6.96875,
-        maxWidth: 338.89,
-        marginLeft: 'auto',
-        marginRight: 'auto',
+        maxWidth: '90%',
+        alignSelf:'center',
         marginVertical: 8,
         marginBottom: 4,
         backgroundColor: Globals.COLOR.BRANCO,
@@ -181,9 +180,8 @@ const styles = StyleSheet.create({
     errorStyle: {
         paddingLeft: 3,
         width: '100%',
-        maxWidth: 338.89,
-        marginLeft: 'auto',
-        marginRight: 'auto',
+        maxWidth: '90%',
+        alignSelf:'center',
         color: Globals.COLOR_ERROR,
         fontSize: 11,
         lineHeight: 12,
@@ -203,9 +201,8 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 49.65,
         borderRadius: 6.96875,
-        maxWidth: 338.89,
-        marginLeft: 'auto',
-        marginRight: 'auto',
+        maxWidth: '90%',
+        alignSelf:'center',
         marginVertical: 8
     },
     textoBotaoGrande: {

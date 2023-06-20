@@ -54,9 +54,7 @@ const styles = StyleSheet.create({
   },
   caixaTitulos: {
     marginTop: 15,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    maxWidth: 338.89,
+    alignSelf: 'center'
   },
   titulo1: {
     fontSize: 30,
@@ -104,9 +102,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 49.65,
     borderRadius: 6.96875,
-    maxWidth: 338.89,
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    maxWidth: '90%',
+    alignSelf: 'center',
     marginVertical: 8
   },
   textoBotaoGrande: {
