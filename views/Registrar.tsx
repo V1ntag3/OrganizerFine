@@ -13,7 +13,6 @@ import Globals from '../Globals';
 import LoadingScreen from './LoadingScreen';
 import FormRegister from './components/FormRegister';
 import { useState } from 'react';
-import * as Animatable from 'react-native-animatable'
 
 function Registrar({ route, navigation }: any): JSX.Element {
 

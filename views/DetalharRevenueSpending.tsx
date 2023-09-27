@@ -377,7 +377,7 @@ function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
                                         width: 60,
                                         height: 60,
                                         borderRadius: 30,
-                                        backgroundColor: tipo == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO
+                                        backgroundColor:  tipo == 0 ? '#2FAD09' : '#AD1909'
                                     }
                                 }>
                                     <View style={
@@ -391,16 +391,7 @@ function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
                                 </View>
                             </TouchableOpacity>
                         </Animatable.View>
-                        <Animatable.View useNativeDriver={true} animation={{
-                            from: {
-                                transform: [{ translateX: -150 }, { translateY: -150 }, { rotateZ: '60deg' }]
-                            },
-                            to: {
-                                transform: [{ translateX: -50 }, { translateY: -95 }, { rotateZ: '60deg' }]
-                            },
-                        }} delay={100} duration={2000} style={{ width: Globals.WIDTH * 1.3, height: 0.8 * Globals.HEIGHT, backgroundColor: tipo == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO, position: 'absolute', zIndex: -1 }}>
-
-                        </Animatable.View>
+                  
                     </View>
                     <Modal
                         animationType="fade"
@@ -536,7 +527,9 @@ function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
         </>)
     }
     return (
-        <SafeAreaView style={styles.body}>
+        <SafeAreaView style={[styles.body,{
+            backgroundColor: tipo == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO
+        }]}>
 
             {
                 isLoading ? renderLoad() : (<></>)
@@ -558,7 +551,7 @@ const styles = StyleSheet.create({
         marginTop: 15
     },
     body: {
-        backgroundColor: Globals.COLOR.LIGHT.COLOR4,
+        
         flex: 1
     },
     scrollView: {

@@ -37,7 +37,6 @@ function Login({ route, navigation }: any): JSX.Element {
 
         setEmailError(email == "" || !isEmail(email) ? true : false)
         setSenhaError(senha == "" ? true : false)
-
         if (senha != "" && email != "" && isEmail(email)) {
             setIsLoading(true)
             fetch(Globals.BASE_URL_API + 'login/', {
@@ -50,21 +49,28 @@ function Login({ route, navigation }: any): JSX.Element {
                     'Content-type': 'application/json; charset=UTF-8',
                 },
             }).then((response) => {
+                console.log(response.status)
+
                 if (response.status == 400) {
                     setSenhaError(true)
                     setEmailError(true)
                 }
                 if (response.status == 200) {
+
                     setSenhaError(false)
                     setEmailError(false)
+
                     response.json().then(json => {
                         AsyncStorage.setItem('token', json.token, () => {
                             const { setUserToken } = route.params
                             setUserToken(json.token)
                         });
+
                     })
                 }
-            }).catch((error) => { }).finally(() => {
+            }).catch((error) => { 
+                console.log(error)
+            }).finally(() => {
                 setIsLoading(false)
             });
         }
