@@ -2,7 +2,7 @@ import * as React from "react"
 import Svg, { Path } from "react-native-svg"
 import Globals from "../../Globals"
 
-function fineSVG() {
+function FineSVG() {
   return (
     <Svg
       width={29}
@@ -26,4 +26,4 @@ function fineSVG() {
   )
 }
 
-export default fineSVG
+export default FineSVG
