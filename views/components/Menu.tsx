@@ -17,12 +17,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Modal from './ModalGeneric';
 import LogoutSadSVG from '../../componentes/SVGComponentes/logoutSadSVG';
 import LoadingScreen from '../LoadingScreen';
+import HomeSVG from '../../componentes/SVGComponentes/homeSVG';
+import MenuSVG from '../../componentes/SVGComponentes/menuSVG';
 
-function Menu({ route, screenElement, navigation, openClose, setOpenClose }: any): JSX.Element {
+function Menu({ route, screenElement, navigation }: any): JSX.Element {
     const [email, setEmail] = useState("")
     const [nome, setNome] = useState("")
 
     const [modalVisible, setModalVisible] = useState(false)
+    const [openClose, setOpenClose] = useState(false);
 
     const [isLoading, setIsLoading] = useState(false)
 
@@ -37,7 +40,7 @@ function Menu({ route, screenElement, navigation, openClose, setOpenClose }: any
                     'Authorization': 'Token ' + result
                 },
             }).then(response => {
-                if (response.status == 204) {
+                if (response.status == 204 || response.status === 401 || response.status === 403) {
                     AsyncStorage.clear().then(() => { setUserToken(null) })
                 }
             }).finally(() => {
@@ -67,7 +70,7 @@ function Menu({ route, screenElement, navigation, openClose, setOpenClose }: any
     }
     useEffect(() => {
         getData()
-    }, [email, nome])
+    }, [nome])
     return (
         <SafeAreaView style={styles.body}>
             {
@@ -100,6 +103,16 @@ function Menu({ route, screenElement, navigation, openClose, setOpenClose }: any
                             </Text>
                             <Text style={styles.dadosMenu}>{email}</Text>
                         </View>
+                        <TouchableOpacity onPress={() => {
+                            setOpenClose(false); setTimeout(() => {
+                                navigation.navigate('Home')
+                            }, 400);
+                        }}>
+                            <View style={styles.itemMenu}>
+                                <HomeSVG style={{ width: 30 }} />
+                                <Text style={styles.itemMenuText}>Home</Text>
+                            </View>
+                        </TouchableOpacity>
 
                         <TouchableOpacity onPress={() => {
                             setOpenClose(false); setTimeout(() => {
@@ -138,6 +151,11 @@ function Menu({ route, screenElement, navigation, openClose, setOpenClose }: any
                         </View>
                     </View>;
                 }}>
+                <TouchableOpacity style={{ position: 'absolute', top: 20, left: 15, zIndex: 1000 }} onPress={() => {
+                    setOpenClose(true)
+                }}>
+                    <MenuSVG />
+                </TouchableOpacity>
                 {screenElement}
 
                 <Modal image={(style: any) => {
@@ -213,7 +231,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 15,
         alignSelf: 'center'
-    }, 
+    },
     nomeApp: {
         width: '100%',
         textAlign: 'center',
