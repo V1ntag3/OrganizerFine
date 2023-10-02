@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
 import {
     SafeAreaView,
     StyleSheet,
@@ -15,38 +9,25 @@ import ButtonGeneric from '../componentes/ButtonGeneric'
 import OkSVG from '../componentes/SVGComponentes/okSVG';
 import Globals from '../Globals';
 
-// Dimensoes
-type props = {
-    navigation: any;
-}
-
-function EsqueciSenhaOk({ navigation }: props["navigation"]): JSX.Element {
+function EsqueciSenhaOk({ navigation }: any): JSX.Element {
     return (
         <SafeAreaView style={styles.body}>
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollView} >
-
                 <View style={[styles.containerInput, { zIndex: 0 }]}>
                     <Text style={styles.textEsqueci}>
                         Sua senha foi enviada com sucesso
                     </Text>
-
                     <OkSVG style={styles.okSVGStyle} width={300} height={300} />
-
-
                     <View style={styles.containerBotoes}>
                         <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={() => navigation.navigate('Login')} title={"Logar"} />
                     </View>
                 </View>
-
                 <View style={styles.containerNome}>
                     <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
                     <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
                 </View>
-
-
             </ScrollView>
         </SafeAreaView>
-
     );
 }
 
@@ -57,45 +38,6 @@ const styles = StyleSheet.create({
     },
     scrollView: {
         height: Globals.HEIGHT
-    },
-    inputStyle: {
-        alignItems: 'center',
-        paddingVertical: 10.75309,
-        paddingHorizontal: 11.0905,
-        width: '100%',
-        height: 49.65,
-        borderRadius: 6.96875,
-        maxWidth: 338.89,
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        marginVertical: 8,
-        marginBottom: 4,
-        backgroundColor: Globals.COLOR.BRANCO,
-        fontFamily: Globals.FONT_FAMILY.REGULAR,
-        color: '#323941',
-        marginTop: 40
-    },
-    esqueciSenha: {
-        paddingLeft: 3,
-        width: '100%',
-        maxWidth: 338.89,
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        color: Globals.COLOR.BRANCO,
-        fontSize: 13,
-        lineHeight: 16,
-        fontFamily: Globals.FONT_FAMILY.MEDIUM
-    },
-    errorStyle: {
-        paddingLeft: 3,
-        width: '100%',
-        maxWidth: 338.89,
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        color: Globals.COLOR_ERROR,
-        fontSize: 11,
-        lineHeight: 12,
-        fontFamily: Globals.FONT_FAMILY.MEDIUM
     },
     containerInput: {
         paddingVertical: Globals.HEIGHT * 0.3,
@@ -115,13 +57,6 @@ const styles = StyleSheet.create({
         fontSize: 17,
         lineHeight: 25,
         color: Globals.COLOR.BRANCO,
-    },
-    imagemOffice: {
-        width: 300,
-        height: 300,
-        position: 'absolute',
-        right: -45,
-        bottom: -20
     },
     containerBotoes: {
         width: '100%',
@@ -164,20 +99,9 @@ const styles = StyleSheet.create({
     textBotaoVerdeClaro: {
         color: Globals.COLOR.BRANCO,
     },
-    botaoBranco: {
-        backgroundColor: Globals.COLOR.BRANCO,
-    },
-    textBotaoBranco: {
-        color: Globals.COLOR.LIGHT.COLOR3,
-    },
     okSVGStyle: {
         marginLeft: Globals.WIDTH * 0.25,
         marginVertical: Globals.HEIGHT * 0.084
-    },
-    notebookSVGStyle: {
-        position: 'absolute',
-        right: 0,
-        top: 0,
     }
 });
 

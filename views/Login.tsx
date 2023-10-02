@@ -68,7 +68,7 @@ function Login({ route, navigation }: any): JSX.Element {
 
                     })
                 }
-            }).catch((error) => { 
+            }).catch((error) => {
                 console.log(error)
             }).finally(() => {
                 setIsLoading(false)
@@ -76,59 +76,53 @@ function Login({ route, navigation }: any): JSX.Element {
         }
     }
 
-    const renderLoad = () => {
-        return (<><LoadingScreen /></>)
-    }
-
-    const renderTela = () => {
-
-        return (
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollView}>
-                <TituloPagina title='Login' navigation={navigation} />
-                <FundoPagina />
-                <View style={[styles.containerInput, { zIndex: 0 }]}>
-                    <Animatable.View delay={100}
-                        useNativeDriver={true} animation='fadeInLeft' duration={300}>
-                        <TextInput
-                            style={styles.inputStyle}
-                            selectionColor="black"
-                            placeholderTextColor={emailError ? Globals.COLOR_ERROR : '#323941'}
-                            onChangeText={(text) => setEmail(text)}
-                            placeholder="Email" />
-                    </Animatable.View>
-                    <Animatable.View delay={300}
-                        useNativeDriver={true} animation='fadeInLeft' duration={300}>
-                        <TextInput style={styles.inputStyle}
-                            secureTextEntry={true}
-                            placeholderTextColor={senhaError ? Globals.COLOR_ERROR : '#323941'}
-                            selectionColor="black"
-                            onChangeText={(text) => setSenha(text)}
-                            placeholder="Senha" />
-                    </Animatable.View>
-                    <Text style={[styles.errorStyle, { display: senhaError || emailError ? 'flex' : 'none' }]}  >Email e/ou Senha inválido(s)</Text>
-                    {/* <TouchableOpacity onPress={() => navigation.navigate('EsqueciSenha')} >
+    const screen = 
+    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollView}>
+        <TituloPagina title='Login' navigation={navigation} />
+        <FundoPagina />
+        <View style={[styles.containerInput, { zIndex: 0 }]}>
+            <Animatable.View delay={100}
+                useNativeDriver={true} animation='fadeInLeft' duration={300}>
+                <TextInput
+                    style={styles.inputStyle}
+                    selectionColor="black"
+                    placeholderTextColor={emailError ? Globals.COLOR_ERROR : '#323941'}
+                    onChangeText={(text) => setEmail(text)}
+                    placeholder="Email" />
+            </Animatable.View>
+            <Animatable.View delay={300}
+                useNativeDriver={true} animation='fadeInLeft' duration={300}>
+                <TextInput style={styles.inputStyle}
+                    secureTextEntry={true}
+                    placeholderTextColor={senhaError ? Globals.COLOR_ERROR : '#323941'}
+                    selectionColor="black"
+                    onChangeText={(text) => setSenha(text)}
+                    placeholder="Senha" />
+            </Animatable.View>
+            <Text style={[styles.errorStyle, { display: senhaError || emailError ? 'flex' : 'none' }]}  >Email e/ou Senha inválido(s)</Text>
+            {/* <TouchableOpacity onPress={() => navigation.navigate('EsqueciSenha')} >
                         <View>
                             <Text style={[styles.esqueciSenha]} >esqueci a senha</Text>
                         </View>
                     </TouchableOpacity> */}
-                    <Animatable.View delay={500} useNativeDriver={true} animation='fadeInLeft' duration={300} style={styles.containerBotoes}>
-                        <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={logar} title={"Login"} />
-                    </Animatable.View>
-                </View>
-                <NotebookSVG style={styles.notebookSVGStyle} width={103} height={103} />
-                <View style={styles.containerNome}>
-                    <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
-                    <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
-                </View>
-                <PastaSVG style={styles.pastaSVGStyle} width={143} height={143} />
-            </ScrollView>)
-    }
+            <Animatable.View delay={500} useNativeDriver={true} animation='fadeInLeft' duration={300} style={styles.containerBotoes}>
+                <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={logar} title={"Login"} />
+            </Animatable.View>
+        </View>
+        <NotebookSVG style={styles.notebookSVGStyle} width={103} height={103} />
+        <View style={styles.containerNome}>
+            <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
+            <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
+        </View>
+        <PastaSVG style={styles.pastaSVGStyle} width={143} height={143} />
+    </ScrollView>
+
     return (
         <SafeAreaView style={styles.body}>
             {
-                isLoading == true ? renderLoad() : (<></>)
+                isLoading == true ? <LoadingScreen /> : (<></>)
             }
-            {renderTela()}
+            {screen}
         </SafeAreaView>
     );
 }
@@ -151,7 +145,7 @@ const styles = StyleSheet.create({
         height: 49.65,
         borderRadius: 6.96875,
         maxWidth: '90%',
-        alignSelf:'center',
+        alignSelf: 'center',
         marginVertical: 8,
         marginBottom: 4,
         backgroundColor: Globals.COLOR.BRANCO,
@@ -163,7 +157,7 @@ const styles = StyleSheet.create({
         paddingLeft: 3,
         width: '100%',
         maxWidth: '90%',
-        alignSelf:'center',
+        alignSelf: 'center',
         color: Globals.COLOR.BRANCO,
         fontSize: 13,
         lineHeight: 16,
@@ -173,7 +167,7 @@ const styles = StyleSheet.create({
         paddingLeft: 3,
         width: '100%',
         maxWidth: '90%',
-        alignSelf:'center',
+        alignSelf: 'center',
         color: Globals.COLOR_ERROR,
         fontSize: 11,
         lineHeight: 12,
@@ -215,7 +209,7 @@ const styles = StyleSheet.create({
         height: 49.65,
         borderRadius: 6.96875,
         maxWidth: '90%',
-        alignSelf:'center',
+        alignSelf: 'center',
         marginVertical: 8
     },
     textoBotaoGrande: {

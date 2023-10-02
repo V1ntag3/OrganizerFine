@@ -2,7 +2,6 @@ import React from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  View,
   Text,
 } from 'react-native';
 import OfficeSVG from '../componentes/SVGComponentes/officeSVG';
@@ -37,7 +36,6 @@ function Welcome({ navigation }: any): JSX.Element {
       </Animatable.View>
       <OfficeSVG style={styles.officeSVGStyle} width={Globals.HEIGHT * 0.29} height={Globals.HEIGHT * 0.29} />
     </SafeAreaView>
-
   );
 }
 

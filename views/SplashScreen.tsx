@@ -11,7 +11,6 @@ import Globals from '../Globals';
 function SplashScreen(): JSX.Element {
   return (
     <SafeAreaView style={styles.body}>
-
       <Animated.View style={[styles.containerNome]}>
         <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
         <Text style={Globals.APP_NAME_STYLE}></Text>

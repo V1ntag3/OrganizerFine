@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
 import {
     SafeAreaView,
     StyleSheet,
@@ -19,20 +13,13 @@ import FundoPagina from '../componentes/FundoPaginaEsqueci';
 import EsqueciSVG from '../componentes/SVGComponentes/esqueciSVG';
 import Globals from '../Globals';
 
-// Dimensoes
-type props = {
-    navigation: any;
-}
-var esqueciSenha = {
-    email: "",
-}
+function EsqueciSenha({ navigation }: any): JSX.Element {
 
-function EsqueciSenha({ navigation }: props["navigation"]): JSX.Element {
-
+    const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState(false);
 
     const mandarEmail = () => {
-        setEmailError(esqueciSenha.email == "" ? true : false)
+        setEmailError(email == "" ? true : false)
 
         if (!emailError) {
             navigation.navigate('EsqueciSenhaOk')
@@ -50,7 +37,7 @@ function EsqueciSenha({ navigation }: props["navigation"]): JSX.Element {
                     <TextInput style={styles.inputStyle}
                         placeholderTextColor="#323941"
                         selectionColor="black"
-                        onChangeText={(text) => esqueciSenha.email = text}
+                        onChangeText={(text) => setEmail(text)}
                         placeholder="Email" />
 
                     <Text style={[styles.errorStyle, { display: emailError ? 'flex' : 'none' }]}  >Email não cadastrado</Text>
@@ -97,17 +84,6 @@ const styles = StyleSheet.create({
         color: '#323941',
         marginTop: 40
     },
-    esqueciSenha: {
-        paddingLeft: 3,
-        width: '100%',
-        maxWidth: 338.89,
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        color: Globals.COLOR.BRANCO,
-        fontSize: 13,
-        lineHeight: 16,
-        fontFamily: Globals.FONT_FAMILY.MEDIUM
-    },
     errorStyle: {
         paddingLeft: 3,
         width: '100%',
@@ -137,13 +113,6 @@ const styles = StyleSheet.create({
         fontSize: 17,
         lineHeight: 25,
         color: Globals.COLOR.BRANCO,
-    },
-    imagemOffice: {
-        width: 300,
-        height: 300,
-        position: 'absolute',
-        right: -45,
-        bottom: -20
     },
     containerBotoes: {
         width: '100%',
@@ -186,21 +155,10 @@ const styles = StyleSheet.create({
     textBotaoVerdeClaro: {
         color: Globals.COLOR.BRANCO
     },
-    botaoBranco: {
-        backgroundColor: Globals.COLOR.BRANCO
-    },
-    textBotaoBranco: {
-        color: Globals.COLOR.LIGHT.COLOR3,
-    },
     footerSVGStyle: {
         position: 'absolute',
         right: -20,
         bottom: 0,
-    },
-    notebookSVGStyle: {
-        position: 'absolute',
-        right: 0,
-        top: 0,
     }
 });
 

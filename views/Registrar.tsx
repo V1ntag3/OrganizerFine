@@ -16,13 +16,8 @@ import { useState } from 'react';
 
 function Registrar({ route, navigation }: any): JSX.Element {
 
-
     const { setUserToken } = route.params
     const [isLoading, setIsLoading] = useState(false)
-
-    const renderLoad = () => {
-        return (<><LoadingScreen /></>)
-    }
 
     const renderTela = () => {
         return (
@@ -42,7 +37,7 @@ function Registrar({ route, navigation }: any): JSX.Element {
     return (
         <SafeAreaView style={styles.body}>
             {
-                isLoading == true ? renderLoad() : (<></>)
+                isLoading == true ? <LoadingScreen /> : (<></>)
             }
             {renderTela()}
 
