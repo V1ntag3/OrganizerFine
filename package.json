@@ -26,6 +26,7 @@
     "react-native-currency-input": "^1.1.0",
     "react-native-drawer-layout": "^3.2.0",
     "react-native-dropdown-picker": "^5.4.6",
+    "react-native-element-dropdown": "^2.10.0",
     "react-native-gesture-handler": "^2.9.0",
     "react-native-gifted-charts": "^1.2.42",
     "react-native-modern-datepicker": "^1.0.0-beta.91",
