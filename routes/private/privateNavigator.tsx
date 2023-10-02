@@ -6,6 +6,7 @@ import Adicionar from '../../views/Adicionar';
 import DetalharRevenueSpending from '../../views/DetalharRevenueSpending';
 import Configuracao from '../../views/Configuracao';
 import Home from '../../views/Home';
+import GestaoDeEmprestimos from '../../views/GestaoDeEmprestimos';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,7 @@ function PrivateNavigator( {route}:any ) {
       }
       } />
     <Stack.Screen name="DetalharRevenueSpending" component={DetalharRevenueSpending} initialParams={{setUserToken}} />
+    <Stack.Screen name="GestaoDeEmprestimos" component={GestaoDeEmprestimos} initialParams={{setUserToken}} />
 
     </Stack.Navigator>
   );
