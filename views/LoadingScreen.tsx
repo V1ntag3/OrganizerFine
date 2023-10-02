@@ -16,8 +16,6 @@ function LoadingScreen(): JSX.Element {
     _start()
   }, [animatedValue])
 
-
-
   function _start() {
     Animated.loop(
       Animated.sequence([
@@ -35,7 +33,6 @@ function LoadingScreen(): JSX.Element {
   }
   return (
     <SafeAreaView style={styles.body}>
-
       <Animated.View style={[styles.containerNome, { opacity: animatedValue }]}>
         <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
         <Text style={Globals.APP_NAME_STYLE}></Text>
