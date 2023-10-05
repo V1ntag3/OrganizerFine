@@ -1,7 +1,7 @@
 
 # OrganizerFine
 
-Projeto mobile que foi idealizado e desenvolvido por mim, abrangendo tanto o design quanto o desenvolvimento. Esse projeto tem como objetivo auxiliar os usuários na visualização e controle de gastos, permitindo uma gestão mais eficiente de suas finanças.
+Projeto mobile que foi idealizado e desenvolvido por mim, abrangendo tanto o design quanto o desenvolvimento do front-end e o back-end. Esse projeto tem como objetivo auxiliar os usuários na visualização e controle de gastos, permitindo uma gestão mais eficiente de suas finanças.
 ## Funcionalidades
 
 - Login e Registro
@@ -54,7 +54,7 @@ Com esse projeto consegui desenvolver minhas habilidades com o figma, além de a
 
 ## Melhorias
 
-No momento do desenvolvimento meu foco foi na otimização da aplicação, tentando ao máximo diminuir as atualizações de tela dos componentes.
+No momento do desenvolvimento meu foco foi na otimização da aplicação, tentando ao máximo diminuir as atualizações de tela dos componentes. Além disso estou desenvolvendo mais um módulo de gerenciamento de empréstimos e uma melhorias nas telas de registro e de edição de dados.
 
 ## Suporte
 
