@@ -49,7 +49,7 @@ Inicie o emulador android
 
 ## Aprendizados
 
-Com esse projeto consegui desenvolver minhas habilidades com o figma, além de abrir meus olhos para o desenvolvimento mobile, o qual estou me afeiçoando bastante, com ele consegui trabalhar com rotas privadas e publicas atrelado ao login em aplicações mobile, animações, além de me forçar a pensar mais no desemplenho das minhas aplicações. 
+Com esse projeto consegui desenvolver minhas habilidades com o figma, além de abrir meus olhos para o desenvolvimento mobile, o qual estou me afeiçoando bastante, com ele consegui trabalhar com rotas privadas e publicas atrelado ao login em aplicações mobile, animações,integrações com API além de me forçar a pensar mais no desempenho das minhas aplicações. 
 
 
 ## Melhorias
