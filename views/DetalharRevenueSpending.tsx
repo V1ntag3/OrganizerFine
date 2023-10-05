@@ -155,15 +155,13 @@ function DetalharRevenueSpending({ route, navigation }: any): JSX.Element {
 
     const screen =
         <FlatList
-            nestedScrollEnabled={true}
+            nestedScrollEnabled={false}
             data={null}
             renderItem={null}
             showsVerticalScrollIndicator={false}
             ListHeaderComponent={(
-                <ScrollView
-
-                    nestedScrollEnabled={true}>
-                    <View style={[styles.body, { backgroundColor: element.type == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO, height: Globals.HEIGHT - 25, }]}>
+                <ScrollView style={styles.scrollView}>
+                    <View style={[styles.body, { backgroundColor: element.type == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO, }]}>
                         {
                             isEditable ? (<TouchableOpacity style={{ position: 'absolute', top: 20, right: 15, zIndex: 1000 }} onPress={() => setIsEditable(false)}>
                                 <EditarSVG />
@@ -287,12 +285,12 @@ const styles = StyleSheet.create({
         marginTop: 15
     },
     body: {
+        flex: 1,
+        minHeight: Globals.HEIGHT,
+        height:'auto'
 
-        flex: 1
     },
     scrollView: {
-        minHeight: Globals.HEIGHT,
-
     },
     inputStyle: {
         alignItems: 'center',
@@ -342,10 +340,9 @@ const styles = StyleSheet.create({
     },
     addBotao: {
         alignSelf: 'center',
-        position: 'absolute',
         width: 60,
         height: 60,
-        bottom: 0
+        marginTop:50
     },
     touchBotao: {
         width: 60,

@@ -7,14 +7,15 @@ function DatePickerGen({type, realDate} :any): JSX.Element {
    
     return (
      <>
+            {console.log(String(realDate).slice(0,10))}
           <DatePicker
                 mode="calendar"
                 isGregorian={true}
                 selectorStartingYear={new Date().getFullYear()}
-                minimumDate={String(realDate).slice(0,9)}
-                maximumDate={String(realDate).slice(0,9)}
-                current={String(realDate).slice(0,9)}
-                selected={String(realDate).slice(0,9)}
+                minimumDate={String(realDate).slice(0,10)}
+                maximumDate={String(realDate).slice(0,10)}
+                current={String(realDate).slice(0,10)}
+                selected={String(realDate).slice(0,10)}
                 selectorEndingYear={new Date().getFullYear()}
                 style={{
                     marginTop:10,
