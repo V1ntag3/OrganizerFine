@@ -8,7 +8,7 @@ import {
     Pressable
 } from 'react-native';
 
-import Globals from '../../Globals';
+import Globals from '../Globals';
 
 function ModalGeneric({ modalVisible, setModalVisible, image, affirmFunc, title, paragraph, textAffirmButton, textNegButton }: any): JSX.Element {
     return (

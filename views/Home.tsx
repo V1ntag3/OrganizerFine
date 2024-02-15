@@ -6,12 +6,12 @@ import {
 }
     from 'react-native';
 import React from 'react';
-import BarChartSVG from '../componentes/SVGComponentes/barChartSVG'
+import BarChartSVG from '../components/SVGComponentes/barChartSVG'
 import Globals from '../Globals';
 import Svg, { Path } from 'react-native-svg';
-import AddSVG from '../componentes/SVGComponentes/addSVG';
-import GestaoSVG from '../componentes/SVGComponentes/gestaoSVG';
-import Menu from './components/Menu';
+import AddSVG from '../components/SVGComponentes/addSVG';
+import GestaoSVG from '../components/SVGComponentes/gestaoSVG';
+import Menu from '../components/Menu';
 
 function Home({ route, navigation }: any): JSX.Element {
 
@@ -32,7 +32,7 @@ function Home({ route, navigation }: any): JSX.Element {
                     <Text style={styles.textBox}  >Finanças</Text>
                 </View>
                 <View onTouchStart={() => {
-                    navigation.navigate('Adicionar')
+                    navigation.navigate('AddRevenueSpending')
                 }} style={[styles.boxClick, styles.boxClick2]}>
                     <View style={{
                         borderRadius: 30
@@ -58,11 +58,11 @@ function Home({ route, navigation }: any): JSX.Element {
                 </View>
             </View>
 
-            <View style={[styles.boxClick, styles.boxClick3]}>
+            <View onTouchEnd={() => {
+                    navigation.navigate('ManagerLoan')
+                }} style={[styles.boxClick, styles.boxClick3]}>
                 <GestaoSVG />
-                <Text style={styles.textBox} onPress={() => {
-                    navigation.navigate('GestaoDeEmprestimos')
-                }} >Gestão de Empréstimos</Text>
+                <Text style={styles.textBox}  >Gestão de Empréstimos</Text>
             </View>
         </View>
 

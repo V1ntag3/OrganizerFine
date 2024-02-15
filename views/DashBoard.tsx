@@ -11,32 +11,30 @@ import {
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Globals from '../Globals';
 import DatePicker from 'react-native-modern-datepicker';
-import BackRotSVG from '../componentes/SVGComponentes/backRotSVG'
-import AddSVG from '../componentes/SVGComponentes/addSVG';
+import BackRotSVG from '../components/SVGComponentes/backRotSVG'
+import AddSVG from '../components/SVGComponentes/addSVG';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from './LoadingScreen';
 import * as Animatable from 'react-native-animatable'
-import Menu from './components/Menu';
-import PieChartComp from './components/PieChartComp';
-import ItemListRevSpen from './components/ItemListRevSpen';
+import Menu from '../components/Menu';
+import PieChartComp from '../components/PieChartComp';
+import ItemListRevSpen from '../components/ItemListRevSpen';
 
 function DashBoard({ route, navigation }: any): JSX.Element {
 
-    const [mes, setMes] = useState(Globals.MONTH[parseInt(new Date().getMonth().toString())])
-    const [ano, setAno] = useState(String(new Date().getFullYear()));
+    const [month, setMonth] = useState(new Date().getMonth() + 1)
+    const [year, setYear] = useState(new Date().getFullYear());
 
-    const mesReal = useRef(Globals.MONTH[parseInt(new Date().getMonth().toString())])
-    const anoReal = useRef(String(new Date().getFullYear()));
+    const [loading, setLoading] = useState(false)
 
-    const [isLoading, setIsLoading] = useState(false)
-    const [gastos, setGastos] = useState('R$ 0,00');
-    const [receitas, setReceitas] = useState('R$ 0,00');
+    const [spending, setSpending] = useState('R$ 0,00');
+    const [revenue, setRevenue] = useState('R$ 0,00');
     const [item, setItems] = useState([])
 
     const [show, setShow] = useState(false);
 
     const [valorMaiorPorc, setValorMaiorPorc] = useState('0%')
-    const [valorMaiorNome, setValorMaiorNome] = useState('')
+    const [valorMaiorNome, setValorMaiorNome] = useState<any>('')
     const [selectedDateSe, _] = useState(new Date().toISOString().slice(0, 10));
 
     const renderHeaderFlat = () => {
@@ -52,8 +50,8 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                         }
                     }>
                         <View>
-                            <Text style={styles.selectData}>{mes}</Text>
-                            <Text style={styles.selectData}>{ano}</Text>
+                            <Text style={styles.selectData}>{Globals.MONTH[month - 1]}</Text>
+                            <Text style={styles.selectData}>{year}</Text>
                         </View>
                         <View style={{ marginTop: 3, marginLeft: 3 }}>
                             <BackRotSVG />
@@ -67,12 +65,12 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                     <View style={styles.dados}>
                         <View style={styles.totalizadores}>
                             <Text style={[styles.textTotalizadores, { color: Globals.COLOR_GASTO }]}>Gastos</Text>
-                            <Text style={[styles.textTotalizadores, { color: Globals.COLOR_GASTO }]}>{gastos}</Text>
+                            <Text style={[styles.textTotalizadores, { color: Globals.COLOR_GASTO }]}>{spending}</Text>
                         </View>
                         <View style={styles.linha}></View>
                         <View style={styles.totalizadores}>
                             <Text style={[styles.textTotalizadores, { color: Globals.COLOR_RECEITA }]}>Receitas</Text>
-                            <Text style={[styles.textTotalizadores, { color: Globals.COLOR_RECEITA }]}>{receitas}</Text>
+                            <Text style={[styles.textTotalizadores, { color: Globals.COLOR_RECEITA }]}>{revenue}</Text>
                         </View>
                     </View>
 
@@ -83,13 +81,13 @@ function DashBoard({ route, navigation }: any): JSX.Element {
     const renderItens = () => {
         return (
             <FlatList
-                refreshControl={<RefreshControl progressBackgroundColor={Globals.COLOR.LIGHT.COLOR1} colors={[Globals.COLOR.LIGHT.COLOR3]} refreshing={refreshing}
-                    onRefresh={onRefresh} />}
+                refreshControl={<RefreshControl 
+                progressBackgroundColor={Globals.COLOR.LIGHT.COLOR1} colors={[Globals.COLOR.LIGHT.COLOR3]} refreshing={refreshing}
+                onRefresh={onRefresh} />}
                 contentContainerStyle={{
                     minHeight: Globals.HEIGHT * 0.4, backgroundColor: Globals.COLOR.LIGHT.COLOR4
                 }}
                 disableVirtualization={false}
-
                 style={{ backgroundColor: '#D9D9D9' }}
                 data={item}
                 renderItem={({ item }) => <ItemListRevSpen navigation={navigation} element={item} />}
@@ -99,6 +97,7 @@ function DashBoard({ route, navigation }: any): JSX.Element {
             />
         )
     }
+
     const pieData = useRef([
         { value: 0, color: '#323131', gradientCenterColor: '#323131' },
         { value: 0, color: '#474747', gradientCenterColor: '#474747' },
@@ -107,72 +106,74 @@ function DashBoard({ route, navigation }: any): JSX.Element {
         { value: 0, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
         { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
     ]);
-    const getData = async (isPageReload = false, anoR = null, mesR = null) => {
+
+    const getData = async (isPageReload = false) => {
         try {
             await AsyncStorage.getItem('token', (_, result) => {
-
-                var mesRealM = mesR == null ? mesReal.current : mesR
-                var anoRealM = anoR == null ? anoReal.current : anoR
-
-                fetch(Globals.BASE_URL_API + 'revenue_spending/?month=' + mesRealM + '&year=' + anoRealM, {
+                fetch(Globals.BASE_URL_API + 'revenueSpending?month=' + month + '&year=' + year, {
                     method: 'GET',
                     headers: {
-                        'Authorization': 'Token ' + result
+                        'Authorization': 'Bearer ' + result
                     },
                 }).then(response => {
+
                     if (response.status === 401 || response.status === 403) {
                         AsyncStorage.clear().then(() => { setUserToken(null) })
                     }
                     if (response.status == 200) {
+
                         response.json().then((json) => {
+
                             setShow(false)
-                            if (json != 0 && json.detail == null) {
+
+                            if (json.length != 0) {
                                 var array: any = []
                                 var gastos: number = 0
                                 var receitas: number = 0
                                 var item0 = 0, item1 = 0, item2 = 0, item3 = 0, item4 = 0, item5 = 0
                                 for (var item in json) {
-                                    switch (json[item].typeCat) {
-                                        case '0':
+
+                                    switch (json[item].category) {
+                                        case 0:
                                             item0 = + json[item].value
                                             break
-                                        case '1':
+                                        case 1:
                                             item1 = + json[item].value
                                             break
-                                        case '2':
+                                        case 2:
                                             item2 = + json[item].value
                                             break
-                                        case '3':
+                                        case 3:
                                             item3 = + json[item].value
                                             break
-                                        case '4':
+                                        case 4:
                                             item4 = + json[item].value
                                             break
-                                        case '5':
+                                        case 5:
                                             item5 = + json[item].value
                                             break
                                     }
 
-                                    if (json[item].type == '0') {
+                                    if (json[item].type == 0) {
                                         receitas += json[item].value
                                     }
 
-                                    if (json[item].type == '1') {
+                                    if (json[item].type == 1) {
                                         gastos += json[item].value
                                     }
+                                    json[item].realDate = json[item].created_at
                                     json[item].value = json[item].value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
-
-                                    var valor = parseInt(new Date() - new Date(json[item].date))
-                                    json[item].realDate = json[item].date
-                                    json[item].date = String(parseInt(valor / (1000 * 60 * 60 * 24))) + ' dias atrás'
-
+                                    var valor = Number(new Date()) - Number(new Date(json[item].created_at))
+                                    json[item].created_at = json[item].created_at
+                                    json[item].created_at = String(valor / (1000 * 60 * 60 * 24))[0] + ' dias atrás'
                                     array.push(json[item])
 
 
                                 }
 
-                                setGastos(gastos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-                                setReceitas(receitas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+                                setRevenue(receitas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+                                setSpending(gastos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+
                                 var arrayValores = [item0, item1, item2, item3, item4, item5]
                                 pieData.current = [
                                     { value: item0, color: '#323131', gradientCenterColor: '#323131' },
@@ -182,15 +183,17 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                                     { value: item4, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
                                     { value: item5, color: '#60625F', gradientCenterColor: '#60625F' },
                                 ]
+
                                 if (item0 == 0 && item1 == 0 && item2 == 0 && item3 == 0 && item4 == 0 && item5 == 0) {
                                     setItems([])
                                     setValorMaiorPorc('0%')
                                     setValorMaiorNome('')
                                 }
+
                                 else {
                                     setItems(array)
-                                    setValorMaiorPorc(String(parseInt((Math.max(...arrayValores) / gastos) * 100)) + '%')
-                                    setValorMaiorNome(renderNome(String(arrayValores.indexOf(Math.max(...arrayValores)))))
+                                    setValorMaiorPorc(String(parseInt(String((Math.max(...arrayValores) / gastos) * 100))) + '%')
+                                    setValorMaiorNome(renderNome(arrayValores.indexOf(Math.max(...arrayValores))))
                                 }
 
                             } else {
@@ -203,8 +206,8 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                                     { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
                                 ]
                                 setItems([]);
-                                setGastos('R$ 0,00');
-                                setReceitas('R$ 0,00');
+                                setSpending('R$ 0,00');
+                                setRevenue('R$ 0,00');
                                 setValorMaiorPorc('0%')
                                 setValorMaiorNome('')
                             }
@@ -217,7 +220,7 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                     }
                 }).finally(() => {
                     if (isPageReload) setRefreshing(false)
-                    setIsLoading(false)
+                    setLoading(false)
                 })
             })
         } catch (e) {
@@ -227,11 +230,11 @@ function DashBoard({ route, navigation }: any): JSX.Element {
 
     const handleDateSelect = (selectedDate: String) => {
 
-        setMes(Globals.MONTH[parseInt(selectedDate.toString().slice(4, 7)) - 1])
-        setAno(selectedDate.slice(0, 4).toString())
-        mesReal.current = Globals.MONTH[parseInt(selectedDate.toString().slice(4, 7)) - 1]
-        anoReal.current = selectedDate.slice(0, 4).toString()
-        getData(false, selectedDate.slice(0, 4).toString(), Globals.MONTH[parseInt(selectedDate.toString().slice(4, 7)) - 1])
+        setMonth(parseInt(selectedDate.toString().slice(4, 7)))
+        setYear(parseInt(selectedDate.slice(0, 4)))
+
+        // getData(false, selectedDate.slice(0, 4).toString(), Globals.MONTH[parseInt(selectedDate.toString().slice(4, 7)) - 1])
+        getData(false)
         setShow(false)
 
     }
@@ -287,7 +290,7 @@ function DashBoard({ route, navigation }: any): JSX.Element {
             </>
         )}
         <TouchableOpacity style={{ zIndex: 9999, position: 'absolute', top: 20, right: 0 }} onPress={() => {
-            navigation.navigate('Adicionar', {
+            navigation.navigate('AddRevenueSpending', {
 
             })
         }}>
@@ -327,18 +330,18 @@ function DashBoard({ route, navigation }: any): JSX.Element {
         {
             item.length <= 0 && (
                 <Animatable.View useNativeDriver={true} animation='fadeInUp' style={{ position: 'absolute', bottom: Globals.HEIGHT * 0.13, alignSelf: 'center' }}>
-                    <Text style={{ color: Globals.COLOR.LIGHT.COLOR4, textAlign: 'center', fontFamily: Globals.FONT_FAMILY.BOLD, }}>Gastos não encontrados</Text>
+                    <Text style={{ color: Globals.COLOR.LIGHT.COLOR4, textAlign: 'center', fontFamily: Globals.FONT_FAMILY.BOLD, }}>Gastos ou receitas não encontrados</Text>
                 </Animatable.View>)
         }
     </>
     useEffect(() => {
         getData();
-    }, [mes]);
+    }, [month]);
 
     return (
         <SafeAreaView style={styles.body}>
             {
-                isLoading ? <LoadingScreen /> : (<></>)
+                loading ? <LoadingScreen /> : (<></>)
             }
             <Menu route={route} screenElement={screen} navigation={navigation} />
         </SafeAreaView>
@@ -400,19 +403,19 @@ const styles = StyleSheet.create({
 
 });
 
-const renderNome = (item: any) => {
+const renderNome = (item: number) => {
     switch (item) {
-        case '0':
+        case 0:
             return 'Alimentação'
-        case '1':
+        case 1:
             return 'Serviço'
-        case '2':
+        case 2:
             return 'Eletrônicos'
-        case '3':
+        case 3:
             return 'Vestuário'
-        case '4':
+        case 4:
             return 'Entretenimento'
-        case '5':
+        case 5:
             return 'Outros'
     }
 }

@@ -8,12 +8,12 @@ import {
 }
     from 'react-native';
 import React from 'react';
-import ButtonGeneric from '../componentes/ButtonGeneric'
-import TituloPagina from '../componentes/TituloPaginaLoginRegistrar'
-import PastaSVG from '../componentes/SVGComponentes/pastaSVG'
-import NotebookSVG from '../componentes/SVGComponentes/notebookSVG'
+import ButtonGeneric from '../components/ButtonGeneric'
+import TituloPagina from '../components/TituloPaginaLoginRegistrar'
+import PastaSVG from '../components/SVGComponentes/pastaSVG'
+import NotebookSVG from '../components/SVGComponentes/notebookSVG'
 import { useState } from 'react';
-import FundoPagina from '../componentes/FundoPaginaLoginRegistrar';
+import FundoPagina from '../components/FundoPaginaLoginRegistrar';
 import Globals from '../Globals';
 import fetch from 'cross-fetch';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -39,19 +39,17 @@ function Login({ route, navigation }: any): JSX.Element {
         setSenhaError(senha == "" ? true : false)
         if (senha != "" && email != "" && isEmail(email)) {
             setIsLoading(true)
-            fetch(Globals.BASE_URL_API + 'login/', {
+            fetch(Globals.BASE_URL_API + 'auth/login', {
                 method: 'POST',
                 body: JSON.stringify({
-                    username: email.toLowerCase(),
+                    email: email,
                     password: senha
                 }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
                 },
             }).then((response) => {
-                console.log(response.status)
-
-                if (response.status == 400) {
+                if (response.status == 404) {
                     setSenhaError(true)
                     setEmailError(true)
                 }
@@ -68,6 +66,9 @@ function Login({ route, navigation }: any): JSX.Element {
 
                     })
                 }
+                response.text().then(text => {
+                }
+                )
             }).catch((error) => {
                 console.log(error)
             }).finally(() => {
@@ -76,46 +77,46 @@ function Login({ route, navigation }: any): JSX.Element {
         }
     }
 
-    const screen = 
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollView}>
-        <TituloPagina title='Login' navigation={navigation} />
-        <FundoPagina />
-        <View style={[styles.containerInput, { zIndex: 0 }]}>
-            <Animatable.View delay={100}
-                useNativeDriver={true} animation='fadeInLeft' duration={300}>
-                <TextInput
-                    style={styles.inputStyle}
-                    selectionColor="black"
-                    placeholderTextColor={emailError ? Globals.COLOR_ERROR : '#323941'}
-                    onChangeText={(text) => setEmail(text)}
-                    placeholder="Email" />
-            </Animatable.View>
-            <Animatable.View delay={300}
-                useNativeDriver={true} animation='fadeInLeft' duration={300}>
-                <TextInput style={styles.inputStyle}
-                    secureTextEntry={true}
-                    placeholderTextColor={senhaError ? Globals.COLOR_ERROR : '#323941'}
-                    selectionColor="black"
-                    onChangeText={(text) => setSenha(text)}
-                    placeholder="Senha" />
-            </Animatable.View>
-            <Text style={[styles.errorStyle, { display: senhaError || emailError ? 'flex' : 'none' }]}  >Email e/ou Senha inválido(s)</Text>
-            {/* <TouchableOpacity onPress={() => navigation.navigate('EsqueciSenha')} >
+    const screen =
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollView}>
+            <TituloPagina title='Login' navigation={navigation} />
+            <FundoPagina />
+            <View style={[styles.containerInput, { zIndex: 0 }]}>
+                <Animatable.View delay={100}
+                    useNativeDriver={true} animation='fadeInLeft' duration={300}>
+                    <TextInput
+                        style={styles.inputStyle}
+                        selectionColor="black"
+                        placeholderTextColor={emailError ? Globals.COLOR_ERROR : '#323941'}
+                        onChangeText={(text) => setEmail(text)}
+                        placeholder="Email" />
+                </Animatable.View>
+                <Animatable.View delay={300}
+                    useNativeDriver={true} animation='fadeInLeft' duration={300}>
+                    <TextInput style={styles.inputStyle}
+                        secureTextEntry={true}
+                        placeholderTextColor={senhaError ? Globals.COLOR_ERROR : '#323941'}
+                        selectionColor="black"
+                        onChangeText={(text) => setSenha(text)}
+                        placeholder="Senha" />
+                </Animatable.View>
+                <Text style={[styles.errorStyle, { display: senhaError || emailError ? 'flex' : 'none' }]}  >Email e/ou Senha inválido(s)</Text>
+                {/* <TouchableOpacity onPress={() => navigation.navigate('EsqueciSenha')} >
                         <View>
                             <Text style={[styles.esqueciSenha]} >esqueci a senha</Text>
                         </View>
                     </TouchableOpacity> */}
-            <Animatable.View delay={500} useNativeDriver={true} animation='fadeInLeft' duration={300} style={styles.containerBotoes}>
-                <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={logar} title={"Login"} />
-            </Animatable.View>
-        </View>
-        <NotebookSVG style={styles.notebookSVGStyle} width={103} height={103} />
-        <View style={styles.containerNome}>
-            <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
-            <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
-        </View>
-        <PastaSVG style={styles.pastaSVGStyle} width={143} height={143} />
-    </ScrollView>
+                <Animatable.View delay={500} useNativeDriver={true} animation='fadeInLeft' duration={300} style={styles.containerBotoes}>
+                    <ButtonGeneric styleButton={[styles.botaoVerdeClaro, styles.botaoGrande]} styleText={[styles.textBotaoVerdeClaro, styles.textoBotaoGrande]} onPress={logar} title={"Login"} />
+                </Animatable.View>
+            </View>
+            <NotebookSVG style={styles.notebookSVGStyle} width={103} height={103} />
+            <View style={styles.containerNome}>
+                <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
+                <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
+            </View>
+            <PastaSVG style={styles.pastaSVGStyle} width={143} height={143} />
+        </ScrollView>
 
     return (
         <SafeAreaView style={styles.body}>
@@ -129,12 +130,13 @@ function Login({ route, navigation }: any): JSX.Element {
 
 const styles = StyleSheet.create({
     body: {
-        backgroundColor: Globals.COLOR.LIGHT.COLOR2,
         flex: 1,
-        height: Globals.HEIGHT
+        backgroundColor: Globals.COLOR.LIGHT.COLOR2,
+        height: Globals.HEIGHT,
+        maxHeight: Globals.HEIGHT
     },
     scrollView: {
-        minHeight: Globals.HEIGHT,
+        minHeight: Globals.HEIGHT - 24,
         maxHeight: Globals.HEIGHT
     },
     inputStyle: {

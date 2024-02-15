@@ -6,31 +6,31 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-import Globals from '../../Globals';
-import VestSVG from '../../componentes/SVGComponentes/vestSVG';
-import ComidaSVG from '../../componentes/SVGComponentes/comidaSVG';
-import EletroSVG from '../../componentes/SVGComponentes/eletroSVG';
-import EntreSVG from '../../componentes/SVGComponentes/entreSVG';
-import OutrosSVG from '../../componentes/SVGComponentes/outrosSVG';
-import ServSVG from '../../componentes/SVGComponentes/servSVG';
-import MoneySVG from '../../componentes/SVGComponentes/moneySVG';
+import Globals from '../Globals';
+import VestSVG from './SVGComponentes/vestSVG';
+import ComidaSVG from './SVGComponentes/comidaSVG';
+import EletroSVG from './SVGComponentes/eletroSVG';
+import EntreSVG from './SVGComponentes/entreSVG';
+import OutrosSVG from './SVGComponentes/outrosSVG';
+import ServSVG from './SVGComponentes/servSVG';
+import MoneySVG from './SVGComponentes/moneySVG';
 
 function ItemListRevSpen({navigation, element} :any): JSX.Element {
     const renderImagem = (item: any) => {
         switch (item) {
-            case '0':
+            case 0:
                 return (<ComidaSVG />)
-            case '1':
+            case 1:
                 return (<ServSVG />)
-            case '2':
+            case 2:
                 return (<EletroSVG />)
-            case '3':
+            case 3:
                 return (<VestSVG />)
-            case '4':
+            case 4:
                 return (<EntreSVG />)
-            case '5':
+            case 5:
                 return (<OutrosSVG />)
-            case '':
+            case -1:
                 return (<MoneySVG />)
         }
     }
@@ -98,21 +98,21 @@ function ItemListRevSpen({navigation, element} :any): JSX.Element {
     return (
         <View key={element.id} style={{ backgroundColor: '#D9D9D9' }}>
             <TouchableOpacity onPress={() => {
-                navigation.navigate('DetalharRevenueSpending', { element })
+                navigation.navigate('DetailRevenueSpending', { element })
             }}>
                 <View style={styles.card}>
                     <View style={styles.iconCard}>
                         {
-                            renderImagem(element.typeCat)
+                            renderImagem(element.category)
                         }
                     </View>
                     <View style={styles.decCat}>
                         <Text style={styles.decCat1}>{element.about}</Text>
-                        <Text style={styles.decCat2}>{renderNome(element.typeCat)}</Text>
+                        <Text style={styles.decCat2}>{renderNome(element.category)}</Text>
                     </View>
                     <View style={styles.valDate}>
                         <Text style={styles.valDate1}>{element.type == 0 ? '+ ' : '- ' }{element.value}</Text>
-                        <Text style={styles.valDate2}>{element.date}</Text>
+                        <Text style={styles.valDate2}>{element.created_at}</Text>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -123,19 +123,19 @@ function ItemListRevSpen({navigation, element} :any): JSX.Element {
 };
 const renderNome = (item: any) => {
     switch (item) {
-        case '0':
+        case 0:
             return 'Alimentação'
-        case '1':
+        case 1:
             return 'Serviço'
-        case '2':
+        case 2:
             return 'Eletrônicos'
-        case '3':
+        case 3:
             return 'Vestuário'
-        case '4':
+        case 4:
             return 'Entretenimento'
-        case '5':
+        case 5:
             return 'Outros'
-        case '':
+        case -1:
             return 'Receita'
     }
 }

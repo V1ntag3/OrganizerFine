@@ -5,8 +5,8 @@ import {
     Text,
     ScrollView,
 } from 'react-native';
-import ButtonGeneric from '../componentes/ButtonGeneric'
-import OkSVG from '../componentes/SVGComponentes/okSVG';
+import ButtonGeneric from '../components/ButtonGeneric'
+import OkSVG from '../components/SVGComponentes/okSVG';
 import Globals from '../Globals';
 
 function EsqueciSenhaOk({ navigation }: any): JSX.Element {

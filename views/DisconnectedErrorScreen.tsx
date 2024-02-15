@@ -5,7 +5,7 @@ import {
     View,
 } from 'react-native';
 import Globals from '../Globals';
-import NoConnectSVG from '../componentes/SVGComponentes/noConnectSVG';
+import NoConnectSVG from '../components/SVGComponentes/noConnectSVG';
 
 function DisconnectedErrorScreen(): JSX.Element {
     return (

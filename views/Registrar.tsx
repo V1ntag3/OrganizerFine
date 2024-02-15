@@ -5,13 +5,13 @@ import {
     Text,
     ScrollView,
 } from 'react-native';
-import TituloPagina from '../componentes/TituloPaginaLoginRegistrar'
-import PastaSVG from '../componentes/SVGComponentes/pastaSVG'
-import NotebookSVG from '../componentes/SVGComponentes/notebookSVG'
-import FundoPagina from '../componentes/FundoPaginaLoginRegistrar';
+import TituloPagina from '../components/TituloPaginaLoginRegistrar'
+import PastaSVG from '../components/SVGComponentes/pastaSVG'
+import NotebookSVG from '../components/SVGComponentes/notebookSVG'
+import FundoPagina from '../components/FundoPaginaLoginRegistrar';
 import Globals from '../Globals';
 import LoadingScreen from './LoadingScreen';
-import FormRegister from './components/FormRegister';
+import FormRegister from '../components/FormRegister';
 import { useState } from 'react';
 
 function Registrar({ route, navigation }: any): JSX.Element {

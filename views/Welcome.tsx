@@ -4,8 +4,8 @@ import {
   StyleSheet,
   Text,
 } from 'react-native';
-import OfficeSVG from '../componentes/SVGComponentes/officeSVG';
-import ButtonGeneric from '../componentes/ButtonGeneric'
+import OfficeSVG from '../components/SVGComponentes/officeSVG';
+import ButtonGeneric from '../components/ButtonGeneric'
 import Globals from '../Globals';
 import * as Animatable from 'react-native-animatable'
 function Welcome({ navigation }: any): JSX.Element {
@@ -15,10 +15,10 @@ function Welcome({ navigation }: any): JSX.Element {
     <SafeAreaView style={styles.body}>
       <Animatable.View useNativeDriver={true} animation={{
         from: {
-          transform: [{ translateX: -(Globals.WIDTH / 2 - (Globals.WIDTH * 1.53 / 2) + Globals.WIDTH * 0.03) }, { translateY: -(Globals.WIDTH / 2 - (Globals.HEIGHT * 0.71 / 2) - (Globals.HEIGHT * 0.04)) }, { rotate: '-26.71deg' }],
+          transform: [{ translateX: -(Globals.WIDTH / 2 - (Globals.WIDTH * 1.53 / 2) + Globals.WIDTH * 0.04) }, { translateY: -(Globals.WIDTH / 2 - (Globals.HEIGHT * 0.71 / 2) - (Globals.HEIGHT * 0.04)) }, { rotate: '-26.71deg' }],
         },
         to: {
-          transform: [{ translateX: (Globals.WIDTH / 2 - (Globals.WIDTH * 1.53 / 2) + Globals.WIDTH * 0.03) }, { translateY: Globals.WIDTH / 2 - (Globals.HEIGHT * 0.71 / 2) - (Globals.HEIGHT * 0.04) }, { rotate: '-26.71deg' }],
+          transform: [{ translateX: (Globals.WIDTH / 2 - (Globals.WIDTH * 1.53 / 2) + Globals.WIDTH * 0.03) }, { translateY: Globals.WIDTH / 2 - (Globals.HEIGHT * 0.75 / 2) - (Globals.HEIGHT * 0.04) }, { rotate: '-26.71deg' }],
         },
       }} delay={100} duration={2000} style={styles.retangulo}></Animatable.View>
       <Animatable.View delay={1000} useNativeDriver={true} animation='fadeInDown' duration={1000} style={styles.caixaTitulos}>

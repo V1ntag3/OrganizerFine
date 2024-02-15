@@ -7,18 +7,18 @@ import {
     SafeAreaView
 } from 'react-native';
 
-import Globals from '../../Globals';
+import Globals from '../Globals';
 import { Drawer } from 'react-native-drawer-layout';
-import UserSVG from '../../componentes/SVGComponentes/userSVG';
-import ConfigSVG from '../../componentes/SVGComponentes/configSVG';
-import LogoutSVG from '../../componentes/SVGComponentes/logoutSVG';
-import FineSVG from '../../componentes/SVGComponentes/fineSVG';
+import UserSVG from './SVGComponentes/userSVG';
+import ConfigSVG from './SVGComponentes/configSVG';
+import LogoutSVG from './SVGComponentes/logoutSVG';
+import FineSVG from './SVGComponentes/fineSVG';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Modal from './ModalGeneric';
-import LogoutSadSVG from '../../componentes/SVGComponentes/logoutSadSVG';
-import LoadingScreen from '../LoadingScreen';
-import HomeSVG from '../../componentes/SVGComponentes/homeSVG';
-import MenuSVG from '../../componentes/SVGComponentes/menuSVG';
+import LogoutSadSVG from './SVGComponentes/logoutSadSVG';
+import LoadingScreen from '../views/LoadingScreen';
+import HomeSVG from './SVGComponentes/homeSVG';
+import MenuSVG from './SVGComponentes/menuSVG';
 
 function Menu({ route, screenElement, navigation }: any): JSX.Element {
     const [email, setEmail] = useState("")
@@ -51,15 +51,17 @@ function Menu({ route, screenElement, navigation }: any): JSX.Element {
 
     const getData = async () => {
         await AsyncStorage.getItem('token', (_, result) => {
-            fetch(Globals.BASE_URL_API + 'profile/', {
+            fetch(Globals.BASE_URL_API + 'user/profile', {
                 method: 'GET',
                 headers: {
-                    'Authorization': 'Token ' + result
+                    'Authorization': 'Bearer ' + result
                 },
             }).then(response => {
+
                 if (response.status == 401 || response.status == 403) { removeData() };
                 response.json().then((json) => {
-                    setNome(json.first_name + ' ' + json.last_name)
+
+                    setNome(json.name + ' ' + json.surname)
                     setEmail(json.email)
                 })
             }).catch(error => {

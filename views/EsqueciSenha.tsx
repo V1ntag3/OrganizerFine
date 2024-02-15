@@ -6,11 +6,11 @@ import {
     TextInput,
     ScrollView,
 } from 'react-native';
-import ButtonGeneric from '../componentes/ButtonGeneric'
-import TituloPagina from '../componentes/TituloPaginaEsqueci'
+import ButtonGeneric from '../components/ButtonGeneric'
+import TituloPagina from '../components/TituloPaginaEsqueci'
 import { useState } from 'react';
-import FundoPagina from '../componentes/FundoPaginaEsqueci';
-import EsqueciSVG from '../componentes/SVGComponentes/esqueciSVG';
+import FundoPagina from '../components/FundoPaginaEsqueci';
+import EsqueciSVG from '../components/SVGComponentes/esqueciSVG';
 import Globals from '../Globals';
 
 function EsqueciSenha({ navigation }: any): JSX.Element {

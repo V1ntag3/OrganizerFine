@@ -5,7 +5,7 @@ import {
     Text,
 } from 'react-native';
 
-import Globals from '../../Globals';
+import Globals from '../Globals';
 import { PieChart } from 'react-native-gifted-charts';
 
 function PieChartComp({ pieData, valorMaiorPorc, valorMaiorNome }: any): JSX.Element {
