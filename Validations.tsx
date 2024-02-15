@@ -1,4 +1,7 @@
 const Validations = {
+  onlyBlankSpaces(text:string){
+    return text.trim() === '';
+  },
   hasTruthyValue(obj: { [key: string]: boolean }): boolean {
     for (const key in obj) {
       if (obj[key]) {

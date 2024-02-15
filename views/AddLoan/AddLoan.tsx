@@ -23,17 +23,21 @@ function AddLoan({ route, navigation }: any): JSX.Element {
 
     const [value, setValue] = useState<any>(0)
     const [about, setAbout] = useState("")
+    const [name, setName] = useState("")
 
     const [errors, setErrors] = useState({
         value: false,
-        about: false
+        about: false,
+        name: false
     })
 
     const postData = async () => {
         await AsyncStorage.getItem('token', (_, result) => {
             var obj_errors = {
                 value: value == 0 ? true : false,
-                about: about == "" ? true : false
+                about: Validations.onlyBlankSpaces(about),
+                name: Validations.onlyBlankSpaces(name) ? true : false
+
             }
             setErrors(obj_errors)
 
@@ -42,9 +46,9 @@ function AddLoan({ route, navigation }: any): JSX.Element {
                 var obj = JSON.stringify({
                     value: value,
                     about: about,
-                    loanId: item.id
+                    name: name
                 })
-                fetch(Globals.BASE_URL_API + 'transaction/create', {
+                fetch(Globals.BASE_URL_API + 'loan/create', {
                     method: 'POST',
                     headers: {
                         'Content-type': 'application/json; charset=UTF-8',
@@ -58,9 +62,7 @@ function AddLoan({ route, navigation }: any): JSX.Element {
                     }
                     console.log(response.status)
                     if (response.status == 200) {
-                        navigation.navigate("DetailLoan", {
-                            item
-                        })
+                        navigation.navigate("ManagerLoan")
                     }
 
                 }).catch((err)=>{
@@ -79,8 +81,21 @@ function AddLoan({ route, navigation }: any): JSX.Element {
         <Text style={styles.tituloView}>Realizar Pagamento</Text>
 
         <View style={{ paddingHorizontal: 15 }}>
+        <Animatable.View
+                delay={300}
+                useNativeDriver={true}
+                animation='fadeInLeft'
+                duration={300}>
+                <TextInput style={[styles.inputStyle,]}
+                    selectionColor="white"
+                    placeholderTextColor={errors.about ? Globals.COLOR_ERROR : 'white'}
+                    onChangeText={setName}
+                    placeholder="Nome" />
+                <Text style={[styles.errorStyle, { display: errors.name ? 'flex' : 'none' }]}>Campo inválido</Text>
+            </Animatable.View>
+
             <Animatable.View
-                delay={400}
+                delay={500}
                 useNativeDriver={true}
                 animation='fadeInLeft'
                 duration={300}>
@@ -94,7 +109,7 @@ function AddLoan({ route, navigation }: any): JSX.Element {
 
             <Animatable.View
                 style={{ zIndex: 10 }}
-                delay={800}
+                delay={700}
                 useNativeDriver={true}
                 animation='fadeInLeft'
                 duration={300}>
@@ -111,11 +126,12 @@ function AddLoan({ route, navigation }: any): JSX.Element {
                     keyboardType="numeric" />
                 <Text style={[styles.errorStyle, { display: errors.value ? 'flex' : 'none' }]}>Campo inválido</Text>
             </Animatable.View>
+
         </View>
 
         <View style={[styles.menuBottom, { position: 'absolute', bottom: 0 }]}>
             <TouchableOpacity onPress={() => {
-                navigation.navigate("DetailLoan",{item});
+                navigation.navigate("ManagerLoan");
             }} style={styles.menuBottomButton}>
                 <BackBestSVG width={30} height={30} />
             </TouchableOpacity>

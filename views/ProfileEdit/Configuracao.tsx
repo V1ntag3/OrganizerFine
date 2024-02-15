@@ -7,17 +7,17 @@ import {
     ScrollView,
     TextInput,
 } from 'react-native';
-import Globals from '../Globals';
+import Globals from '../../Globals';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import LoadingScreen from './LoadingScreen';
-import UserSVG from '../components/SVGComponentes/userSVG';
-import EditarSVG from '../components/SVGComponentes/editarSVG';
-import SaveSVG from '../components/SVGComponentes/saveSVG';
-import ConfigurationSVG from '../components/SVGComponentes/configurationSVG';
+import LoadingScreen from '../LoadingScreen';
+import UserSVG from '../../components/SVGComponentes/userSVG';
+import EditarSVG from '../../components/SVGComponentes/editarSVG';
+import SaveSVG from '../../components/SVGComponentes/saveSVG';
+import ConfigurationSVG from '../../components/SVGComponentes/configurationSVG';
 import * as Animatable from 'react-native-animatable'
-import Menu from '../components/Menu';
-import Modal from '../components/ModalGeneric';
+import Menu from '../../components/Menu';
+import Modal from '../../components/ModalGeneric';
 function Configuracao({ route, navigation }: any): JSX.Element {
 
     const { setUserToken } = route.params

@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DashBoard from '../../views/DashBoard';
 import AddRevenueSpending from '../../views/AddRevenueSpending/AddRevenueSpending';
 import DetailRevenueSpending from '../../views/DetailRevenueSpending/DetailRevenueSpending';
-import Configuracao from '../../views/Configuracao';
+import Configuracao from '../../views/ProfileEdit/Configuracao';
 import Home from '../../views/Home';
 import ManagerLoan from '../../views/ManagerLoan/ManagerLoan';
 import DetailLoan from '../../views/DetailLoan/DetailLoan';
