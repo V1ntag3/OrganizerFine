@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
     itemContainer: {
         paddingHorizontal: 10,
         width: '90%',
+        maxWidth:Globals.WIDTH *0.9,
         backgroundColor: 'white',
         height: 58,
         alignSelf: 'center', marginTop: 10,

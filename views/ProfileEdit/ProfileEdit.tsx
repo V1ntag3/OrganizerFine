@@ -136,7 +136,7 @@ function ProfileEdit({ route, navigation }: any): JSX.Element {
                                 name: 'image.jpg'
                             })
 
-                            fetch(Globals.BASE_URL_API + 'image_profile', {
+                            fetch(Globals.BASE_URL_API + 'imageProfile', {
                                 method: 'POST',
                                 headers: {
                                     'Authorization': 'Bearer ' + result,
@@ -206,7 +206,7 @@ function ProfileEdit({ route, navigation }: any): JSX.Element {
                     </TouchableOpacity>) : (<TouchableOpacity style={{ position: 'absolute', top: 20, right: 15, zIndex: 1000 }} onPress={() => setModalVisible(true)}>
                         <SaveSVG />
                     </TouchableOpacity>)}
-                    <Text style={styles.tituloView}>Configuração</Text>
+                    <Text style={styles.tituloView}>Configurações</Text>
                     <Animatable.View animation='flipInY' duration={1000} style={{
                         width: 150,
                         height: 150,

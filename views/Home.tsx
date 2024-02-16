@@ -59,8 +59,8 @@ function Home({ route, navigation }: any): JSX.Element {
             </View>
 
             <View onTouchEnd={() => {
-                    navigation.navigate('ManagerLoan')
-                }} style={[styles.boxClick, styles.boxClick3]}>
+                navigation.navigate('ManagerLoan')
+            }} style={[styles.boxClick, styles.boxClick3]}>
                 <GestaoSVG />
                 <Text style={styles.textBox}  >Gestão de Empréstimos</Text>
             </View>

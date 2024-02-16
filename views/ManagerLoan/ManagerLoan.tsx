@@ -89,7 +89,7 @@ function ManagerLoan({ route, navigation }: any): JSX.Element {
         }}
             data={loans}
             renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => {navigation.navigate("DetailLoan", { item })}} style={styles.itemContainer} >
+                <TouchableOpacity onPress={() => {navigation.navigate("DetailLoan", { item })}} style={[styles.itemContainer,{maxWidth:Globals.WIDTH *0.9}]} >
                     <View style={{ flexDirection: 'row' }}>
                         <View style={{ backgroundColor: Globals.COLOR.LIGHT.COLOR4, width: 50, height: 50, borderRadius: 30, padding: 3, marginRight: 5, alignSelf: 'center' }}>
                             <Text style={{ fontFamily: Globals.FONT_FAMILY.SEMIBOLD, fontSize: 30, textAlign: 'center', color: 'white' }}>{item.name[0]}</Text>

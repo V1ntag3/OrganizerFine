@@ -35,13 +35,13 @@ function Menu({ route, screenElement, navigation }: any): JSX.Element {
     const removeData = async () => {
         await AsyncStorage.getItem('token', (_, result) => {
             setIsLoading(true)
-            fetch(Globals.BASE_URL_API + 'logout/', {
+            fetch(Globals.BASE_URL_API + 'auth/logout', {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'Token ' + result
+                    'Authorization': 'Bearer ' + result
                 },
             }).then(response => {
-                if (response.status == 204 || response.status === 401 || response.status === 403) {
+                if (response.status == 200 || response.status === 401 || response.status === 403) {
                     AsyncStorage.clear().then(() => { setUserToken(null) })
                 }
             }).finally(() => {
