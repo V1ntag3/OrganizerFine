@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import DashBoard from '../../views/DashBoard';
 import AddRevenueSpending from '../../views/AddRevenueSpending/AddRevenueSpending';
 import DetailRevenueSpending from '../../views/DetailRevenueSpending/DetailRevenueSpending';
-import Configuracao from '../../views/ProfileEdit/Configuracao';
+import ProfileEdit from '../../views/ProfileEdit/ProfileEdit';
 import Home from '../../views/Home';
 import ManagerLoan from '../../views/ManagerLoan/ManagerLoan';
 import DetailLoan from '../../views/DetailLoan/DetailLoan';
@@ -21,7 +21,7 @@ function PrivateNavigator({ route }: any) {
     }} initialRouteName='Home'>
       <Stack.Screen name='Home' component={Home} initialParams={{ setUserToken }} />
       <Stack.Screen name="DashBoard" component={DashBoard} initialParams={{ setUserToken }} />
-      <Stack.Screen name="Configuracao" component={Configuracao} initialParams={{ setUserToken }} options={{
+      <Stack.Screen name="ProfileEdit" component={ProfileEdit} initialParams={{ setUserToken }} options={{
         animationTypeForReplace: 'push',
         animation: 'slide_from_left'
       }} />

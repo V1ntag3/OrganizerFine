@@ -4,7 +4,8 @@ import {
     TouchableOpacity,
     View,
     Text,
-    SafeAreaView
+    SafeAreaView,
+    Image
 } from 'react-native';
 
 import Globals from '../Globals';
@@ -23,7 +24,7 @@ import MenuSVG from './SVGComponentes/menuSVG';
 function Menu({ route, screenElement, navigation }: any): JSX.Element {
     const [email, setEmail] = useState("")
     const [nome, setNome] = useState("")
-
+    const [profileImage, setProfileImage] = useState(null)
     const [modalVisible, setModalVisible] = useState(false)
     const [openClose, setOpenClose] = useState(false);
 
@@ -60,7 +61,7 @@ function Menu({ route, screenElement, navigation }: any): JSX.Element {
 
                 if (response.status == 401 || response.status == 403) { removeData() };
                 response.json().then((json) => {
-
+                    setProfileImage(json.image)
                     setNome(json.name + ' ' + json.surname)
                     setEmail(json.email)
                 })
@@ -91,8 +92,18 @@ function Menu({ route, screenElement, navigation }: any): JSX.Element {
                     }}>
 
                         <View style={styles.imagemUser}>
-                            <View style={{ alignSelf: 'center', marginTop: 10 }}>
-                                <UserSVG />
+                            <View style={{
+                                alignSelf: 'center', width: '100%',
+                                height: '100%'
+                            }}>
+                                {profileImage == null ? <UserSVG style={{ marginTop: 10 }} /> : <Image
+                                    source={{ uri: Globals.BASE_URL + profileImage }}
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        borderRadius: 75
+                                    }}
+                                />}
                             </View>
                         </View>
                         <View style={{ marginLeft: 20, marginBottom: 30 }}>
@@ -129,7 +140,7 @@ function Menu({ route, screenElement, navigation }: any): JSX.Element {
                         <TouchableOpacity onPress={() => {
                             setOpenClose(false);
                             setTimeout(() => {
-                                navigation.navigate('Configuracao')
+                                navigation.navigate('ProfileEdit')
                             }, 400);
                         }}>
 

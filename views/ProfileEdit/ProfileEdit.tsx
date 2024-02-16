@@ -1,11 +1,11 @@
 import {
     SafeAreaView,
-    StyleSheet,
     View,
     Text,
     TouchableOpacity,
     ScrollView,
     TextInput,
+    Image
 } from 'react-native';
 import Globals from '../../Globals';
 import { useEffect, useState } from 'react';
@@ -18,42 +18,70 @@ import ConfigurationSVG from '../../components/SVGComponentes/configurationSVG';
 import * as Animatable from 'react-native-animatable'
 import Menu from '../../components/Menu';
 import Modal from '../../components/ModalGeneric';
-function Configuracao({ route, navigation }: any): JSX.Element {
+import styles from './ProfileEditStyles';
+import PencilSVG from '../../components/SVGComponentes/pencilImageSVG'
+import ImagePicker from 'react-native-image-crop-picker';
+import Validations from '../../Validations';
+
+function ProfileEdit({ route, navigation }: any): JSX.Element {
+
+    const [photoProfile, setPhotoProfile] = useState<any>(null);
+
+    const handleChoosePhoto = () => {
+        ImagePicker.openPicker({
+            mediaType: 'photo',
+            compressImageQuality: 0.7,
+            width: 300,
+            height: 300,
+            cropping: true
+        }).then((image: any) => {
+            console.log(image)
+            if (image) {
+                setPhotoProfile(image);
+            }
+        });
+
+
+    };
 
     const { setUserToken } = route.params
     const [isEditable, setIsEditable] = useState(true)
     const [isLoading, setIsLoading] = useState(false)
 
-    const [nomeNew, setNomeNew] = useState('');
-    const [sobrenome, setSobrenome] = useState('');
-    const [emailNew, setEmailNew] = useState('');
+    const [imageProfile, setImageProfile] = useState('');
+
+    const [name, setName] = useState('');
+    const [surname, setSurname] = useState('');
+    const [email, setEmail] = useState('');
     // const [senha, setSenha] = useState('');
     // const [confirm_senha, setConfSenha] = useState('');
 
-    const [nomeError, setNomeError] = useState(false);
-    const [sobreNomeError, setsobreNomeError] = useState(false);
-    const [emailError, setEmailError] = useState(false);
-    // const [senhaError, setSenhaError] = useState(false);
-    // const [confirmSenhaError, setConfirmSenhaError] = useState(false);
+    const [errors, setErrors] = useState({
+        name: false,
+        surname: false,
+        email: false
+    })
 
     const readData = async () => {
         try {
-            const value = await AsyncStorage.getItem('token', (_, result) => {
+            await AsyncStorage.getItem('token', (_, result) => {
 
-                fetch(Globals.BASE_URL_API + 'profile/', {
+                fetch(Globals.BASE_URL_API + 'user/profile', {
                     method: 'GET',
                     headers: {
-                        'Authorization': 'Token ' + result
+                        'Authorization': 'Bearer ' + result
                     },
                 }).then(response => {
+                    console.log(response.status)
                     if (response.status === 401 || response.status === 403) {
                         AsyncStorage.clear().then(() => { setUserToken(null) })
                     }
                     return response.json();
                 }).then((json) => {
-                    setNomeNew(json.first_name)
-                    setSobrenome(json.last_name)
-                    setEmailNew(json.email)
+                    setImageProfile(json.image)
+                    setName(json.name)
+                    setSurname(json.surname)
+                    setEmail(json.email)
                 }).catch(error => {
                     if (error.toString() == "TypeError: Network request failed") {
                     }
@@ -66,41 +94,77 @@ function Configuracao({ route, navigation }: any): JSX.Element {
             navigation.navigate('Welcome')
         }
     };
-    const isEmail = (emailM: String) => {
-        const emailRegex = /^([a-zA-Z][^<>\"!@[\]#$%¨&*()~^:;ç,\-´`=+{}º\|/\\?]{1,})@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        return emailRegex.test(String(emailM).toLowerCase())
-    }
-    const mandarDados = async () => {
+
+    const putData = async () => {
         setModalVisible(false)
-        setNomeError(nomeNew == "" ? true : false)
-        setsobreNomeError(sobrenome == "" ? true : false)
-        setEmailError(emailNew == "" || !isEmail(emailNew) ? true : false)
+
         // setSenhaError(senha == "" || (senha != confirm_senha) ? true : false)
         // setConfirmewSenhaError(confirm_senha == "" || (senha != confirm_senha) ? true : false)
-
-        if (nomeNew != "" && sobrenome != "" && isEmail(emailNew)) {
+        var obj_errors = {
+            name: Validations.onlyBlankSpaces(name),
+            surname: Validations.onlyBlankSpaces(surname),
+            email: !Validations.isEmail(email),
+        }
+        setErrors(obj_errors)
+        console.log(obj_errors)
+        if (!Validations.hasTruthyValue(obj_errors)) {
             setIsLoading(true)
             await AsyncStorage.getItem('token', (_, result) => {
 
-                fetch(Globals.BASE_URL_API + 'profile/', {
-                    method: 'PUT',
+                fetch(Globals.BASE_URL_API + 'user/update', {
+                    method: 'POST',
                     headers: {
-                        'Authorization': 'Token ' + result,
+                        'Authorization': 'Bearer ' + result,
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        'username': emailNew,
-                        'first_name': nomeNew,
-                        'last_name': sobrenome,
-                        'email': emailNew,
+                        'name': name,
+                        'surname': surname,
                         // 'password': senha
                     })
                 }).then(response => {
                     if (response.status === 401 || response.status === 403) {
                         AsyncStorage.clear().then(() => { setUserToken(null) })
                     }
+                    console.log(response.status)
                     if (response.status == 200) {
-                        navigation.navigate('DashBoard')
+                        if (photoProfile) {
+                            const formData = new FormData()
+                            formData.append('image', {
+                                uri: Platform.OS === 'ios' ? `file:///${photoProfile.path}` : photoProfile.path,
+                                type: 'image/jpeg',
+                                name: 'image.jpg'
+                            })
+
+                            fetch(Globals.BASE_URL_API + 'image_profile', {
+                                method: 'POST',
+                                headers: {
+                                    'Authorization': 'Bearer ' + result,
+                                    'Content-Type': "multipart/form-data"
+                                },
+                                body: formData
+                            }).then(response => {
+                                console.log(response.status)
+                                if (response.status === 401 || response.status === 403) {
+                                    AsyncStorage.clear().then(() => { setUserToken(null) })
+                                }
+                                if (response.status == 200) {
+
+                                    navigation.navigate('Home')
+                                }
+                            }
+                            ).catch(error => {
+                                console.log(error)
+                            }).finally(() => {
+                                setIsLoading(false)
+                            });
+                        }else{
+                             navigation.navigate('Home')
+
+                        }
+
+
+
                     }
                 }
                 ).catch(error => {
@@ -125,7 +189,7 @@ function Configuracao({ route, navigation }: any): JSX.Element {
                 image={(style: any) => {
                     return <ConfigurationSVG style={style} />
                 }}
-                affirmFunc={mandarDados}
+                affirmFunc={putData}
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
                 title="Alterar configurações"
@@ -153,42 +217,64 @@ function Configuracao({ route, navigation }: any): JSX.Element {
                         alignSelf: 'center',
                         marginTop: 20,
                     }}>
-                        <View style={{ alignSelf: 'center', marginTop: 10 }}>
-                            <UserSVG />
+                        <View style={{
+                            alignSelf: 'center', position: 'relative', width: '100%',
+                            height: '100%'
+                            
+                        }}>
+                            {
+                                photoProfile !== null && photoProfile !== undefined ? <Image
+                                    source={{ uri: photoProfile.path }}
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        borderRadius: 75
+                                    }}
+                                /> :  ( imageProfile == null ? <UserSVG style={{marginTop:10,marginLeft:13}} />: <Image
+                                source={{ uri: Globals.BASE_URL + imageProfile }}
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    borderRadius: 75
+                                }}
+                            /> )
+
+                            }
+                            {!isEditable && <TouchableOpacity onPress={handleChoosePhoto} style={{ position: 'absolute', bottom: 0, padding: 8, borderRadius: 20, right: 5, zIndex: 1000000, backgroundColor: Globals.COLOR.LIGHT.COLOR5, borderWidth: 1, borderColor: 'white' }}><PencilSVG width={20} height={20} fill={'white'} /></TouchableOpacity>}
                         </View>
                     </Animatable.View>
                     <Animatable.View style={{ zIndex: 10 }} delay={100}
                         useNativeDriver={true} animation='fadeInLeft' duration={300}>
                         <TextInput style={[styles.inputStyle, isEditable ? { backgroundColor: Globals.COLOR.LIGHT.COLOR5 } : { backgroundColor: Globals.COLOR.LIGHT.COLOR1, color: Globals.COLOR.LIGHT.COLOR5 }, { marginTop: Globals.HEIGHT * 0.05 }]}
-                            value={nomeNew}
+                            value={name}
                             editable={!isEditable}
                             selectionColor="white"
-                            placeholderTextColor={nomeError ? Globals.COLOR_ERROR : (isEditable ? 'white' : Globals.COLOR.LIGHT.COLOR5)}
-                            onChangeText={text => { setNomeNew(text); }}
+                            placeholderTextColor={errors.name ? Globals.COLOR_ERROR : (isEditable ? 'white' : Globals.COLOR.LIGHT.COLOR5)}
+                            onChangeText={text => { setName(text); }}
                             placeholder="Nome" />
-                        <Text style={[styles.errorStyle, { display: nomeError ? 'flex' : 'none' }]}>Campo inválido</Text>
+                        <Text style={[styles.errorStyle, { display: errors.name ? 'flex' : 'none' }]}>Campo inválido</Text>
                     </Animatable.View>
                     <Animatable.View style={{ zIndex: 10 }} delay={300}
                         useNativeDriver={true} animation='fadeInLeft' duration={300}>
                         <TextInput style={[styles.inputStyle, isEditable ? { backgroundColor: Globals.COLOR.LIGHT.COLOR5 } : { backgroundColor: Globals.COLOR.LIGHT.COLOR1, color: Globals.COLOR.LIGHT.COLOR5 }]}
-                            value={sobrenome}
+                            value={surname}
                             editable={!isEditable}
                             selectionColor="white"
-                            placeholderTextColor={sobreNomeError ? Globals.COLOR_ERROR : isEditable ? 'white' : Globals.COLOR.LIGHT.COLOR5}
-                            onChangeText={text => { setSobrenome(text); }}
+                            placeholderTextColor={errors.surname ? Globals.COLOR_ERROR : isEditable ? 'white' : Globals.COLOR.LIGHT.COLOR5}
+                            onChangeText={text => { setSurname(text); }}
                             placeholder="Sobrenome" />
-                        <Text style={[styles.errorStyle, { display: sobreNomeError ? 'flex' : 'none' }]}>Campo inválido</Text>
+                        <Text style={[styles.errorStyle, { display: errors.surname ? 'flex' : 'none' }]}>Campo inválido</Text>
                     </Animatable.View>
                     <Animatable.View style={{ zIndex: 10 }} delay={500}
                         useNativeDriver={true} animation='fadeInLeft' duration={300}>
                         <TextInput style={[styles.inputStyle, isEditable ? { backgroundColor: Globals.COLOR.LIGHT.COLOR5 } : { backgroundColor: Globals.COLOR.LIGHT.COLOR1, color: Globals.COLOR.LIGHT.COLOR5 }]}
-                            value={emailNew}
+                            value={email}
                             editable={!isEditable}
                             selectionColor="white"
-                            placeholderTextColor={emailError ? Globals.COLOR_ERROR : (isEditable ? 'white' : Globals.COLOR.LIGHT.COLOR5)}
-                            onChangeText={text => { setEmailNew(text); }}
+                            placeholderTextColor={errors.email ? Globals.COLOR_ERROR : (isEditable ? 'white' : Globals.COLOR.LIGHT.COLOR5)}
+                            onChangeText={text => { setEmail(text); }}
                             placeholder="Email" />
-                        <Text style={[styles.errorStyle, { display: emailError ? 'flex' : 'none' }]}>Campo inválido</Text>
+                        <Text style={[styles.errorStyle, { display: errors.email ? 'flex' : 'none' }]}>Campo inválido</Text>
                     </Animatable.View>
                     {/* {
         !isEditable && (
@@ -222,51 +308,6 @@ function Configuracao({ route, navigation }: any): JSX.Element {
     );
 }
 
-const styles = StyleSheet.create({
-    tituloView: {
-        fontFamily: Globals.FONT_FAMILY.SEMIBOLD,
-        fontWeight: '600',
-        fontSize: 24,
-        textAlign: 'center',
-        color: Globals.COLOR.BRANCO,
-        marginTop: 15
-    },
-    body: {
-        backgroundColor: Globals.COLOR.LIGHT.COLOR4,
-        flex: 1
-    },
-    scrollView: {
-        minHeight: Globals.HEIGHT,
+export default ProfileEdit;
 
-    },
-    inputStyle: {
-        alignItems: 'center',
-        paddingVertical: 10.75309,
-        paddingHorizontal: 11.0905,
-        paddingBottom: 0,
-        width: '100%',
-        height: 49.65,
-        maxWidth: '90%',
-        alignSelf: 'center',
-        marginVertical: 8,
-        marginBottom: 5,
-        backgroundColor: Globals.COLOR.BRANCO,
-        fontFamily: Globals.FONT_FAMILY.REGULAR,
-        color: 'white',
-        borderRadius: 6.96875,
-    },
-    errorStyle: {
-        paddingLeft: 7,
-        width: '100%',
-        maxWidth: '90%',
-        alignSelf: 'center',
-        marginLeft: -15,
-        color: Globals.COLOR_ERROR,
-        fontSize: 11,
-        lineHeight: 12,
-        fontFamily: Globals.FONT_FAMILY.MEDIUM,
-    },
 
-});
-
-export default Configuracao;
