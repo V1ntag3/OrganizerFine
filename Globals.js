@@ -2,7 +2,7 @@ import { Dimensions } from "react-native";
 
 export default {
     BASE_URL:'http://192.168.18.19:8000',
-    BASE_URL_API:'http://192.168.18.19:8000/api/',
+    BASE_URL_API: this.BASE_URL + '/api/',
     APP_NAME:'ORGANIZER FINE',
     APP_NAME1:'ORGANIZER',
     APP_NAME2:'FINE',
@@ -55,3 +55,4 @@ export default {
     COLOR_RECEITA:'#77DD78',
     TEXT_LOGOUT:"Não gostou de utilizar nosso App? Qualquer insatisfação pode nos contatar..."
   };
+
