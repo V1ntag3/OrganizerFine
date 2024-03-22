@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, Pressable, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Globals from '../Globals';
 type ButtonProps = {
     onPress: () => void;

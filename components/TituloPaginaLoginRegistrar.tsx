@@ -1,6 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, Pressable, View, Dimensions, Button, TouchableOpacity, Touchable, TouchableHighlightBase, Alert } from 'react-native';
-import { TouchableHighlight } from 'react-native-gesture-handler';
+import { Text, StyleSheet, Pressable, View, Dimensions} from 'react-native';
 import BackSVG from './SVGComponentes/backSVG';
 import Globals from '../Globals';
 type tituloPaginaProps = {
