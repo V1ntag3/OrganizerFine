@@ -19,38 +19,12 @@ export default {
         DARK:{
            
         },
-        LIGHT:{
-            // COLOR1:'#640377',
-            // COLOR2:'#550267',
-            // COLOR3:'#450257',
-            // COLOR4:'#360146',
-            // COLOR5:'#260036'
-
-            // COLOR1:'#ECE1C3',
-            // COLOR2:'#8EBDB6',
-            // COLOR3:'#3E838C',
-            // COLOR4:'#195E63',
-            // COLOR5:'#063940' 
-
-            // COLOR1:'#ae60d3',
-            // COLOR2:'#a24ccd',
-            // COLOR3:'#9739c8',
-            // COLOR4:'#8b26c3',
-            // COLOR5:'#7400b8' 
-
-            // COLOR1:'#b8e6b8',
-            // COLOR2:'#60bf60',
-            // COLOR3:'#32a632',
-            // COLOR4:'#1f991f',
-            // COLOR5:'#008000' 
-            
+        LIGHT:{     
             COLOR1:'#dac7ff',
             COLOR2:'#ac8bee',
             COLOR3:'#916dd5',
             COLOR4:'#7151a9',
             COLOR5:'#573d7f' 
-
-
         }
     },
     FONT_FAMILY:{

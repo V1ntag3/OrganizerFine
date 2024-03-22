@@ -226,15 +226,11 @@ function ProfileEdit({ route, navigation }: any): JSX.Element {
                                 photoProfile !== null && photoProfile !== undefined ? <Image
                                     source={{ uri: photoProfile.path }}
                                     style={{
-                                        width: '100%',
-                                        height: '100%',
                                         borderRadius: 75
                                     }}
                                 /> :  ( imageProfile == null ? <UserSVG style={{marginTop:10,marginLeft:13}} />: <Image
                                 source={{ uri: Globals.BASE_URL + imageProfile }}
                                 style={{
-                                    width: '100%',
-                                    height: '100%',
                                     borderRadius: 75
                                 }}
                             /> )
