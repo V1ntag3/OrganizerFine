@@ -15,7 +15,7 @@ Projeto mobile que foi idealizado e desenvolvido por mim, abrangendo tanto o des
 
 **Front-end:** React-Native
 ######
-**Back-end:** Django
+**Back-end:** Golang
 
 
 ## Design Figma
