@@ -12,11 +12,8 @@ import Globals from '../Globals';
 import { Drawer } from 'react-native-drawer-layout';
 import UserSVG from './SVGComponentes/userSVG';
 import ConfigSVG from './SVGComponentes/configSVG';
-import LogoutSVG from './SVGComponentes/logoutSVG';
 import FineSVG from './SVGComponentes/fineSVG';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Modal from './ModalGeneric';
-import LogoutSadSVG from './SVGComponentes/logoutSadSVG';
 import LoadingScreen from '../views/LoadingScreen';
 import HomeSVG from './SVGComponentes/homeSVG';
 import MenuSVG from './SVGComponentes/menuSVG';
@@ -25,7 +22,6 @@ function Menu({ route, screenElement, navigation }: any): JSX.Element {
     const [email, setEmail] = useState("")
     const [nome, setNome] = useState("")
     const [profileImage, setProfileImage] = useState(null)
-    const [modalVisible, setModalVisible] = useState(false)
     const [openClose, setOpenClose] = useState(false);
 
     const [isLoading, setIsLoading] = useState(false)
@@ -149,15 +145,6 @@ function Menu({ route, screenElement, navigation }: any): JSX.Element {
                                 <Text style={styles.itemMenuText}>Configurações</Text>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {
-                            setOpenClose(false);
-                            setModalVisible(true)
-                        }}>
-                            <View style={[styles.itemMenu, { paddingLeft: 17 }]}>
-                                <LogoutSVG />
-                                <Text style={styles.itemMenuText}>Sair</Text>
-                            </View>
-                        </TouchableOpacity>
                         <View style={styles.containerNomeMenu}>
                             <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
                             <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
@@ -170,19 +157,6 @@ function Menu({ route, screenElement, navigation }: any): JSX.Element {
                     <MenuSVG />
                 </TouchableOpacity>
                 {screenElement}
-
-                <Modal image={(style: any) => {
-                    return <LogoutSadSVG style={style} />
-                }} affirmFunc={removeData}
-                    modalVisible={modalVisible}
-                    setModalVisible={setModalVisible}
-                    title="Isso não é um adeus"
-                    paragraph={Globals.TEXT_LOGOUT}
-                    textAffirmButton="Sair..."
-                    textNegButton="Não agora"
-                    isLoading={isLoading}
-                    setIsLoading={setIsLoading}
-                />
 
             </Drawer>
 
