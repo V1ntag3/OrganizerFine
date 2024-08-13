@@ -25,7 +25,7 @@ import styles from './DetailRevenueSpendingStyle';
 import Validations from '../../Validations';
 
 function DetailRevenueSpending({ route, navigation }: any): JSX.Element {
-    const { setUserToken, element } = route.params
+    const { element } = route.params
 
     const [isLoading, setIsLoading] = useState(false)
     // Dados
@@ -98,9 +98,7 @@ function DetailRevenueSpending({ route, navigation }: any): JSX.Element {
                     'Authorization': 'Bearer ' + result
                 }
             }).then(response => {
-                if (response.status === 401 || response.status === 403) {
-                    AsyncStorage.clear().then(() => { setUserToken(null) })
-                }
+           
                 if (response.status == 200) {
                     navigation.navigate("DashBoard");
                     return response.json();
@@ -145,9 +143,7 @@ function DetailRevenueSpending({ route, navigation }: any): JSX.Element {
                     },
                     body: element.type == 0 ? tipo0 : tipo1
                 }).then(response => {
-                    if (response.status === 401 || response.status === 403) {
-                        AsyncStorage.clear().then(() => { setUserToken(null) })
-                    }
+               
 
                     if (response.status == 200) {
                         navigation.navigate("DashBoard");

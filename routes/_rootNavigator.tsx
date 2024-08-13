@@ -15,7 +15,6 @@ const Stack = createNativeStackNavigator();
 function RootNavigator() {
 
   const [isLoading, setIsLoading] = useState(true);
-  const [userToken, setUserToken] = useState<any>(null);
   const netInfo = useNetInfo();
   const [disconnected, setDisconnected] = useState(false)
 
@@ -32,7 +31,6 @@ function RootNavigator() {
       if (valor) {
         setDisconnected(false)
         AsyncStorage.getItem('token', (err, result) => {
-          setUserToken(result)
           setIsLoading(false);
         })
       } else {
@@ -51,13 +49,7 @@ function RootNavigator() {
   }
 
   return (
-    <Stack.Navigator screenOptions={{
-      headerShown: false
-    }} >
-
-      <Stack.Screen name="PrivateNavigator" component={PrivateNavigator} initialParams={{ setUserToken }} />
-
-    </Stack.Navigator>
+   <PrivateNavigator/>
   );
 }
 

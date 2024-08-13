@@ -16,10 +16,8 @@ import BackBestSVG from '../../components/SVGComponentes/backBest'
 import PaySVG from '../../components/SVGComponentes/paySVG';
 import CurrencyInput from 'react-native-currency-input';
 import Validations from '../../Validations';
+import { createLoan } from '../../server/database/services/LoansService';
 function AddLoan({ route, navigation }: any): JSX.Element {
-    const { setUserToken, item } = route.params
-
-
 
     const [value, setValue] = useState<any>(0)
     const [about, setAbout] = useState("")
@@ -32,7 +30,7 @@ function AddLoan({ route, navigation }: any): JSX.Element {
     })
 
     const postData = async () => {
-        await AsyncStorage.getItem('token', (_, result) => {
+        
             var obj_errors = {
                 value: value == 0 ? true : false,
                 about: Validations.onlyBlankSpaces(about),
@@ -43,37 +41,17 @@ function AddLoan({ route, navigation }: any): JSX.Element {
 
             if (!Validations.hasTruthyValue(obj_errors)) {
 
-                var obj = JSON.stringify({
-                    value: value,
+                var obj = {
+                    value: parseFloat(value),
                     about: about,
                     name: name
-                })
-                fetch(Globals.BASE_URL_API + 'loan/create', {
-                    method: 'POST',
-                    headers: {
-                        'Content-type': 'application/json; charset=UTF-8',
-                        'Authorization': 'Bearer ' + result
-                    },
-                    body: obj
-                }).then(response => {
-                    console.log(response)
-                    if (response.status === 401 || response.status === 403) {
-                        AsyncStorage.clear().then(() => { setUserToken(null) })
-                    }
-                    console.log(response.status)
-                    if (response.status == 200) {
-                        navigation.navigate("ManagerLoan")
-                    }
+                }
 
-                }).catch((err)=>{
-                    console.log(err)
-                }).finally(() => {
-
+                createLoan(obj).then((data) => {
+                    navigation.navigate("ManagerLoan")
                 })
+
             }
-
-
-        })
     }
 
     const screen = <>
@@ -81,7 +59,7 @@ function AddLoan({ route, navigation }: any): JSX.Element {
         <Text style={styles.tituloView}>Realizar Pagamento</Text>
 
         <View style={{ paddingHorizontal: 15 }}>
-        <Animatable.View
+            <Animatable.View
                 delay={300}
                 useNativeDriver={true}
                 animation='fadeInLeft'
@@ -139,7 +117,7 @@ function AddLoan({ route, navigation }: any): JSX.Element {
             <View style={{ flexDirection: 'row', gap: 10 }}>
 
                 <TouchableOpacity onPress={postData} style={[styles.menuBottomButton]}>
-                    <PaySVG width={35} fill={'white'} height={35}/>
+                    <PaySVG width={35} fill={'white'} height={35} />
                 </TouchableOpacity>
 
             </View>

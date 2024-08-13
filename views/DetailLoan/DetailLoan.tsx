@@ -21,7 +21,7 @@ import * as Animatable from 'react-native-animatable'
 import ModalGeneric from '../../components/ModalGeneric';
 import EditStorySVG from '../../components/SVGComponentes/deleteTrashSVG'
 function DetailLoan({ route, navigation }: any): JSX.Element {
-    const { setUserToken, item } = route.params
+    const { item } = route.params
 
     const [loan, setLoan] = useState({
         name: "",
@@ -43,9 +43,7 @@ function DetailLoan({ route, navigation }: any): JSX.Element {
                     'Authorization': 'Bearer ' + result
                 },
             }).then(response => {
-                if (response.status === 401 || response.status === 403) {
-                    AsyncStorage.clear().then(() => { setUserToken(null) })
-                }
+             
 
                 if (response.status == 200) {
                     response.json().then((json) => {
@@ -69,9 +67,7 @@ function DetailLoan({ route, navigation }: any): JSX.Element {
                 },
             }).then(response => {
                 console.log(response.status)
-                if (response.status === 401 || response.status === 403) {
-                    AsyncStorage.clear().then(() => { setUserToken(null) })
-                }
+              
 
                 if (response.status == 200) {
                     navigation.navigate("ManagerLoan")
@@ -95,9 +91,7 @@ function DetailLoan({ route, navigation }: any): JSX.Element {
                     },
                 }).then(response => {
 
-                    if (response.status === 401 || response.status === 403) {
-                        AsyncStorage.clear().then(() => { setUserToken(null) })
-                    }
+                
 
                     if (response.status == 200) {
                         response.json().then((json) => {

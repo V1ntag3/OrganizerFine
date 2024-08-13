@@ -37,7 +37,6 @@ function AddRevenueSpending({ route, navigation }: any): JSX.Element {
         selectedValue: false
     })
 
-    const { setUserToken } = route.params
 
     const postData = async () => {
         var errors = {

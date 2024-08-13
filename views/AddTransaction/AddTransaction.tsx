@@ -17,7 +17,7 @@ import PaySVG from '../../components/SVGComponentes/paySVG';
 import CurrencyInput from 'react-native-currency-input';
 import Validations from '../../Validations';
 function AddTransaction({ route, navigation }: any): JSX.Element {
-    const { setUserToken, item } = route.params
+    const {  item } = route.params
 
 
 
@@ -53,9 +53,7 @@ function AddTransaction({ route, navigation }: any): JSX.Element {
                     body: obj
                 }).then(response => {
                     console.log(response)
-                    if (response.status === 401 || response.status === 403) {
-                        AsyncStorage.clear().then(() => { setUserToken(null) })
-                    }
+                 
                     console.log(response.status)
                     if (response.status == 200) {
                         navigation.navigate("DetailLoan", {

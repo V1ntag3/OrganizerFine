@@ -26,7 +26,6 @@ function Menu({ route, screenElement, navigation }: any): JSX.Element {
 
     const [isLoading, setIsLoading] = useState(false)
 
-    const { setUserToken } = route.params
 
     const removeData = async () => {
         await AsyncStorage.getItem('token', (_, result) => {
@@ -37,9 +36,7 @@ function Menu({ route, screenElement, navigation }: any): JSX.Element {
                     'Authorization': 'Bearer ' + result
                 },
             }).then(response => {
-                if (response.status == 200 || response.status === 401 || response.status === 403) {
-                    AsyncStorage.clear().then(() => { setUserToken(null) })
-                }
+               
             }).finally(() => {
                 setIsLoading(false)
             })
@@ -68,7 +65,7 @@ function Menu({ route, screenElement, navigation }: any): JSX.Element {
         })
     }
     useEffect(() => {
-        getData()
+        // getData()
     }, [nome])
     return (
         <SafeAreaView style={styles.body}>

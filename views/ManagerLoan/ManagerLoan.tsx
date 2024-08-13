@@ -13,8 +13,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AddSVG from '../../components/SVGComponentes/addSVG';
 import BackSvg from '../../components/SVGComponentes/backBest'
+import { listLoans } from '../../server/database/services/LoansService';
 function ManagerLoan({ route, navigation }: any): JSX.Element {
-    const { setUserToken } = route.params
     const [refreshing, setRefreshing] = useState(false);
 
     const [loans, setLoans] = useState([])
@@ -22,47 +22,32 @@ function ManagerLoan({ route, navigation }: any): JSX.Element {
     const [isFinalPage, setIsFinalPage] = useState(false)
 
     const getData = async (isPageReload = false) => {
-        await AsyncStorage.getItem('token', (_, result) => {
-            var realPage = isPageReload == true ? 1 : page
-            if ((isFinalPage == false && isPageReload == false) || (isFinalPage == true && isPageReload == true) || isPageReload == true) {
+        var realPage = isPageReload == true ? 1 : page
+        if ((isFinalPage == false && isPageReload == false) || (isFinalPage == true && isPageReload == true) || isPageReload == true) {
 
-                fetch(Globals.BASE_URL_API + 'loan/list?limit=12&page=' + realPage, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Bearer ' + result
-                    },
-                }).then(response => {
 
-                    if (response.status === 401 || response.status === 403) {
-                        AsyncStorage.clear().then(() => { setUserToken(null) })
+            listLoans(page, 12).then((data: any) => {
+                console.log(data)
+                if (isPageReload) {
+                    setLoans(data)
+                } else {
+                    setPage(page + 1)
+                    setLoans(loans.concat(data))
+
+                    if (data.length == 0) {
+                        setIsFinalPage(true)
                     }
 
-                    if (response.status == 200) {
-                        response.json().then((json) => {
-                            if (isPageReload) {
-                                setLoans(json)
-                            } else {
-                                setPage(page + 1)
-                                setLoans(loans.concat(json))
+                }
+            }).finally(() => {
+                if (isPageReload) {
+                    setIsFinalPage(false)
+                    setRefreshing(false)
+                    setPage(1)
+                }
+            })
+        }
 
-                                if (json.length == 0) {
-                                    setIsFinalPage(true)
-                                }
-
-                            }
-                        })
-                    }
-
-
-                }).finally(() => {
-                    if (isPageReload) {
-                        setIsFinalPage(false)
-                        setRefreshing(false)
-                        setPage(1)
-                    }
-                })
-            }
-        })
     }
 
     const onRefresh = useCallback(() => {
@@ -74,8 +59,8 @@ function ManagerLoan({ route, navigation }: any): JSX.Element {
         const unsubscribe = navigation.addListener('focus', () => {
             getData()
         });
-      
-          return unsubscribe;
+
+        return unsubscribe;
     }, [navigation])
 
     const screen = <>
@@ -84,12 +69,12 @@ function ManagerLoan({ route, navigation }: any): JSX.Element {
             refreshControl={<RefreshControl progressBackgroundColor={Globals.COLOR.LIGHT.COLOR1} colors={[Globals.COLOR.LIGHT.COLOR3]} refreshing={refreshing}
                 onRefresh={onRefresh} />}
             disableVirtualization={false}
-        style={{
-            paddingBottom:10
-        }}
+            style={{
+                paddingBottom: 10
+            }}
             data={loans}
             renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => {navigation.navigate("DetailLoan", { item })}} style={[styles.itemContainer,{maxWidth:Globals.WIDTH *0.9}]} >
+                <TouchableOpacity onPress={() => { navigation.navigate("DetailLoan", { item }) }} style={[styles.itemContainer, { maxWidth: Globals.WIDTH * 0.9 }]} >
                     <View style={{ flexDirection: 'row' }}>
                         <View style={{ backgroundColor: Globals.COLOR.LIGHT.COLOR4, width: 50, height: 50, borderRadius: 30, padding: 3, marginRight: 5, alignSelf: 'center' }}>
                             <Text style={{ fontFamily: Globals.FONT_FAMILY.SEMIBOLD, fontSize: 30, textAlign: 'center', color: 'white' }}>{item.name[0]}</Text>
@@ -118,7 +103,7 @@ function ManagerLoan({ route, navigation }: any): JSX.Element {
             <TouchableOpacity onPress={() => {
                 navigation.navigate("Home")
             }} style={styles.menuBottomButton}>
-                    <BackSvg style={{}} width={40} height={34} />
+                <BackSvg style={{}} width={40} height={34} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => {
                 navigation.navigate("AddLoan")

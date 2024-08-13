@@ -207,7 +207,6 @@ function DashBoard({ route, navigation }: any): JSX.Element {
         } catch (e) {
         }
     }
-    const { setUserToken } = route.params
 
     const handleDateSelect = (selectedDate: String) => {
 

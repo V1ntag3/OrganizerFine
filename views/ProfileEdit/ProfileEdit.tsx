@@ -44,7 +44,6 @@ function ProfileEdit({ route, navigation }: any): JSX.Element {
 
     };
 
-    const { setUserToken } = route.params
     const [isEditable, setIsEditable] = useState(true)
     const [isLoading, setIsLoading] = useState(false)
 
@@ -73,9 +72,7 @@ function ProfileEdit({ route, navigation }: any): JSX.Element {
                     },
                 }).then(response => {
                     console.log(response.status)
-                    if (response.status === 401 || response.status === 403) {
-                        AsyncStorage.clear().then(() => { setUserToken(null) })
-                    }
+                  
                     return response.json();
                 }).then((json) => {
                     setImageProfile(json.image)
@@ -123,9 +120,7 @@ function ProfileEdit({ route, navigation }: any): JSX.Element {
                         // 'password': senha
                     })
                 }).then(response => {
-                    if (response.status === 401 || response.status === 403) {
-                        AsyncStorage.clear().then(() => { setUserToken(null) })
-                    }
+              
                     console.log(response.status)
                     if (response.status == 200) {
                         if (photoProfile) {
@@ -145,9 +140,7 @@ function ProfileEdit({ route, navigation }: any): JSX.Element {
                                 body: formData
                             }).then(response => {
                                 console.log(response.status)
-                                if (response.status === 401 || response.status === 403) {
-                                    AsyncStorage.clear().then(() => { setUserToken(null) })
-                                }
+                             
                                 if (response.status == 200) {
 
                                     navigation.navigate('Home')

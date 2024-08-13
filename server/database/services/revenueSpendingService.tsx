@@ -7,13 +7,13 @@ export const listRevenueSpendings = async (month: number, year: number) => {
     return new Promise((resolve, reject) => {
         db.transaction(tx => {
             tx.executeSql(
-                `SELECT * FROM RevenueSpendings WHERE strftime('%m', created_at) = ? AND strftime('%Y', created_at) = ?`,
+                `SELECT * FROM RevenueSpendings WHERE strftime('%m', created_at) = ? AND strftime('%Y', created_at) = ? AND deleted_at IS NULL  ORDER BY created_at DESC `,
                 [month >= 10 ? month : '0' + month, year],
                 (tx, results) => {
                     const rows = results.rows.raw();
                     resolve(rows);
                 },
-                (tx, error) => {
+                (error) => {
                     reject(error);
                 }
             );
@@ -46,7 +46,7 @@ export const getRevenueSpendingById = async (id: string) => {
     return new Promise((resolve, reject) => {
         db.transaction(tx => {
             tx.executeSql(
-                'SELECT * FROM RevenueSpendings WHERE id = ?',
+                'SELECT * FROM RevenueSpendings WHERE id = ? AND deleted_at IS NULL',
                 [id],
                 (tx, results) => {
                     const rows = results.rows.raw();
@@ -58,14 +58,17 @@ export const getRevenueSpendingById = async (id: string) => {
     });
 };
 
-export const updateRevenueSpending = async (id: string, updates: { value: number; about: string; category: number; type: number; }) => {
+export const updateRevenueSpending = async (id: string, revenueSpending: { id: string, value: number; about: string; category: number; type: number; }) => {
     const db = await connectToDatabase()
+
+    const setClause = Object.keys(revenueSpending).map(key => `${key} = ?`).join(', ');
+    const values = [...Object.values(revenueSpending), revenueSpending.id];
 
     return new Promise((resolve, reject) => {
         db.transaction(tx => {
             tx.executeSql(
-                'UPDATE RevenueSpendings SET value = ?, about = ?, category = ?, type = ? WHERE id = ?',
-                [updates.value, updates.about, updates.category, updates.type, id],
+                `UPDATE RevenueSpendings SET ${setClause} WHERE id = ?`,
+                values,
                 (_, result) => resolve(result),
                 (_, error) => reject(error)
             );
@@ -79,7 +82,7 @@ export const deleteRevenueSpending = async (id: string) => {
     return new Promise((resolve, reject) => {
         db.transaction(tx => {
             tx.executeSql(
-                'DELETE FROM RevenueSpendings WHERE id = ?',
+                `UPDATE Transactions SET deleted_at = datetime('now', '-3 hours') WHERE id = ?`,
                 [id],
                 (_, result) => resolve(result),
                 (_, error) => reject(error)

@@ -14,28 +14,25 @@ import AddLoan from '../../views/AddLoan/AddLoan';
 const Stack = createNativeStackNavigator();
 
 function PrivateNavigator({ route }: any) {
-  const { setUserToken } = route.params
   return (
     <Stack.Navigator screenOptions={{
       headerShown: false
     }} initialRouteName='Home'>
-      <Stack.Screen name='Home' component={Home} initialParams={{ setUserToken }} />
-      <Stack.Screen name="DashBoard" component={DashBoard} initialParams={{ setUserToken }} />
-      <Stack.Screen name="ProfileEdit" component={ProfileEdit} initialParams={{ setUserToken }} options={{
+      <Stack.Screen name='Home' component={Home} />
+      <Stack.Screen name="DashBoard" component={DashBoard} />
+      <Stack.Screen name="ProfileEdit" component={ProfileEdit} options={{
         animationTypeForReplace: 'push',
         animation: 'slide_from_left'
       }} />
-      <Stack.Screen name="AddRevenueSpending" component={AddRevenueSpending} initialParams={{ setUserToken }} options={{
+      <Stack.Screen name="AddRevenueSpending" component={AddRevenueSpending} options={{
         animationTypeForReplace: 'push',
         animation: 'slide_from_right'
-      }
-      } />
-      <Stack.Screen name="DetailRevenueSpending" component={DetailRevenueSpending} initialParams={{ setUserToken }} />
-      <Stack.Screen name="ManagerLoan" component={ManagerLoan} initialParams={{ setUserToken }} />
-      <Stack.Screen name="DetailLoan" component={DetailLoan} initialParams={{ setUserToken }} />
-      <Stack.Screen name="AddTransaction" component={AddTransaction} initialParams={{ setUserToken }} />
-
-      <Stack.Screen name="AddLoan" component={AddLoan} initialParams={{ setUserToken }} />
+      }} />
+      <Stack.Screen name="DetailRevenueSpending" component={DetailRevenueSpending} />
+      <Stack.Screen name="ManagerLoan" component={ManagerLoan} />
+      <Stack.Screen name="DetailLoan" component={DetailLoan} />
+      <Stack.Screen name="AddTransaction" component={AddTransaction} />
+      <Stack.Screen name="AddLoan" component={AddLoan} />
 
     </Stack.Navigator>
   );
