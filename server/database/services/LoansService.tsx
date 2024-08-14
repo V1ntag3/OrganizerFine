@@ -8,7 +8,7 @@ export const listLoans = async (page = 1, limit = 10) => {
     return new Promise((resolve, reject) => {
         db.transaction((tx: { executeSql: (arg0: string, arg1: number[], arg2: (tx: any, results: any) => void, arg3: (error: any) => void) => void; }) => {
             tx.executeSql(
-                `SELECT * FROM Loans LIMIT ? OFFSET ?`,
+                `SELECT * FROM Loans WHERE deleted_at IS NULL LIMIT ? OFFSET ?`,
                 [limit, offset],
                 (_, results) => {
                     const rows = results.rows.raw();

@@ -12,8 +12,8 @@ import Menu from '../../components/Menu';
 import styles from './AddTransactionStyles';
 import React, { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import BackBestSVG from '../../components/SVGComponentes/backBest'
-import PaySVG from '../../components/SVGComponentes/paySVG';
+import BackBestSVG from '../../assets/svgs/backBest'
+import PaySVG from '../../assets/svgs/paySVG';
 import CurrencyInput from 'react-native-currency-input';
 import Validations from '../../Validations';
 import { createTransaction } from '../../server/database/services/TransactionService';
@@ -57,7 +57,7 @@ function AddTransaction({ route, navigation }: any): JSX.Element {
 
         <Text style={styles.tituloView}>Realizar Pagamento</Text>
 
-        <View style={{ paddingHorizontal: 15 }}>
+        <View>
             <Animatable.View
                 delay={400}
                 useNativeDriver={true}

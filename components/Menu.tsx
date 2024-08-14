@@ -5,18 +5,19 @@ import {
     View,
     Text,
     SafeAreaView,
-    Image
+    Image,
+    StatusBar
 } from 'react-native';
 
 import Globals from '../Globals';
 import { Drawer } from 'react-native-drawer-layout';
-import UserSVG from './SVGComponentes/userSVG';
-import ConfigSVG from './SVGComponentes/configSVG';
-import FineSVG from './SVGComponentes/fineSVG';
+import UserSVG from '../assets/svgs/userSVG';
+import ConfigSVG from '../assets/svgs/configSVG';
+import FineSVG from '../assets/svgs/fineSVG';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from '../views/LoadingScreen';
-import HomeSVG from './SVGComponentes/homeSVG';
-import MenuSVG from './SVGComponentes/menuSVG';
+import HomeSVG from '../assets/svgs/homeSVG';
+import MenuSVG from '../assets/svgs/menuSVG';
 
 function Menu({ route, screenElement, navigation }: any): JSX.Element {
     const [email, setEmail] = useState<string | null>("")
@@ -77,6 +78,7 @@ function Menu({ route, screenElement, navigation }: any): JSX.Element {
                 drawerStyle={{
                     width: '90%'
                 }}
+
                 open={openClose}
                 onOpen={() => setOpenClose(true)}
                 onClose={() => setOpenClose(false)}
@@ -84,7 +86,7 @@ function Menu({ route, screenElement, navigation }: any): JSX.Element {
                     return <View style={{
                         width: '100%', height: '100%', backgroundColor: Globals.COLOR.LIGHT.COLOR5,
                     }}>
-
+                    {openClose && <StatusBar backgroundColor={Globals.COLOR.LIGHT.COLOR5}/>} 
                         <View style={styles.imagemUser}>
                             <View style={{
                                 justifyContent: 'center',

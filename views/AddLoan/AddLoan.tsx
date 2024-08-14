@@ -1,137 +1,88 @@
-import {
-    SafeAreaView,
-    Text,
-    View,
-    TouchableOpacity,
-    TextInput
-} from 'react-native';
-import * as Animatable from 'react-native-animatable'
+import React, { useState } from 'react';
+import { Text, View } from 'react-native';
 
-import Globals from '../../Globals';
 import Menu from '../../components/Menu';
 import styles from './AddLoanStyles';
-import React, { useState } from 'react';
-import BackBestSVG from '../../components/SVGComponentes/backBest'
-import PaySVG from '../../components/SVGComponentes/paySVG';
-import CurrencyInput from 'react-native-currency-input';
+import PaySVG from '../../assets/svgs/paySVG';
 import Validations from '../../Validations';
 import { createLoan } from '../../server/database/services/LoansService';
-function AddLoan({ route, navigation }: any): JSX.Element {
+import InputAnimation from '../../components/InputAnimation';
+import BottomMenu from '../../components/BottomMenu';
+import Title from '../../components/Title';
 
-    const [value, setValue] = useState<any>(0)
-    const [about, setAbout] = useState("")
-    const [name, setName] = useState("")
+interface AddLoanProps {
+    route: any;
+    navigation: any;
+}
+
+const AddLoan: React.FC<AddLoanProps> = ({ route, navigation }) => {
+    const [value, setValue] = useState<number>(0);
+    const [about, setAbout] = useState<string>("");
+    const [name, setName] = useState<string>("");
 
     const [errors, setErrors] = useState({
         value: false,
         about: false,
         name: false
-    })
+    });
 
     const postData = async () => {
-        
-            var obj_errors = {
-                value: value == 0 ? true : false,
-                about: Validations.onlyBlankSpaces(about),
-                name: Validations.onlyBlankSpaces(name) ? true : false
+        const objErrors = {
+            value: value === 0,
+            about: Validations.onlyBlankSpaces(about),
+            name: Validations.onlyBlankSpaces(name)
+        };
 
-            }
-            setErrors(obj_errors)
+        setErrors(objErrors);
 
-            if (!Validations.hasTruthyValue(obj_errors)) {
+        if (!Validations.hasTruthyValue(objErrors)) {
+            const loanData = {
+                value: parseFloat(value.toString()),
+                about,
+                name
+            };
 
-                var obj = {
-                    value: parseFloat(value),
-                    about: about,
-                    name: name
-                }
-
-                createLoan(obj).then((data) => {
-                    navigation.navigate("ManagerLoan")
-                })
-
-            }
-    }
-
-    const screen = <>
-
-        <Text style={styles.tituloView}>Realizar Pagamento</Text>
-
-        <View style={{ paddingHorizontal: 15 }}>
-            <Animatable.View
-                delay={300}
-                useNativeDriver={true}
-                animation='fadeInLeft'
-                duration={300}>
-                <TextInput style={[styles.inputStyle,]}
-                    selectionColor="white"
-                    placeholderTextColor={errors.about ? Globals.COLOR_ERROR : 'white'}
-                    onChangeText={setName}
-                    placeholder="Nome" />
-                <Text style={[styles.errorStyle, { display: errors.name ? 'flex' : 'none' }]}>Campo inválido</Text>
-            </Animatable.View>
-
-            <Animatable.View
-                delay={500}
-                useNativeDriver={true}
-                animation='fadeInLeft'
-                duration={300}>
-                <TextInput style={[styles.inputStyle,]}
-                    selectionColor="white"
-                    placeholderTextColor={errors.about ? Globals.COLOR_ERROR : 'white'}
-                    onChangeText={setAbout}
-                    placeholder="Descrição" />
-                <Text style={[styles.errorStyle, { display: errors.about ? 'flex' : 'none' }]}>Campo inválido</Text>
-            </Animatable.View>
-
-            <Animatable.View
-                style={{ zIndex: 10 }}
-                delay={700}
-                useNativeDriver={true}
-                animation='fadeInLeft'
-                duration={300}>
-                <CurrencyInput
-                    value={value}
-                    onChangeValue={setValue}
-                    prefix="R$ "
-                    delimiter="."
-                    separator=","
-                    precision={2}
-                    minValue={0}
-                    style={[styles.inputStyle, { color: errors.value ? Globals.COLOR_ERROR : 'white' }, { marginTop: 5 }]}
-                    selectionColor='white'
-                    keyboardType="numeric" />
-                <Text style={[styles.errorStyle, { display: errors.value ? 'flex' : 'none' }]}>Campo inválido</Text>
-            </Animatable.View>
-
-        </View>
-
-        <View style={[styles.menuBottom, { position: 'absolute', bottom: 0 }]}>
-            <TouchableOpacity onPress={() => {
+            try {
+                await createLoan(loanData);
                 navigation.navigate("ManagerLoan");
-            }} style={styles.menuBottomButton}>
-                <BackBestSVG width={30} height={30} />
-            </TouchableOpacity>
+            } catch (error) {
+                console.error("Error creating loan:", error);
+            }
+        }
+    };
 
-            <View style={{ flexDirection: 'row', gap: 10 }}>
-
-                <TouchableOpacity onPress={postData} style={[styles.menuBottomButton]}>
-                    <PaySVG width={35} fill={'white'} height={35} />
-                </TouchableOpacity>
-
+    const screen = (
+        <>
+            <Title text='Criar Empréstimo' />
+            <View>
+                <InputAnimation
+                    animation={{ delay: 300, duration: 300 }}
+                    error={errors.name}
+                    setValue={setName}
+                    placeholder="Nome"
+                />
+                <InputAnimation
+                    animation={{ delay: 500, duration: 300 }}
+                    error={errors.about}
+                    setValue={setAbout}
+                    placeholder="Descrição"
+                />
+                <InputAnimation
+                    value={value}
+                    animation={{ delay: 700, duration: 300 }}
+                    error={errors.value}
+                    setValue={setValue}
+                    type="currency"
+                />
             </View>
-
-        </View>
-
-
-    </>
-    return (
-        <SafeAreaView style={styles.body}>
-            <Menu route={route} screenElement={screen} navigation={navigation} />
-        </SafeAreaView>
+            <BottomMenu onNavigateBack={() => {
+                navigation.goBack()
+            }} onConfirm={postData} ConfirmIcon={<PaySVG width={35} fill="white" height={35} />
+            } />
+        </>
     );
-}
 
-
+    return <Menu route={route} screenElement={screen} navigation={navigation} />;
+};
 
 export default AddLoan;

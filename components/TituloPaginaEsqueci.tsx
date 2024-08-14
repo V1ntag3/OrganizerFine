@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, StyleSheet, Pressable, View, Dimensions} from 'react-native';
-import BackSVG from './SVGComponentes/backSVG';
+import BackSVG from '../assets/svgs/backSVG';
 import Globals from '../Globals';
 type tituloPaginaProps = {
     title: string;

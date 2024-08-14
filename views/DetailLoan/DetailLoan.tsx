@@ -9,19 +9,18 @@ import Globals from '../../Globals';
 import Menu from '../../components/Menu';
 import styles from './DetailLoanStyles';
 import React, { useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import EditSVG from '../../components/SVGComponentes/editarSVG';
-import BackBestSVG from '../../components/SVGComponentes/backBest'
+import EditSVG from '../../assets/svgs/editarSVG';
+import BackBestSVG from '../../assets/svgs/backBest'
 import * as Progress from 'react-native-progress';
 import Validations from '../../Validations';
-import PDFSVG from '../../components/SVGComponentes/pdfSVG'
-import TrashSVG from '../../components/SVGComponentes/lixeiraSVG'
-import PaySVG from '../../components/SVGComponentes/paySVG';
+import PDFSVG from '../../assets/svgs/pdfSVG'
+import TrashSVG from '../../assets/svgs/lixeiraSVG'
+import PaySVG from '../../assets/svgs/paySVG';
 import * as Animatable from 'react-native-animatable'
 import ModalGeneric from '../../components/ModalGeneric';
-import EditStorySVG from '../../components/SVGComponentes/deleteTrashSVG'
+import EditStorySVG from '../../assets/svgs/deleteTrashSVG'
 import { deleteLoan, getLoanById } from '../../server/database/services/LoansService';
-import { getTransactionById, listTransactions } from '../../server/database/services/TransactionService';
+import { listTransactions } from '../../server/database/services/TransactionService';
 function DetailLoan({ route, navigation }: any): JSX.Element {
     const { item } = route.params
 

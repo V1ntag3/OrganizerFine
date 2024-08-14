@@ -5,19 +5,20 @@ import {
     TouchableOpacity,
     FlatList,
     ScrollView,
+    StatusBar,
 } from 'react-native';
 import Globals from '../../Globals';
 import { useState } from 'react';
-import LixeiraSVG from '../../components/SVGComponentes/lixeiraSVG';
+import LixeiraSVG from '../../assets/svgs/lixeiraSVG';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from '../LoadingScreen';
-import EditarSVG from '../../components/SVGComponentes/editarSVG';
-import SaveSVG from '../../components/SVGComponentes/saveSVG';
-import EditSVG from '../../components/SVGComponentes/editSVG';
+import EditarSVG from '../../assets/svgs/editarSVG';
+import SaveSVG from '../../assets/svgs/saveSVG';
+import EditSVG from '../../assets/svgs/editSVG';
 import CurrencyInput from 'react-native-currency-input';
 import * as Animatable from 'react-native-animatable'
 import Menu from '../../components/Menu';
-import DeleteTrashSVG from '../../components/SVGComponentes/deleteTrashSVG';
+import DeleteTrashSVG from '../../assets/svgs/deleteTrashSVG';
 import ModalGeneric from '../../components/ModalGeneric';
 import DatePickerGen from '../../components/DatePickerGen';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -254,6 +255,8 @@ function DetailRevenueSpending({ route, navigation }: any): JSX.Element {
             {
                 isLoading ? <LoadingScreen /> : (<></>)
             }
+            <StatusBar backgroundColor={element.type == 1 ? Globals.COLOR_GASTO : Globals.COLOR_RECEITA}/>
+
             <Menu route={route} screenElement={screen} navigation={navigation} />
             <ModalGeneric image={(style: any) => {
                 return <EditSVG style={style} />

@@ -90,3 +90,28 @@ export const deleteRevenueSpending = async (id: string) => {
         });
     });
 };
+
+export const getTotalRevenueSpendings = async (): Promise<number> => {
+    const db = await connectToDatabase();
+  
+    return new Promise((resolve, reject) => {
+      db.transaction((tx) => {
+        tx.executeSql(
+            `SELECT SUM(
+                CASE
+                  WHEN type = 1 THEN -value
+                  WHEN type = 0 THEN value
+                  ELSE 0
+                END
+              ) AS total
+              FROM RevenueSpendings`,
+                        [],
+          (_, result) => {
+            const total = result.rows.item(0).total;
+            resolve(total || 0); // Retorna 0 se total for null ou undefined
+          },
+          (_, error) => reject(error)
+        );
+      });
+    });
+  };

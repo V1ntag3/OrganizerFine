@@ -3,24 +3,38 @@ import {
     StyleSheet,
     View,
     Text,
+    StatusBar,
 }
     from 'react-native';
 import React from 'react';
-import BarChartSVG from '../components/SVGComponentes/barChartSVG'
+import BarChartSVG from '../assets/svgs/barChartSVG'
 import Globals from '../Globals';
 import Svg, { Path } from 'react-native-svg';
-import AddSVG from '../components/SVGComponentes/addSVG';
-import GestaoSVG from '../components/SVGComponentes/gestaoSVG';
+import AddSVG from '../assets/svgs/addSVG';
+import GestaoSVG from '../assets/svgs/gestaoSVG';
 import Menu from '../components/Menu';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { getTotalRevenueSpendings } from '../server/database/services/revenueSpendingService';
 
 function Home({ route, navigation }: any): JSX.Element {
+    const [total, setTotal] = useState(0)
+    const getTotal = () => {
+        getTotalRevenueSpendings().then((data) => {
+            setTotal(data)
 
+        })
+
+    }
+    useEffect(() => {
+        getTotal()
+    }, [])
     const screen = <SafeAreaView style={styles.body}>
         <View style={styles.boxUp} >
             <Text style={styles.tituloView}>Home</Text>
             <View style={styles.boxUpDados}>
                 <Text style={styles.boxUpDadosText1}>Balanço Geral</Text>
-                <Text style={styles.boxUpDadosText2}>+ R$ 999.999,00</Text>
+                <Text style={styles.boxUpDadosText2}>{total.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</Text>
             </View>
         </View>
         <View style={styles.boxDown} >
@@ -62,13 +76,13 @@ function Home({ route, navigation }: any): JSX.Element {
                 navigation.navigate('ManagerLoan')
             }} style={[styles.boxClick, styles.boxClick3]}>
                 <GestaoSVG />
-                <Text style={styles.textBox}  >Gestão de Empréstimos</Text>
+                <Text style={styles.textBox}>Gestão de Empréstimos</Text>
             </View>
         </View>
 
     </SafeAreaView>
     return (
-        <Menu route={route} screenElement={screen} navigation={navigation} />
+        <><StatusBar backgroundColor={Globals.COLOR.LIGHT.COLOR2} /><Menu route={route} screenElement={screen} navigation={navigation} /></>
     );
 }
 

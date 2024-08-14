@@ -11,15 +11,15 @@ import Globals from '../../Globals';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from '../LoadingScreen';
-import UserSVG from '../../components/SVGComponentes/userSVG';
-import EditarSVG from '../../components/SVGComponentes/editarSVG';
-import SaveSVG from '../../components/SVGComponentes/saveSVG';
-import ConfigurationSVG from '../../components/SVGComponentes/configurationSVG';
+import UserSVG from '../../assets/svgs/userSVG';
+import EditarSVG from '../../assets/svgs/editarSVG';
+import SaveSVG from '../../assets/svgs/saveSVG';
+import ConfigurationSVG from '../../assets/svgs/configurationSVG';
 import * as Animatable from 'react-native-animatable'
 import Menu from '../../components/Menu';
 import Modal from '../../components/ModalGeneric';
 import styles from './ProfileEditStyles';
-import PencilSVG from '../../components/SVGComponentes/pencilImageSVG'
+import PencilSVG from '../../assets/svgs/pencilImageSVG'
 import ImagePicker from 'react-native-image-crop-picker';
 import Validations from '../../Validations';
 

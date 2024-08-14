@@ -5,12 +5,13 @@ import {
     TextInput,
     TouchableOpacity,
     FlatList,
+    StatusBar,
 } from 'react-native';
 
 import Globals from '../../Globals';
 import Validations from '../../Validations';
 import { useState } from 'react';
-import AddSVG from '../../components/SVGComponentes/addSVG';
+import AddSVG from '../../assets/svgs/addSVG';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from '../LoadingScreen';
 import CurrencyInput from 'react-native-currency-input'
@@ -222,8 +223,9 @@ function AddRevenueSpending({ route, navigation }: any): JSX.Element {
     return (
         <SafeAreaView style={styles.body}>
             {
-                loading ? <LoadingScreen /> : (<></>)
+                loading && <LoadingScreen />
             }
+            <StatusBar backgroundColor={type ? Globals.COLOR_GASTO : Globals.COLOR_RECEITA}/>
             <Menu route={route} screenElement={screen} navigation={navigation} />
         </SafeAreaView>
     );

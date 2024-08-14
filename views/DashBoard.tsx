@@ -7,12 +7,13 @@ import {
     RefreshControl,
     Pressable,
     FlatList,
+    StatusBar,
 } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Globals from '../Globals';
 import DatePicker from 'react-native-modern-datepicker';
-import BackRotSVG from '../components/SVGComponentes/backRotSVG'
-import AddSVG from '../components/SVGComponentes/addSVG';
+import BackRotSVG from '../assets/svgs/backRotSVG'
+import AddSVG from '../assets/svgs/addSVG';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from './LoadingScreen';
 import * as Animatable from 'react-native-animatable'
@@ -320,6 +321,7 @@ function DashBoard({ route, navigation }: any): JSX.Element {
 
     return (
         <SafeAreaView style={styles.body}>
+            <StatusBar backgroundColor={Globals.COLOR.LIGHT.COLOR4} />
             {
                 loading ? <LoadingScreen /> : (<></>)
             }

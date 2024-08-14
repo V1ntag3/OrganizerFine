@@ -7,15 +7,15 @@ import {
 } from 'react-native';
 
 import Globals from '../Globals';
-import VestSVG from './SVGComponentes/vestSVG';
-import ComidaSVG from './SVGComponentes/comidaSVG';
-import EletroSVG from './SVGComponentes/eletroSVG';
-import EntreSVG from './SVGComponentes/entreSVG';
-import OutrosSVG from './SVGComponentes/outrosSVG';
-import ServSVG from './SVGComponentes/servSVG';
-import MoneySVG from './SVGComponentes/moneySVG';
+import VestSVG from '../assets/svgs/vestSVG';
+import ComidaSVG from '../assets/svgs/comidaSVG';
+import EletroSVG from '../assets/svgs/eletroSVG';
+import EntreSVG from '../assets/svgs/entreSVG';
+import OutrosSVG from '../assets/svgs/outrosSVG';
+import ServSVG from '../assets/svgs/servSVG';
+import MoneySVG from '../assets/svgs/moneySVG';
 
-function ItemListRevSpen({navigation, element} :any): JSX.Element {
+function ItemListRevSpen({ navigation, element }: any): JSX.Element {
     const renderImagem = (item: any) => {
         switch (item) {
             case 0:
@@ -47,14 +47,14 @@ function ItemListRevSpen({navigation, element} :any): JSX.Element {
             fontWeight: '900',
             fontSize: 13.8889,
             textAlign: 'right',
-            color: element.type == 0 ? Globals.COLOR_RECEITA: Globals.COLOR_GASTO,
+            color: element.type == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO,
             marginBottom: 2
         },
         valDate2: {
             fontSize: 10.8889,
             textAlign: 'right',
-            color: element.type == 0 ? Globals.COLOR_RECEITA: Globals.COLOR_GASTO,
-    
+            color: element.type == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO,
+
         },
         decCat: {
             width: 'auto',
@@ -62,17 +62,18 @@ function ItemListRevSpen({navigation, element} :any): JSX.Element {
             flexDirection: 'column'
         },
         decCat1: {
-    
+
             fontSize: 15.2778,
             fontWeight: '600',
-            color: element.type == 0 ? Globals.COLOR_RECEITA: Globals.COLOR_GASTO,
+            color: element.type == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO,
             marginBottom: 2
-    
+
         },
         decCat2: {
-            color: element.type == 0 ? Globals.COLOR_RECEITA: Globals.COLOR_GASTO,
+            color: element.type == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO,
             fontSize: 10.8889
-        },card: {
+        },
+        card: {
             alignSelf: 'center',
             backgroundColor: Globals.COLOR.BRANCO,
             width: '100%',
@@ -92,9 +93,9 @@ function ItemListRevSpen({navigation, element} :any): JSX.Element {
             flexDirection: 'row',
             marginRight: 5,
         },
-    
+
     });
-    
+
     return (
         <View key={element.id} style={{ backgroundColor: '#D9D9D9' }}>
             <TouchableOpacity onPress={() => {
@@ -111,7 +112,7 @@ function ItemListRevSpen({navigation, element} :any): JSX.Element {
                         <Text style={styles.decCat2}>{renderNome(element.category)}</Text>
                     </View>
                     <View style={styles.valDate}>
-                        <Text style={styles.valDate1}>{element.type == 0 ? '+ ' : '- ' }{element.value}</Text>
+                        <Text style={styles.valDate1}>{element.type == 0 ? '+ ' : '- '}{element.value}</Text>
                         <Text style={styles.valDate2}>{element.created_at}</Text>
                     </View>
                 </View>
@@ -119,7 +120,7 @@ function ItemListRevSpen({navigation, element} :any): JSX.Element {
         </View>
 
     );
-    
+
 };
 const renderNome = (item: any) => {
     switch (item) {
