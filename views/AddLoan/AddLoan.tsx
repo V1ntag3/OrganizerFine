@@ -11,7 +11,6 @@ import Globals from '../../Globals';
 import Menu from '../../components/Menu';
 import styles from './AddLoanStyles';
 import React, { useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import BackBestSVG from '../../components/SVGComponentes/backBest'
 import PaySVG from '../../components/SVGComponentes/paySVG';
 import CurrencyInput from 'react-native-currency-input';

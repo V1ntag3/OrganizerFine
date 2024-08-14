@@ -20,6 +20,8 @@ import PaySVG from '../../components/SVGComponentes/paySVG';
 import * as Animatable from 'react-native-animatable'
 import ModalGeneric from '../../components/ModalGeneric';
 import EditStorySVG from '../../components/SVGComponentes/deleteTrashSVG'
+import { deleteLoan, getLoanById } from '../../server/database/services/LoansService';
+import { getTransactionById, listTransactions } from '../../server/database/services/TransactionService';
 function DetailLoan({ route, navigation }: any): JSX.Element {
     const { item } = route.params
 
@@ -35,82 +37,32 @@ function DetailLoan({ route, navigation }: any): JSX.Element {
     const [loading, setLoading] = useState(false)
 
     const getData = async () => {
-        await AsyncStorage.getItem('token', (_, result) => {
-
-            fetch(Globals.BASE_URL_API + 'loan/' + item.id, {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + result
-                },
-            }).then(response => {
-             
-
-                if (response.status == 200) {
-                    response.json().then((json) => {
-                        setLoan(json)
-                    })
-                }
-
-            }).finally(() => {
-
-            })
-
+        getLoanById(item.id).then((data: any) => {
+            console.log(data)
+            setLoan(data)
         })
     }
+
     const removeLoan = async () => {
-        await AsyncStorage.getItem('token', (_, result) => {
 
-            fetch(Globals.BASE_URL_API + 'loan/' + item.id, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': 'Bearer ' + result
-                },
-            }).then(response => {
-                console.log(response.status)
-              
-
-                if (response.status == 200) {
-                    navigation.navigate("ManagerLoan")
-                }
-
-            }).catch((err) => {
-                console.log(err)
-
-            }).finally(() => {
-
-            })
+        deleteLoan(item.id).then(() => {
+            navigation.navigate("ManagerLoan")
         })
+
     }
     const getDataTransactions = async () => {
-        await AsyncStorage.getItem('token', (_, result) => {
-            if (isFinalPage == false) {
-                fetch(Globals.BASE_URL_API + 'transaction/list?page=' + page + '&limit=12&loan=' + item.id, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Bearer ' + result
-                    },
-                }).then(response => {
+        if (isFinalPage == false) {
+            listTransactions(item.id, page, 12).then((data: any) => {
+                setPage(page + 1)
+                setTransactions(transactions.concat(data))
 
-                
-
-                    if (response.status == 200) {
-                        response.json().then((json) => {
-                            setPage(page + 1)
-                            setTransactions(transactions.concat(json))
-
-                            if (json.length == 0) {
-                                setIsFinalPage(true)
-                            }
-                        })
-                    }
-
-                }).finally(() => {
-
-                })
-            }
+                if (data.length == 0) {
+                    setIsFinalPage(true)
+                }
+            })
+        }
 
 
-        })
     }
 
     useEffect(() => {

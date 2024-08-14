@@ -19,54 +19,55 @@ import HomeSVG from './SVGComponentes/homeSVG';
 import MenuSVG from './SVGComponentes/menuSVG';
 
 function Menu({ route, screenElement, navigation }: any): JSX.Element {
-    const [email, setEmail] = useState("")
-    const [nome, setNome] = useState("")
-    const [profileImage, setProfileImage] = useState(null)
+    const [email, setEmail] = useState<string | null>("")
+    const [name, setName] = useState<string | null>("")
+    const [profileImage, setProfileImage] = useState<string | null>(null)
     const [openClose, setOpenClose] = useState(false);
 
     const [isLoading, setIsLoading] = useState(false)
 
 
-    const removeData = async () => {
-        await AsyncStorage.getItem('token', (_, result) => {
-            setIsLoading(true)
-            fetch(Globals.BASE_URL_API + 'auth/logout', {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + result
-                },
-            }).then(response => {
-               
-            }).finally(() => {
-                setIsLoading(false)
-            })
-        })
-    };
+    const getUserDetails = async () => {
+        try {
+            const keys = ['@image_user', '@name_user', '@surname_user', '@email_user'];
 
-    const getData = async () => {
-        await AsyncStorage.getItem('token', (_, result) => {
-            fetch(Globals.BASE_URL_API + 'user/profile', {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + result
-                },
-            }).then(response => {
+            const result = await AsyncStorage.multiGet(keys);
 
-                if (response.status == 401 || response.status == 403) { removeData() };
-                response.json().then((json) => {
-                    setProfileImage(json.image)
-                    setNome(json.name + ' ' + json.surname)
-                    setEmail(json.email)
-                })
-            }).catch(error => {
-                if (error.toString() == "TypeError: Network request failed") {
+            const userDetails = result.reduce((acc, [key, value]) => {
+                if (value !== null) {
+                    switch (key) {
+                        case '@image_user':
+                            acc.image = value;
+                            break;
+                        case '@name_user':
+                            acc.name = value;
+                            break;
+                        case '@surname_user':
+                            acc.surname = value;
+                            break;
+                        case '@email_user':
+                            acc.email = value;
+                            break;
+                        default:
+                            break;
+                    }
                 }
-            })
-        })
-    }
+                return acc;
+            }, {} as Record<string, string | null>);
+
+            setEmail(userDetails.email)
+            setProfileImage(userDetails.image)
+            setName(userDetails.name + ' ' + userDetails.surname)
+
+            return userDetails;
+        } catch (error) {
+            console.error('Failed to fetch user details', error);
+            throw error;
+        }
+    };
     useEffect(() => {
-        // getData()
-    }, [nome])
+        getUserDetails()
+    }, [name])
     return (
         <SafeAreaView style={styles.body}>
             {
@@ -86,11 +87,12 @@ function Menu({ route, screenElement, navigation }: any): JSX.Element {
 
                         <View style={styles.imagemUser}>
                             <View style={{
-                                alignSelf: 'center', width: '100%',
+                                justifyContent: 'center',
+                                alignItems: 'center', width: '100%',
                                 height: '100%'
                             }}>
                                 {profileImage == null ? <UserSVG style={{ marginTop: 10 }} /> : <Image
-                                    source={{ uri: Globals.BASE_URL + profileImage }}
+                                    source={{ uri: profileImage }}
                                     style={{
                                         width: '100%',
                                         height: '100%',
@@ -105,7 +107,7 @@ function Menu({ route, screenElement, navigation }: any): JSX.Element {
                                 fontSize: 20,
                                 color: '#FFFFFF'
                             }}>
-                                <Text style={{ fontWeight: '700' }}>Olá</Text>, {nome}
+                                {name !== null && name !== "" && <Text style={{ fontWeight: '700' }}>Olá</Text>}, {name}
                             </Text>
                             <Text style={styles.dadosMenu}>{email}</Text>
                         </View>
@@ -142,9 +144,9 @@ function Menu({ route, screenElement, navigation }: any): JSX.Element {
                                 <Text style={styles.itemMenuText}>Configurações</Text>
                             </View>
                         </TouchableOpacity>
-                        <View style={styles.containerNomeMenu}>
-                            <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
-                            <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
+                        <View style={styles.containernameMenu}>
+                            <Text style={styles.nameApp}>{Globals.APP_NAME1}</Text>
+                            <Text style={styles.nameApp}>{Globals.APP_NAME2}</Text>
                         </View>
                     </View>;
                 }}>
@@ -211,12 +213,12 @@ const styles = StyleSheet.create({
         marginLeft: 15,
         lineHeight: 24
     },
-    containerNomeMenu: {
+    containernameMenu: {
         position: 'absolute',
         bottom: 15,
         alignSelf: 'center'
     },
-    nomeApp: {
+    nameApp: {
         width: '100%',
         textAlign: 'center',
         fontFamily: Globals.FONT_FAMILY_NAME_APP.REGULAR,

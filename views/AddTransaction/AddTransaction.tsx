@@ -16,8 +16,9 @@ import BackBestSVG from '../../components/SVGComponentes/backBest'
 import PaySVG from '../../components/SVGComponentes/paySVG';
 import CurrencyInput from 'react-native-currency-input';
 import Validations from '../../Validations';
+import { createTransaction } from '../../server/database/services/TransactionService';
 function AddTransaction({ route, navigation }: any): JSX.Element {
-    const {  item } = route.params
+    const { item } = route.params
 
 
 
@@ -30,46 +31,26 @@ function AddTransaction({ route, navigation }: any): JSX.Element {
     })
 
     const postData = async () => {
-        await AsyncStorage.getItem('token', (_, result) => {
-            var obj_errors = {
-                value: value == 0 ? true : false,
-                about: about == "" ? true : false
+
+        var obj_errors = {
+            value: value == 0 ? true : false,
+            about: about == "" ? true : false
+        }
+        setErrors(obj_errors)
+
+        if (!Validations.hasTruthyValue(obj_errors)) {
+
+            var obj = {
+                value: value,
+                about: about,
+                loan_id: item.id
             }
-            setErrors(obj_errors)
-
-            if (!Validations.hasTruthyValue(obj_errors)) {
-
-                var obj = JSON.stringify({
-                    value: value,
-                    about: about,
-                    loanId: item.id
+            createTransaction(obj).then(() => {
+                navigation.navigate("DetailLoan", {
+                    item
                 })
-                fetch(Globals.BASE_URL_API + 'transaction/create', {
-                    method: 'POST',
-                    headers: {
-                        'Content-type': 'application/json; charset=UTF-8',
-                        'Authorization': 'Bearer ' + result
-                    },
-                    body: obj
-                }).then(response => {
-                    console.log(response)
-                 
-                    console.log(response.status)
-                    if (response.status == 200) {
-                        navigation.navigate("DetailLoan", {
-                            item
-                        })
-                    }
-
-                }).catch((err)=>{
-                    console.log(err)
-                }).finally(() => {
-
-                })
-            }
-
-
-        })
+            })
+        }
     }
 
     const screen = <>
@@ -113,7 +94,7 @@ function AddTransaction({ route, navigation }: any): JSX.Element {
 
         <View style={[styles.menuBottom, { position: 'absolute', bottom: 0 }]}>
             <TouchableOpacity onPress={() => {
-                navigation.navigate("DetailLoan",{item});
+                navigation.navigate("DetailLoan", { item });
             }} style={styles.menuBottomButton}>
                 <BackBestSVG width={30} height={30} />
             </TouchableOpacity>
@@ -121,7 +102,7 @@ function AddTransaction({ route, navigation }: any): JSX.Element {
             <View style={{ flexDirection: 'row', gap: 10 }}>
 
                 <TouchableOpacity onPress={postData} style={[styles.menuBottomButton]}>
-                    <PaySVG width={35} fill={'white'} height={35}/>
+                    <PaySVG width={35} fill={'white'} height={35} />
                 </TouchableOpacity>
 
             </View>

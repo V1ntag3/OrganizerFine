@@ -22,7 +22,7 @@ function SplashScreen(): JSX.Element {
 
 const styles = StyleSheet.create({
   body: {
-    backgroundColor: Globals.COLOR.LIGHT.COLOR5,
+    backgroundColor: Globals.COLOR.LIGHT.COLOR4,
     flex: 1,
     zIndex: 10000
   },
