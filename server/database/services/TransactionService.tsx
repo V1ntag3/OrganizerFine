@@ -34,13 +34,23 @@ export const createTransaction = async (transaction: { value: number; about: str
                 `INSERT INTO Transactions (id, value, about, loan_id) VALUES (?, ?, ?, ?)`,
                 [id, value, about, loan_id],
                 (_, result) => {
+                    if (value > 0) {
+                        tx.executeSql(
+                            `UPDATE Loans SET amount_paid = amount_paid + ? WHERE id = ?`,
+                            [value, loan_id],
+                            (_, updateResult) => resolve({ transactionId: id, result, updateResult }),
+                            (_, updateError) => reject(updateError)
+                        );
+                    } else {
+                        console.log('aqio')
+                        tx.executeSql(
+                            `UPDATE Loans SET value = value - ? WHERE id = ?`,
+                            [value, loan_id],
+                            (_, updateResult) => resolve({ transactionId: id, result, updateResult }),
+                            (_, updateError) => reject(updateError)
+                        );
+                    }
 
-                    tx.executeSql(
-                        `UPDATE Loans SET amount_paid = amount_paid + ? WHERE id = ?`,
-                        [value, loan_id],
-                        (_, updateResult) => resolve({ transactionId: id, result, updateResult }),
-                        (_, updateError) => reject(updateError)
-                    );
                 },
                 (_, error) => reject(error)
             );

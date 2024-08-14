@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     } as TextStyle,
 });
 
-const InputComponent: React.FC<InputProps> = ({
+const InputAnimation: React.FC<InputProps> = ({
     animation,
     error = false,
     value,
@@ -98,4 +98,4 @@ const InputComponent: React.FC<InputProps> = ({
     );
 };
 
-export default InputComponent;
+export default InputAnimation;

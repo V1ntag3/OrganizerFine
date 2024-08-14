@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { Text, View } from 'react-native';
 
-import Menu from '../../components/Menu';
-import styles from './AddLoanStyles';
-import PaySVG from '../../assets/svgs/paySVG';
-import Validations from '../../Validations';
-import { createLoan } from '../../server/database/services/LoansService';
-import InputAnimation from '../../components/InputAnimation';
-import BottomMenu from '../../components/BottomMenu';
-import Title from '../../components/Title';
+import Menu from '../components/Menu';
+import PaySVG from '../assets/svgs/paySVG';
+import Validations from '../Validations';
+import { createLoan } from '../server/database/services/LoansService';
+import InputAnimation from '../components/InputAnimation';
+import BottomMenu from '../components/BottomMenu';
+import Title from '../components/Title';
 
 interface AddLoanProps {
     route: any;

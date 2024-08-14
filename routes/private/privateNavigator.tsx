@@ -8,8 +8,8 @@ import ProfileEdit from '../../views/ProfileEdit/ProfileEdit';
 import Home from '../../views/Home';
 import ManagerLoan from '../../views/ManagerLoan/ManagerLoan';
 import DetailLoan from '../../views/DetailLoan/DetailLoan';
-import AddTransaction from '../../views/AddTransaction/AddTransaction';
-import AddLoan from '../../views/AddLoan/AddLoan';
+import AddTransaction from '../../views/AddTransaction';
+import AddLoan from '../../views/AddLoan';
 
 const Stack = createNativeStackNavigator();
 

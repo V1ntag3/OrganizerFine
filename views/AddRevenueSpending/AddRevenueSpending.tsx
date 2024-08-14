@@ -12,7 +12,6 @@ import Globals from '../../Globals';
 import Validations from '../../Validations';
 import { useState } from 'react';
 import AddSVG from '../../assets/svgs/addSVG';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from '../LoadingScreen';
 import CurrencyInput from 'react-native-currency-input'
 import * as Animatable from 'react-native-animatable'
