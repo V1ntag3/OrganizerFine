@@ -10,17 +10,16 @@ import {
     StatusBar,
 } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import Globals from '../Globals';
+import Globals from '../../Globals';
 import DatePicker from 'react-native-modern-datepicker';
-import BackRotSVG from '../assets/svgs/backRotSVG'
-import AddSVG from '../assets/svgs/addSVG';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import LoadingScreen from './LoadingScreen';
+import BackRotSVG from '../../assets/svgs/backRotSVG'
+import AddSVG from '../../assets/svgs/addSVG';
+import LoadingScreen from '../LoadingScreen';
 import * as Animatable from 'react-native-animatable'
-import Menu from '../components/Menu';
-import PieChartComp from '../components/PieChartComp';
-import ItemListRevSpen from '../components/ItemListRevSpen';
-import { listRevenueSpendings } from '../server/database/services/revenueSpendingService';
+import Menu from '../../components/Menus/Menu';
+import PieChartComp from '../../components/PieChartComp';
+import CardRevenueSpending from '../../components/Cards/CardRevenueSpending';
+import { listRevenueSpendings } from '../../server/database/services/revenueSpendingService';
 
 function DashBoard({ route, navigation }: any): JSX.Element {
 
@@ -42,7 +41,7 @@ function DashBoard({ route, navigation }: any): JSX.Element {
     const renderHeaderFlat = () => {
         return (
             <>
-                <TouchableOpacity onPressIn={() => { setShow(show == true ? false : true) }}>
+                <TouchableOpacity onPress={() => { setShow(show == true ? false : true) }}>
                     <View style={
                         {
                             position: 'absolute',
@@ -92,7 +91,7 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                 disableVirtualization={false}
                 style={{ backgroundColor: '#D9D9D9' }}
                 data={item}
-                renderItem={({ item }) => <ItemListRevSpen navigation={navigation} element={item} />}
+                renderItem={({ item }) => <CardRevenueSpending navigation={navigation} element={item} />}
                 showsVerticalScrollIndicator={false}
                 ListHeaderComponent={renderHeaderFlat()}
                 keyExtractor={(item: { id: any; }) => item.id}
@@ -111,95 +110,98 @@ function DashBoard({ route, navigation }: any): JSX.Element {
 
     const getData = async (isPageReload = false) => {
         try {
-            listRevenueSpendings(month, year).then((json: any) => {
+
+            listRevenueSpendings(month, year).then(async (json: any) => {
                 setShow(false)
+               await setTimeout(() => {
 
-                if (json.length != 0) {
-                    var array: any = []
-                    var gastos: number = 0
-                    var receitas: number = 0
-                    var item0 = 0, item1 = 0, item2 = 0, item3 = 0, item4 = 0, item5 = 0
-                    for (var item in json) {
 
-                        switch (json[item].category) {
-                            case 0:
-                                item0 = + json[item].value
-                                break
-                            case 1:
-                                item1 = + json[item].value
-                                break
-                            case 2:
-                                item2 = + json[item].value
-                                break
-                            case 3:
-                                item3 = + json[item].value
-                                break
-                            case 4:
-                                item4 = + json[item].value
-                                break
-                            case 5:
-                                item5 = + json[item].value
-                                break
+                    if (json.length != 0) {
+                        var array: any = []
+                        var gastos: number = 0
+                        var receitas: number = 0
+                        var item0 = 0, item1 = 0, item2 = 0, item3 = 0, item4 = 0, item5 = 0
+                        for (var item in json) {
+
+                            switch (json[item].category) {
+                                case 0:
+                                    item0 = + json[item].value
+                                    break
+                                case 1:
+                                    item1 = + json[item].value
+                                    break
+                                case 2:
+                                    item2 = + json[item].value
+                                    break
+                                case 3:
+                                    item3 = + json[item].value
+                                    break
+                                case 4:
+                                    item4 = + json[item].value
+                                    break
+                                case 5:
+                                    item5 = + json[item].value
+                                    break
+                            }
+
+                            if (json[item].type == 0) {
+                                receitas += json[item].value
+                            }
+
+                            if (json[item].type == 1) {
+                                gastos += json[item].value
+                            }
+                            json[item].realDate = json[item].created_at
+                            json[item].value = json[item].value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+                            var valor = Number(new Date()) - Number(new Date(json[item].created_at))
+                            json[item].created_at = json[item].created_at
+                            json[item].created_at = String(valor / (1000 * 60 * 60 * 24))[0] + ' dias atrás'
+                            array.push(json[item])
+
+
                         }
 
-                        if (json[item].type == 0) {
-                            receitas += json[item].value
+                        setRevenue(receitas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+                        setSpending(gastos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+
+                        var arrayValores = [item0, item1, item2, item3, item4, item5]
+                        pieData.current = [
+                            { value: item0, color: '#323131', gradientCenterColor: '#323131' },
+                            { value: item1, color: '#474747', gradientCenterColor: '#474747' },
+                            { value: item2, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
+                            { value: item3, color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
+                            { value: item4, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
+                            { value: item5, color: '#60625F', gradientCenterColor: '#60625F' },
+                        ]
+
+                        if (item0 == 0 && item1 == 0 && item2 == 0 && item3 == 0 && item4 == 0 && item5 == 0) {
+                            setItems([])
+                            setValorMaiorPorc('0%')
+                            setValorMaiorNome('')
                         }
 
-                        if (json[item].type == 1) {
-                            gastos += json[item].value
+                        else {
+                            setItems(array)
+                            setValorMaiorPorc(String(parseInt(String((Math.max(...arrayValores) / gastos) * 100))) + '%')
+                            setValorMaiorNome(renderNome(arrayValores.indexOf(Math.max(...arrayValores))))
                         }
-                        json[item].realDate = json[item].created_at
-                        json[item].value = json[item].value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
-                        var valor = Number(new Date()) - Number(new Date(json[item].created_at))
-                        json[item].created_at = json[item].created_at
-                        json[item].created_at = String(valor / (1000 * 60 * 60 * 24))[0] + ' dias atrás'
-                        array.push(json[item])
 
-
-                    }
-
-                    setRevenue(receitas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-                    setSpending(gastos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-
-                    var arrayValores = [item0, item1, item2, item3, item4, item5]
-                    pieData.current = [
-                        { value: item0, color: '#323131', gradientCenterColor: '#323131' },
-                        { value: item1, color: '#474747', gradientCenterColor: '#474747' },
-                        { value: item2, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-                        { value: item3, color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
-                        { value: item4, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
-                        { value: item5, color: '#60625F', gradientCenterColor: '#60625F' },
-                    ]
-
-                    if (item0 == 0 && item1 == 0 && item2 == 0 && item3 == 0 && item4 == 0 && item5 == 0) {
-                        setItems([])
+                    } else {
+                        pieData.current = [
+                            { value: 0, color: '#323131', gradientCenterColor: '#323131' },
+                            { value: 0, color: '#474747', gradientCenterColor: '#474747' },
+                            { value: 0, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
+                            { value: 0, color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
+                            { value: 0, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
+                            { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
+                        ]
+                        setItems([]);
+                        setSpending('R$ 0,00');
+                        setRevenue('R$ 0,00');
                         setValorMaiorPorc('0%')
                         setValorMaiorNome('')
                     }
-
-                    else {
-                        setItems(array)
-                        setValorMaiorPorc(String(parseInt(String((Math.max(...arrayValores) / gastos) * 100))) + '%')
-                        setValorMaiorNome(renderNome(arrayValores.indexOf(Math.max(...arrayValores))))
-                    }
-
-                } else {
-                    pieData.current = [
-                        { value: 0, color: '#323131', gradientCenterColor: '#323131' },
-                        { value: 0, color: '#474747', gradientCenterColor: '#474747' },
-                        { value: 0, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-                        { value: 0, color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
-                        { value: 0, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
-                        { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
-                    ]
-                    setItems([]);
-                    setSpending('R$ 0,00');
-                    setRevenue('R$ 0,00');
-                    setValorMaiorPorc('0%')
-                    setValorMaiorNome('')
-                }
-
+                }, 800);
             }).finally(() => {
                 if (isPageReload) setRefreshing(false)
                 setLoading(false)

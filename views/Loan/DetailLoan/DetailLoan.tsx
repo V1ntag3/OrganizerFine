@@ -1,26 +1,26 @@
 import {
-    SafeAreaView,
     Text,
     View,
     FlatList,
-    TouchableOpacity
+    TouchableOpacity,
+    SafeAreaView
 } from 'react-native';
-import Globals from '../../Globals';
-import Menu from '../../components/Menu';
+import Globals from '../../../Globals';
+import Menu from '../../../components/Menus/Menu';
 import styles from './DetailLoanStyles';
 import React, { useEffect, useState } from 'react';
-import EditSVG from '../../assets/svgs/editarSVG';
-import BackBestSVG from '../../assets/svgs/backBest'
+import EditSVG from '../../../assets/svgs/editarSVG';
+import BackBestSVG from '../../../assets/svgs/backBest'
 import * as Progress from 'react-native-progress';
-import Validations from '../../Validations';
-import PDFSVG from '../../assets/svgs/pdfSVG'
-import TrashSVG from '../../assets/svgs/lixeiraSVG'
-import PaySVG from '../../assets/svgs/paySVG';
+import Validations from '../../../Validations';
+import PDFSVG from '../../../assets/svgs/pdfSVG'
+import TrashSVG from '../../../assets/svgs/lixeiraSVG'
+import PaySVG from '../../../assets/svgs/paySVG';
 import * as Animatable from 'react-native-animatable'
-import ModalGeneric from '../../components/ModalGeneric';
-import EditStorySVG from '../../assets/svgs/deleteTrashSVG'
-import { deleteLoan, getLoanById } from '../../server/database/services/LoansService';
-import { listTransactions } from '../../server/database/services/TransactionService';
+import ModalGeneric from '../../../components/ModalGeneric';
+import EditStorySVG from '../../../assets/svgs/deleteTrashSVG'
+import { deleteLoan, getLoanById } from '../../../server/database/services/LoansService';
+import { listTransactions } from '../../../server/database/services/TransactionService';
 function DetailLoan({ route, navigation }: any): JSX.Element {
     const { item } = route.params
 
@@ -33,11 +33,9 @@ function DetailLoan({ route, navigation }: any): JSX.Element {
     const [transactions, setTransactions] = useState([])
     const [isFinalPage, setIsFinalPage] = useState(false)
     const [modalRemove, setModalRemove] = useState(false)
-    const [loading, setLoading] = useState(false)
 
     const getData = async () => {
         getLoanById(item.id).then((data: any) => {
-            console.log(data)
             setLoan(data)
         })
     }
@@ -180,8 +178,6 @@ function DetailLoan({ route, navigation }: any): JSX.Element {
             paragraph={"Tem certeza que deseja remover o empréstimo?"}
             textAffirmButton="Sim"
             textNegButton="Não agora"
-            isLoading={loading}
-            setIsLoading={setLoading}
         />
 
     </>

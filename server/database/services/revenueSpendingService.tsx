@@ -58,7 +58,7 @@ export const getRevenueSpendingById = async (id: string) => {
     });
 };
 
-export const updateRevenueSpending = async (id: string, revenueSpending: { id: string, value: number; about: string; category: number; type: number; }) => {
+export const updateRevenueSpending = async (revenueSpending: { id: string, value: number; about: string; category: number; type: number; }) => {
     const db = await connectToDatabase()
 
     const setClause = Object.keys(revenueSpending).map(key => `${key} = ?`).join(', ');

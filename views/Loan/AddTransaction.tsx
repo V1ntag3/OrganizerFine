@@ -1,14 +1,14 @@
-import Menu from '../components/Menu';
+import Menu from '../../components/Menus/Menu';
 import React, { useState } from 'react';
-import PaySVG from '../assets/svgs/paySVG';
-import Validations from '../Validations';
-import { createTransaction } from '../server/database/services/TransactionService';
-import InputAnimation from '../components/InputAnimation';
-import BottomMenu from '../components/BottomMenu';
-import Title from '../components/Title';
+import PaySVG from '../../assets/svgs/paySVG';
+import Validations from '../../Validations';
+import { createTransaction } from '../../server/database/services/TransactionService';
+import InputAnimation from '../../components/InputAnimation';
+import BottomMenu from '../../components/Menus/BottomMenu';
+import Title from '../../components/Title';
 import { Text } from 'react-native';
 import { Switch } from 'react-native-gesture-handler';
-import Globals from '../Globals';
+import Globals from '../../Globals';
 import * as Animatable from 'react-native-animatable';
 
 function AddTransaction({ route, navigation }: any): JSX.Element {

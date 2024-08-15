@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { Text, View } from 'react-native';
+import { SafeAreaView, Text, View } from 'react-native';
 
-import Menu from '../components/Menu';
-import PaySVG from '../assets/svgs/paySVG';
-import Validations from '../Validations';
-import { createLoan } from '../server/database/services/LoansService';
-import InputAnimation from '../components/InputAnimation';
-import BottomMenu from '../components/BottomMenu';
-import Title from '../components/Title';
+import Menu from '../../components/Menus/Menu';
+import PaySVG from '../../assets/svgs/paySVG';
+import Validations from '../../Validations';
+import { createLoan } from '../../server/database/services/LoansService';
+import InputAnimation from '../../components/InputAnimation';
+import BottomMenu from '../../components/Menus/BottomMenu';
+import Title from '../../components/Title';
+import Globals from '../../Globals';
 
 interface AddLoanProps {
     route: any;
@@ -81,7 +82,10 @@ const AddLoan: React.FC<AddLoanProps> = ({ route, navigation }) => {
         </>
     );
 
-    return <Menu route={route} screenElement={screen} navigation={navigation} />;
+    return <SafeAreaView style={{
+        backgroundColor: Globals.COLOR.LIGHT.COLOR4,
+        flex: 1
+    }}><Menu route={route} screenElement={screen} navigation={navigation} /></SafeAreaView>;
 };
 
 export default AddLoan;

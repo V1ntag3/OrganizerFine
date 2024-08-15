@@ -3,17 +3,15 @@ import {
     View,
     FlatList,
     RefreshControl,
-    StatusBar
+    StatusBar,
+    SafeAreaView
 } from 'react-native';
 import Globals from '../../Globals';
-import Menu from '../../components/Menu';
-import styles from './ManagerLoanStyles';
+import Menu from '../../components/Menus/Menu';
 import { useCallback, useEffect, useState } from 'react';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import AddSVG from '../../assets/svgs/addSVG';
-import BackSvg from '../../assets/svgs/backBest'
 import { listLoans } from '../../server/database/services/LoansService';
-import BottomMenu from '../../components/BottomMenu';
+import BottomMenu from '../../components/Menus/BottomMenu';
 import CardLoan from '../../components/Cards/CardLoan';
 import Title from '../../components/Title';
 function ManagerLoan({ route, navigation }: any): JSX.Element {
@@ -71,10 +69,13 @@ function ManagerLoan({ route, navigation }: any): JSX.Element {
     </>
 
     return (
-        <>
+        <SafeAreaView style={{
+            backgroundColor: Globals.COLOR.LIGHT.COLOR4,
+            flex: 1
+        }}>
             <StatusBar backgroundColor={Globals.COLOR.LIGHT.COLOR4} />
             <Menu route={route} screenElement={screen} navigation={navigation} />
-        </>
+        </SafeAreaView>
     );
 }
 

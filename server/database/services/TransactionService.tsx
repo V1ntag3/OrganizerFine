@@ -42,7 +42,6 @@ export const createTransaction = async (transaction: { value: number; about: str
                             (_, updateError) => reject(updateError)
                         );
                     } else {
-                        console.log('aqio')
                         tx.executeSql(
                             `UPDATE Loans SET value = value - ? WHERE id = ?`,
                             [value, loan_id],

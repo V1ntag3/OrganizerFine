@@ -17,13 +17,14 @@ import SaveSVG from '../../assets/svgs/saveSVG';
 import EditSVG from '../../assets/svgs/editSVG';
 import CurrencyInput from 'react-native-currency-input';
 import * as Animatable from 'react-native-animatable'
-import Menu from '../../components/Menu';
+import Menu from '../../components/Menus/Menu';
 import DeleteTrashSVG from '../../assets/svgs/deleteTrashSVG';
 import ModalGeneric from '../../components/ModalGeneric';
 import DatePickerGen from '../../components/DatePickerGen';
 import { Dropdown } from 'react-native-element-dropdown';
 import styles from './DetailRevenueSpendingStyle';
 import Validations from '../../Validations';
+import { deleteRevenueSpending, updateRevenueSpending } from '../../server/database/services/revenueSpendingService';
 
 function DetailRevenueSpending({ route, navigation }: any): JSX.Element {
     const { element } = route.params
@@ -91,23 +92,10 @@ function DetailRevenueSpending({ route, navigation }: any): JSX.Element {
     const removeData = async () => {
         setModalVisibleD(false)
         setIsLoading(true)
-        await AsyncStorage.getItem('token', (_, result) => {
-
-            fetch(Globals.BASE_URL_API + 'revenueSpending/' + String(element['id']), {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': 'Bearer ' + result
-                }
-            }).then(response => {
-           
-                if (response.status == 200) {
-                    navigation.navigate("DashBoard");
-                    return response.json();
-                }
-            }
-            ).finally(() => {
-                setIsLoading(false)
-            })
+        deleteRevenueSpending(element.id).then(() => {
+            navigation.navigate("DashBoard");
+        }).finally(() => {
+            setIsLoading(false)
         })
     }
 
@@ -122,40 +110,28 @@ function DetailRevenueSpending({ route, navigation }: any): JSX.Element {
         setErrors(obj_errors)
 
         if (!Validations.hasTruthyValue(obj_errors)) {
-            var tipo0 = JSON.stringify({
-                id: element['id'],
-                about: about,
-                value: value
-            })
-            var tipo1 = JSON.stringify({
+            var tipo0 = {
                 id: element['id'],
                 about: about,
                 value: value,
-                category: selectedValue.value
-            })
+                category: null,
+                type: 0
+            }
+            var tipo1 = {
+                id: element['id'],
+                about: about,
+                value: value,
+                category: selectedValue.value,
+                type: 1
+            }
             setIsLoading(true)
-            await AsyncStorage.getItem('token', (_, result) => {
+            var obj = element.type == 0 ? tipo0 : tipo1
+            updateRevenueSpending(obj).then(() => {
+                navigation.navigate("DashBoard");
+            }).finally(() => {
+                setIsLoading(false)
 
-                fetch(Globals.BASE_URL_API + 'revenueSpending/update', {
-                    method: 'PUT',
-                    headers: {
-                        "Content-Type": "application/json",
-                        'Authorization': 'Bearer ' + result
-                    },
-                    body: element.type == 0 ? tipo0 : tipo1
-                }).then(response => {
-               
-
-                    if (response.status == 200) {
-                        navigation.navigate("DashBoard");
-                        return response.json();
-                    }
-                }
-                ).finally(() => {
-                    setIsLoading(false)
-                })
             })
-
         }
 
     }
@@ -255,7 +231,7 @@ function DetailRevenueSpending({ route, navigation }: any): JSX.Element {
             {
                 isLoading ? <LoadingScreen /> : (<></>)
             }
-            <StatusBar backgroundColor={element.type == 1 ? Globals.COLOR_GASTO : Globals.COLOR_RECEITA}/>
+            <StatusBar backgroundColor={element.type == 1 ? Globals.COLOR_GASTO : Globals.COLOR_RECEITA} />
 
             <Menu route={route} screenElement={screen} navigation={navigation} />
             <ModalGeneric image={(style: any) => {

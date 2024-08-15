@@ -16,7 +16,7 @@ import EditarSVG from '../../assets/svgs/editarSVG';
 import SaveSVG from '../../assets/svgs/saveSVG';
 import ConfigurationSVG from '../../assets/svgs/configurationSVG';
 import * as Animatable from 'react-native-animatable'
-import Menu from '../../components/Menu';
+import Menu from '../../components/Menus/Menu';
 import Modal from '../../components/ModalGeneric';
 import styles from './ProfileEditStyles';
 import PencilSVG from '../../assets/svgs/pencilImageSVG'
@@ -35,7 +35,6 @@ function ProfileEdit({ route, navigation }: any): JSX.Element {
             height: 300,
             cropping: true
         }).then((image: any) => {
-            console.log(image)
             if (image) {
                 setPhotoProfile(image);
             }
@@ -174,7 +173,7 @@ function ProfileEdit({ route, navigation }: any): JSX.Element {
                                         height: '100%',
                                         borderRadius: 75
                                     }}
-                                /> : (imageProfile == null ? <UserSVG style={{ marginTop: 10, marginLeft: 13 }} /> : <Image
+                                /> : (imageProfile == null || imageProfile === '' ? <UserSVG style={{ marginTop: 10, marginLeft: 13 }} /> : <Image
                                     source={{ uri: imageProfile }}
                                     style={{
                                         width: '100%',

@@ -1,16 +1,38 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import {
     StyleSheet,
     TouchableOpacity,
     View,
     Text,
     Modal,
-    Pressable
+    Pressable,
+    StyleProp,
+    ImageStyle
 } from 'react-native';
 
 import Globals from '../Globals';
 
-function ModalGeneric({ modalVisible, setModalVisible, image, affirmFunc, title, paragraph, textAffirmButton, textNegButton }: any): JSX.Element {
+interface ModalGenericProps {
+    modalVisible: boolean;
+    setModalVisible: (visible: boolean) => void;
+    image: (style: StyleProp<ImageStyle>) => ReactElement;
+    affirmFunc: () => void;
+    title: string;
+    paragraph: string;
+    textAffirmButton: string;
+    textNegButton: string;
+}
+
+function ModalGeneric({
+    modalVisible,
+    setModalVisible,
+    image,
+    affirmFunc,
+    title,
+    paragraph,
+    textAffirmButton,
+    textNegButton
+}: ModalGenericProps): JSX.Element {
     return (
         <Modal
             animationType="fade"
@@ -22,19 +44,19 @@ function ModalGeneric({ modalVisible, setModalVisible, image, affirmFunc, title,
             <Pressable
                 style={styles.modalContainer}
                 onPress={() => {
-                    setModalVisible(false)
-                }}>
-            </Pressable>
+                    setModalVisible(false);
+                }}
+            />
             <View style={styles.modal}>
                 <Text style={styles.tittle}>{title}</Text>
                 {image(styles.image)}
                 <Text style={styles.paragraph}>{paragraph}</Text>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.affirmButton} onPress={affirmFunc}>
                         <Text style={styles.textAffirmButton}>{textAffirmButton}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.negButton} onPress={() => setModalVisible(false)}>
-                        <Text style={styles.textNegButton} >{textNegButton}</Text>
+                        <Text style={styles.textNegButton}>{textNegButton}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -47,7 +69,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modal: {
         position: 'absolute',
@@ -59,59 +81,59 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginTop: 40,
         borderRadius: 15,
-        shadowColor: "#000",
+        shadowColor: '#000',
         shadowOffset: {
             width: 0,
             height: 12,
         },
         shadowOpacity: 0.58,
-        shadowRadius: 16.00,
+        shadowRadius: 16,
         elevation: 24,
     },
     image: {
         width: 250,
         height: 250,
-        alignSelf: 'center'
+        alignSelf: 'center',
     },
     tittle: {
         color: 'white',
         fontFamily: Globals.FONT_FAMILY.BOLD,
-        fontSize: 20
+        fontSize: 20,
     },
-    paragraph:
-    {
+    paragraph: {
         color: 'white',
         fontFamily: Globals.FONT_FAMILY.REGULAR,
         fontSize: 16,
-        marginBottom: 30
+        marginBottom: 30,
     },
-    affirmButton:
-    {
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    affirmButton: {
         backgroundColor: Globals.COLOR.LIGHT.COLOR4,
         paddingHorizontal: 5,
         paddingVertical: 10,
         width: '45%',
-        borderRadius: 20
-    }
-    ,
+        borderRadius: 20,
+    },
     negButton: {
         backgroundColor: Globals.COLOR.LIGHT.COLOR3,
         paddingHorizontal: 5,
         paddingVertical: 10,
         width: '45%',
-        borderRadius: 20
+        borderRadius: 20,
     },
     textAffirmButton: {
         color: 'white',
         fontFamily: Globals.FONT_FAMILY.SEMIBOLD,
-        textAlign: 'center'
+        textAlign: 'center',
     },
     textNegButton: {
         color: 'white',
         fontFamily: Globals.FONT_FAMILY.SEMIBOLD,
-        textAlign: 'center'
-    }
-
+        textAlign: 'center',
+    },
 });
 
-export default ModalGeneric; 
+export default ModalGeneric;

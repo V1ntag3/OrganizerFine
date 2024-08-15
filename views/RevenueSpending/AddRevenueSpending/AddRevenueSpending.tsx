@@ -15,7 +15,7 @@ import AddSVG from '../../assets/svgs/addSVG';
 import LoadingScreen from '../LoadingScreen';
 import CurrencyInput from 'react-native-currency-input'
 import * as Animatable from 'react-native-animatable'
-import Menu from '../../components/Menu';
+import Menu from '../../components/Menus/Menu';
 import { Dropdown } from 'react-native-element-dropdown';
 import styles from './AddRevenueSpendingStyles';
 import { createRevenueSpending } from '../../server/database/services/revenueSpendingService';
@@ -41,12 +41,13 @@ function AddRevenueSpending({ route, navigation }: any): JSX.Element {
     const postData = async () => {
         var errors = {
             about: about == "" ? true : false,
-            selectedValue: selectedValue.value == null ? true : false,
+            selectedValue: type == 1 && selectedValue.value == null ? true : false,
             value: value <= 0 ? true : false
         }
+
         setErrors(errors)
 
-
+        console.log(type)
         if (!Validations.hasTruthyValue(errors)) {
             var type0 = {
                 about: about,

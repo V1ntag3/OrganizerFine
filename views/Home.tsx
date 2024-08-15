@@ -12,7 +12,7 @@ import Globals from '../Globals';
 import Svg, { Path } from 'react-native-svg';
 import AddSVG from '../assets/svgs/addSVG';
 import GestaoSVG from '../assets/svgs/gestaoSVG';
-import Menu from '../components/Menu';
+import Menu from '../components/Menus/Menu';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { getTotalRevenueSpendings } from '../server/database/services/revenueSpendingService';
@@ -27,8 +27,11 @@ function Home({ route, navigation }: any): JSX.Element {
 
     }
     useEffect(() => {
-        getTotal()
-    }, [])
+        navigation.addListener('focus', () => {
+            getTotal()
+        });
+    }, [navigation])
+
     const screen = <SafeAreaView style={styles.body}>
         <View style={styles.boxUp} >
             <Text style={styles.tituloView}>Home</Text>
