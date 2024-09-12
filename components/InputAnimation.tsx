@@ -6,15 +6,16 @@ import Globals from '../Globals';
 
 interface InputProps {
     animation?: {
-      delay: number;
-      duration: number;
+        delay: number;
+        duration: number;
     };
     error?: boolean;
-    value?: string | number | null; 
-    setValue?: (value: string | number | any) => void; 
+    value?: string | number | null;
+    setValue?: (value: string | number | any) => void;
     placeholder?: string;
     type?: 'text' | 'currency' | null;
-  }
+    editable?: boolean;
+}
 
 const styles = StyleSheet.create({
     inputStyle: {
@@ -51,6 +52,7 @@ const InputAnimation: React.FC<InputProps> = ({
     setValue,
     placeholder = '',
     type = 'text',
+    editable = true
 }) => {
 
     const InputGeneric = type === 'currency' ? (
@@ -65,9 +67,12 @@ const InputAnimation: React.FC<InputProps> = ({
             style={[styles.inputStyle, { color: error ? Globals.COLOR_ERROR : 'white' }, { marginTop: 5 }]}
             selectionColor='white'
             keyboardType="numeric"
+            editable={editable}
         />
     ) : (
         <TextInput
+            value={typeof value === 'string' ? value : undefined}
+            editable={editable}
             style={[styles.inputStyle]}
             selectionColor="white"
             placeholderTextColor={error ? Globals.COLOR_ERROR : 'white'}

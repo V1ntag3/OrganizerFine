@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import Globals from "../../Globals";
+import Globals from "../../../Globals";
 const styles = StyleSheet.create({
     titleView: {
         fontFamily: Globals.FONT_FAMILY.SEMIBOLD,

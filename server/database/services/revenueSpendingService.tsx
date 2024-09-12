@@ -8,9 +8,10 @@ export const listRevenueSpendings = async (month: number, year: number) => {
         db.transaction(tx => {
             tx.executeSql(
                 `SELECT * FROM RevenueSpendings WHERE strftime('%m', created_at) = ? AND strftime('%Y', created_at) = ? AND deleted_at IS NULL  ORDER BY created_at DESC `,
-                [month >= 10 ? month : '0' + month, year],
+                [month >= 10 ? month : '0' + month.toString(), year.toString()],
                 (tx, results) => {
                     const rows = results.rows.raw();
+
                     resolve(rows);
                 },
                 (error) => {

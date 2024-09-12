@@ -1,15 +1,16 @@
 import Menu from '../../components/Menus/Menu';
 import React, { useState } from 'react';
 import PaySVG from '../../assets/svgs/paySVG';
-import Validations from '../../Validations';
+import Validations from '../../utils/Validations';
 import { createTransaction } from '../../server/database/services/TransactionService';
 import InputAnimation from '../../components/InputAnimation';
 import BottomMenu from '../../components/Menus/BottomMenu';
 import Title from '../../components/Title';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { Switch } from 'react-native-gesture-handler';
 import Globals from '../../Globals';
 import * as Animatable from 'react-native-animatable';
+import styles from '../ProfileEdit/ProfileEditStyles';
 
 function AddTransaction({ route, navigation }: any): JSX.Element {
     const { item } = route.params
@@ -46,7 +47,7 @@ function AddTransaction({ route, navigation }: any): JSX.Element {
         }
     }
 
-    const screen = <>
+    const screen = <View style={styles.body}>
         <Title text='Realizar Pagamento' />
 
         <InputAnimation animation={{
@@ -89,7 +90,7 @@ function AddTransaction({ route, navigation }: any): JSX.Element {
                 value={type}
             />
         </Animatable.View>
-    </>
+    </View>
     return (
         <Menu route={route} screenElement={screen} navigation={navigation} />
     );

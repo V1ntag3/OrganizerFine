@@ -22,7 +22,8 @@ const styles = StyleSheet.create({
         fontSize: 24,
         textAlign: 'center',
         color: Globals.COLOR.BRANCO,
-        marginTop: 15
+        marginTop: 25,
+        marginLeft:35
     },
 });
 

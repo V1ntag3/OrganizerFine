@@ -5,20 +5,19 @@ import {
     TextInput,
     TouchableOpacity,
     FlatList,
-    StatusBar,
 } from 'react-native';
 
 import Globals from '../../Globals';
 import Validations from '../../Validations';
 import { useState } from 'react';
-import AddSVG from '../../assets/svgs/addSVG';
+import AddSVG from '../../components/SVGComponentes/addSVG';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from '../LoadingScreen';
 import CurrencyInput from 'react-native-currency-input'
 import * as Animatable from 'react-native-animatable'
-import Menu from '../../components/Menus/Menu';
+import Menu from '../../components/Menu';
 import { Dropdown } from 'react-native-element-dropdown';
 import styles from './AddRevenueSpendingStyles';
-import { createRevenueSpending } from '../../server/database/services/revenueSpendingService';
 
 function AddRevenueSpending({ route, navigation }: any): JSX.Element {
     const [loading, setLoading] = useState(false)
@@ -37,43 +36,54 @@ function AddRevenueSpending({ route, navigation }: any): JSX.Element {
         selectedValue: false
     })
 
+    const { setUserToken } = route.params
 
     const postData = async () => {
         var errors = {
             about: about == "" ? true : false,
-            selectedValue: type == 1 && selectedValue.value == null ? true : false,
+            selectedValue: selectedValue.value == null ? true : false,
             value: value <= 0 ? true : false
         }
-
         setErrors(errors)
 
-        console.log(type)
+
         if (!Validations.hasTruthyValue(errors)) {
-            var type0 = {
-                about: about,
-                value: value,
-                type: type,
-                category: null
-            }
-
-            var type1 = {
-                about: about,
-                value: value,
-                type: type,
-                category: selectedValue.value
-            }
-            setLoading(true)
-
-            const createRevenueSpendingVar = type == 0 ? type0 : type1
-            await createRevenueSpending(createRevenueSpendingVar).then((data) => {
-                console.log(data)
-                navigation.navigate("DashBoard");
-            }).catch((data)=>{
-                console.log(data)
-            }).finally(() => {
-                setLoading(false)
+            var type0 = JSON.stringify({
+                'about': about,
+                'value': value,
+                'type': type
             })
 
+            var type1 = JSON.stringify({
+                'about': about,
+                'value': value,
+                'type': type,
+                'category': selectedValue.value
+            })
+            setLoading(true)
+
+            await AsyncStorage.getItem('token', (_, result) => {
+                fetch(Globals.BASE_URL_API + 'revenueSpending/create', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization': 'Bearer ' + result
+                    },
+                    body: type == 0 ? type0 : type1
+                }).then(response => {
+                
+                    if (response.status === 401 || response.status === 403) {
+                        AsyncStorage.clear().then(() => { setUserToken(null) })
+                    }
+                    if (response.status === 200) {
+                        navigation.navigate("DashBoard");
+                        return response.json();
+                    }
+                }
+                ).finally(() => {
+                    setLoading(false)
+                })
+            })
         }
 
     }
@@ -223,9 +233,8 @@ function AddRevenueSpending({ route, navigation }: any): JSX.Element {
     return (
         <SafeAreaView style={styles.body}>
             {
-                loading && <LoadingScreen />
+                loading ? <LoadingScreen /> : (<></>)
             }
-            <StatusBar backgroundColor={type ? Globals.COLOR_GASTO : Globals.COLOR_RECEITA}/>
             <Menu route={route} screenElement={screen} navigation={navigation} />
         </SafeAreaView>
     );

@@ -4,7 +4,7 @@ import {
     TouchableOpacity,
     View,
     Text,
-    SafeAreaView,
+    ScrollView,
     Image,
     StatusBar,
 } from 'react-native';
@@ -64,9 +64,12 @@ const Menu: React.FC<MenuProps> = ({ screenElement, navigation }) => {
                 return acc;
             }, {} as UserDetails);
 
-            setEmail(userDetails.email);
-            setProfileImage(userDetails.image);
-            setName(`${userDetails.name} ${userDetails.surname}`);
+            if (userDetails.name !== undefined) {
+                setEmail(userDetails.email);
+                setProfileImage(userDetails.image);
+                setName(`${userDetails.name} ${userDetails.surname}`);
+            }
+
 
             return userDetails;
         } catch (error) {
@@ -87,7 +90,7 @@ const Menu: React.FC<MenuProps> = ({ screenElement, navigation }) => {
             onOpen={() => setOpenClose(true)}
             onClose={() => setOpenClose(false)}
             renderDrawerContent={() => (
-                <View style={styles.drawerContent}>
+                <ScrollView style={styles.drawerContent}>
                     {openClose && <StatusBar backgroundColor={Globals.COLOR.LIGHT.COLOR5} />}
                     <View style={styles.imagemUser}>
                         <View style={styles.imagemUserContent}>
@@ -103,7 +106,7 @@ const Menu: React.FC<MenuProps> = ({ screenElement, navigation }) => {
                     </View>
                     <View style={styles.userInfo}>
                         <Text style={styles.userName}>
-                            {name && <Text style={styles.userNameBold}>Olá</Text>}, {name}
+                            {name !== null && name.replaceAll(" ", "") !== "" && <Text style={styles.userNameBold}>Olá, </Text>} {name}
                         </Text>
                         <Text style={styles.dadosMenu}>{email}</Text>
                     </View>
@@ -135,6 +138,9 @@ const Menu: React.FC<MenuProps> = ({ screenElement, navigation }) => {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
+                        style={{
+                            marginBottom: 70,
+                        }}
                         onPress={() => {
                             setOpenClose(false);
                             setTimeout(() => {
@@ -151,7 +157,7 @@ const Menu: React.FC<MenuProps> = ({ screenElement, navigation }) => {
                         <Text style={styles.nameApp}>{Globals.APP_NAME1}</Text>
                         <Text style={styles.nameApp}>{Globals.APP_NAME2}</Text>
                     </View>
-                </View>
+                </ScrollView>
             )}
         >
             <TouchableOpacity
@@ -257,7 +263,7 @@ const styles = StyleSheet.create({
     },
     menuButton: {
         position: 'absolute',
-        top: 20,
+        top: 27,
         left: 15,
         zIndex: 1000,
     },

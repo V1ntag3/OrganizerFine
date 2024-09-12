@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { SafeAreaView, Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import Menu from '../../components/Menus/Menu';
 import PaySVG from '../../assets/svgs/paySVG';
-import Validations from '../../Validations';
+import Validations from '../../utils/Validations';
 import { createLoan } from '../../server/database/services/LoansService';
 import InputAnimation from '../../components/InputAnimation';
 import BottomMenu from '../../components/Menus/BottomMenu';
@@ -44,7 +44,7 @@ const AddLoan: React.FC<AddLoanProps> = ({ route, navigation }) => {
 
             try {
                 await createLoan(loanData);
-                navigation.navigate("ManagerLoan");
+                navigation.navigate("ListLoan");
             } catch (error) {
                 console.error("Error creating loan:", error);
             }
@@ -82,10 +82,10 @@ const AddLoan: React.FC<AddLoanProps> = ({ route, navigation }) => {
         </>
     );
 
-    return <SafeAreaView style={{
+    return <View style={{
         backgroundColor: Globals.COLOR.LIGHT.COLOR4,
         flex: 1
-    }}><Menu route={route} screenElement={screen} navigation={navigation} /></SafeAreaView>;
+    }}><Menu route={route} screenElement={screen} navigation={navigation} /></View>;
 };
 
 export default AddLoan;

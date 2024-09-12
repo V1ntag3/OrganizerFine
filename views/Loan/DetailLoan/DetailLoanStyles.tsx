@@ -72,7 +72,8 @@ const styles = StyleSheet.create({
     porcent: {
         color: 'white',
         fontSize: 28,
-        fontFamily: Globals.FONT_FAMILY.BOLD
+        fontFamily: Globals.FONT_FAMILY.BOLD,
+        marginBottom:10
     }, subTitle: {
         color: 'white',
         textAlign: 'center',
