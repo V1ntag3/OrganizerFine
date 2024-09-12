@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { connectToDatabase } from '../database';
+import { connectToDatabase } from '@/server/database/database';
 import 'react-native-get-random-values';
 
 export const generateLoanReport = async (loanId: string): Promise<any> => {

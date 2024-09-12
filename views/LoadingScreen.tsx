@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
   Text,
   Animated,
+  View,
 
 } from 'react-native';
 
-import Globals from '../Globals';
+import Globals from '@/Globals';
 
 function LoadingScreen(): JSX.Element {
   const animatedValue = new Animated.Value(0)
@@ -32,13 +32,13 @@ function LoadingScreen(): JSX.Element {
     ).start()
   }
   return (
-    <SafeAreaView style={styles.body}>
+    <View style={styles.body}>
       <Animated.View style={[styles.containerNome, { opacity: animatedValue }]}>
         <Text style={styles.nomeApp}>{Globals.APP_NAME1}</Text>
         <Text style={Globals.APP_NAME_STYLE}></Text>
         <Text style={styles.nomeApp}>{Globals.APP_NAME2}</Text>
       </Animated.View>
-    </SafeAreaView>
+    </View>
   );
 }
 

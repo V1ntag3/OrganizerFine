@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
 
-import Menu from '../../components/Menus/Menu';
-import PaySVG from '../../assets/svgs/paySVG';
-import Validations from '../../utils/Validations';
-import { createLoan, updateLoan } from '../../server/database/services/LoansService';
-import InputAnimation from '../../components/InputAnimation';
-import BottomMenu from '../../components/Menus/BottomMenu';
-import Title from '../../components/Title';
-import Globals from '../../Globals';
+import Menu from '@/components/Menus/Menu';
+import PaySVG from '@/assets/svgs/paySVG';
+import Validations from '@/utils/Validations';
+import { createLoan, updateLoan } from '@/server/database/services/LoansService';
+import InputAnimation from '@/components/InputAnimation';
+import BottomMenu from '@/components/Menus/BottomMenu';
+import Title from '@/components/Title';
+import Globals from '@/Globals';
 
 interface UpdateLoanProps {
     route: any;

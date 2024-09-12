@@ -1,5 +1,4 @@
 import {
-    SafeAreaView,
     View,
     Text,
     TouchableOpacity,
@@ -7,21 +6,21 @@ import {
     TextInput,
     Image
 } from 'react-native';
-import Globals from '../../Globals';
+import Globals from '@/Globals';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import LoadingScreen from '../LoadingScreen';
-import UserSVG from '../../assets/svgs/userSVG';
-import EditarSVG from '../../assets/svgs/editarSVG';
-import SaveSVG from '../../assets/svgs/saveSVG';
-import ConfigurationSVG from '../../assets/svgs/configurationSVG';
+import LoadingScreen from '@/views/LoadingScreen';
+import UserSVG from '@/assets/svgs/userSVG';
+import EditarSVG from '@/assets/svgs/editarSVG';
+import SaveSVG from '@/assets/svgs/saveSVG';
+import ConfigurationSVG from '@/assets/svgs/configurationSVG';
 import * as Animatable from 'react-native-animatable'
-import Menu from '../../components/Menus/Menu';
-import Modal from '../../components/ModalGeneric';
+import Menu from '@/components/Menus/Menu';
+import Modal from '@/components/ModalGeneric';
 import styles from './ProfileEditStyles';
-import PencilSVG from '../../assets/svgs/pencilImageSVG'
+import PencilSVG from '@/assets/svgs/pencilImageSVG'
 import ImagePicker from 'react-native-image-crop-picker';
-import Validations from '../../Validations';
+import Validations from '@/Validations';
 
 function ProfileEdit({ route, navigation }: any): JSX.Element {
 
@@ -223,12 +222,12 @@ function ProfileEdit({ route, navigation }: any): JSX.Element {
             </ScrollView></>
 
     return (
-        <SafeAreaView style={styles.body}>
+        <View style={styles.body}>
             {
                 isLoading ? <LoadingScreen /> : (<></>)
             }
             <Menu route={route} screenElement={screen} navigation={navigation} />
-        </SafeAreaView>
+        </View>
     );
 }
 

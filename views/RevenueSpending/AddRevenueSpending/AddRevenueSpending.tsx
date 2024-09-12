@@ -1,5 +1,4 @@
 import {
-    SafeAreaView,
     View,
     Text,
     TextInput,
@@ -7,15 +6,15 @@ import {
     FlatList,
 } from 'react-native';
 
-import Globals from '../../Globals';
-import Validations from '../../Validations';
+import Globals from '@/Globals';
+import Validations from '@/Validations';
 import { useState } from 'react';
-import AddSVG from '../../components/SVGComponentes/addSVG';
+import AddSVG from '@/assets/svgs/addSVG';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import LoadingScreen from '../LoadingScreen';
+import LoadingScreen from '@/views/LoadingScreen';
 import CurrencyInput from 'react-native-currency-input'
 import * as Animatable from 'react-native-animatable'
-import Menu from '../../components/Menu';
+import Menu from '@/components/Menus/Menu';
 import { Dropdown } from 'react-native-element-dropdown';
 import styles from './AddRevenueSpendingStyles';
 
@@ -36,7 +35,6 @@ function AddRevenueSpending({ route, navigation }: any): JSX.Element {
         selectedValue: false
     })
 
-    const { setUserToken } = route.params
 
     const postData = async () => {
         var errors = {
@@ -73,7 +71,6 @@ function AddRevenueSpending({ route, navigation }: any): JSX.Element {
                 }).then(response => {
                 
                     if (response.status === 401 || response.status === 403) {
-                        AsyncStorage.clear().then(() => { setUserToken(null) })
                     }
                     if (response.status === 200) {
                         navigation.navigate("DashBoard");
@@ -231,12 +228,12 @@ function AddRevenueSpending({ route, navigation }: any): JSX.Element {
             )} />
 
     return (
-        <SafeAreaView style={styles.body}>
+        <View style={styles.body}>
             {
                 loading ? <LoadingScreen /> : (<></>)
             }
             <Menu route={route} screenElement={screen} navigation={navigation} />
-        </SafeAreaView>
+        </View>
     );
 }
 export default AddRevenueSpending;

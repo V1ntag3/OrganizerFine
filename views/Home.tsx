@@ -1,5 +1,4 @@
 import {
-    SafeAreaView,
     StyleSheet,
     View,
     Text,
@@ -7,15 +6,15 @@ import {
 }
     from 'react-native';
 import React from 'react';
-import BarChartSVG from '../assets/svgs/barChartSVG'
-import Globals from '../Globals';
+import BarChartSVG from '@/assets/svgs/barChartSVG'
+import Globals from '@/Globals';
 import Svg, { Path } from 'react-native-svg';
-import AddSVG from '../assets/svgs/addSVG';
-import GestaoSVG from '../assets/svgs/gestaoSVG';
-import Menu from '../components/Menus/Menu';
+import AddSVG from '@/assets/svgs/addSVG';
+import GestaoSVG from '@/assets/svgs/gestaoSVG';
+import Menu from '@/components/Menus/Menu';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { getTotalRevenueSpendings } from '../server/database/services/revenueSpendingService';
+import { getTotalRevenueSpendings } from '@/server/database/services/revenueSpendingService';
 
 function Home({ route, navigation }: any): JSX.Element {
     const [total, setTotal] = useState(0)
@@ -32,7 +31,7 @@ function Home({ route, navigation }: any): JSX.Element {
         });
     }, [navigation])
 
-    const screen = <SafeAreaView style={styles.body}>
+    const screen = <View style={styles.body}>
         <View style={styles.boxUp} >
             <Text style={styles.tituloView}>Home</Text>
             <View style={styles.boxUpDados}>
@@ -76,14 +75,14 @@ function Home({ route, navigation }: any): JSX.Element {
             </View>
 
             <View onTouchEnd={() => {
-                navigation.navigate('ManagerLoan')
+                navigation.navigate('ListLoan')
             }} style={[styles.boxClick, styles.boxClick3]}>
                 <GestaoSVG />
                 <Text style={styles.textBox}>Gestão de Empréstimos</Text>
             </View>
         </View>
 
-    </SafeAreaView>
+    </View>
     return (
         <><StatusBar backgroundColor={Globals.COLOR.LIGHT.COLOR2} /><Menu route={route} screenElement={screen} navigation={navigation} /></>
     );

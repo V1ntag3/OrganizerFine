@@ -1,4 +1,4 @@
-import { connectToDatabase } from '../database';
+import { connectToDatabase } from '@/server/database/database';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 

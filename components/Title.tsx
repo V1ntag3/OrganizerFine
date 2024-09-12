@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, StyleSheet } from 'react-native';
-import Globals from '../Globals';
+import Globals from '@/Globals';
 
 interface TitleProps {
     text: string;

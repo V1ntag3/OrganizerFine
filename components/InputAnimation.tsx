@@ -2,7 +2,7 @@ import React from 'react';
 import { TextInput, StyleSheet, Text, View, TextStyle } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import CurrencyInput from 'react-native-currency-input';
-import Globals from '../Globals';
+import Globals from '@/Globals';
 
 interface InputProps {
     animation?: {

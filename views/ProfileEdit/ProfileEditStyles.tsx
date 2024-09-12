@@ -1,4 +1,4 @@
-import Globals from '../../Globals';
+import Globals from '@/Globals';
 import { StyleSheet } from 'react-native'
 
 const styles = StyleSheet.create({

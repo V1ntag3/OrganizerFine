@@ -1,27 +1,26 @@
 import {
-    SafeAreaView,
     Text,
     View,
     FlatList,
     TouchableOpacity
 } from 'react-native';
-import Globals from '../../Globals';
-import Menu from '../../components/Menu';
+import Globals from '@/Globals';
+import Menu from '@/components/Menus/Menu';
 import styles from './DetailLoanStyles';
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import EditSVG from '../../components/SVGComponentes/editarSVG';
-import BackBestSVG from '../../components/SVGComponentes/backBest'
+import EditSVG from '@/assets/svgs/editarSVG';
+import BackBestSVG from '@/assets/svgs/backBest'
 import * as Progress from 'react-native-progress';
-import Validations from '../../Validations';
-import PDFSVG from '../../components/SVGComponentes/pdfSVG'
-import TrashSVG from '../../components/SVGComponentes/lixeiraSVG'
-import PaySVG from '../../components/SVGComponentes/paySVG';
+import Validations from '@/Validations';
+import PDFSVG from '@/assets/svgs/pdfSVG'
+import TrashSVG from '@/assets/svgs/lixeiraSVG'
+import PaySVG from '@/assets/svgs/paySVG';
 import * as Animatable from 'react-native-animatable'
-import ModalGeneric from '../../components/ModalGeneric';
-import EditStorySVG from '../../components/SVGComponentes/deleteTrashSVG'
+import ModalGeneric from '@/components/ModalGeneric';
+import EditStorySVG from '@/assets/svgs/deleteTrashSVG'
 function DetailLoan({ route, navigation }: any): JSX.Element {
-    const { setUserToken, item } = route.params
+    const { item } = route.params
 
     const [loan, setLoan] = useState({
         name: "",
@@ -43,10 +42,7 @@ function DetailLoan({ route, navigation }: any): JSX.Element {
                     'Authorization': 'Bearer ' + result
                 },
             }).then(response => {
-                if (response.status === 401 || response.status === 403) {
-                    AsyncStorage.clear().then(() => { setUserToken(null) })
-                }
-
+              
                 if (response.status == 200) {
                     response.json().then((json) => {
                         setLoan(json)
@@ -69,12 +65,10 @@ function DetailLoan({ route, navigation }: any): JSX.Element {
                 },
             }).then(response => {
                 console.log(response.status)
-                if (response.status === 401 || response.status === 403) {
-                    AsyncStorage.clear().then(() => { setUserToken(null) })
-                }
+
 
                 if (response.status == 200) {
-                    navigation.navigate("ManagerLoan")
+                    navigation.navigate("ListLoan")
                 }
 
             }).catch((err) => {
@@ -96,7 +90,6 @@ function DetailLoan({ route, navigation }: any): JSX.Element {
                 }).then(response => {
 
                     if (response.status === 401 || response.status === 403) {
-                        AsyncStorage.clear().then(() => { setUserToken(null) })
                     }
 
                     if (response.status == 200) {
@@ -133,7 +126,7 @@ function DetailLoan({ route, navigation }: any): JSX.Element {
 
     const screen = <>
 
-        <Text style={styles.tituloView}>Gestão de Emprestimos</Text>
+        <Text style={styles.tituloView}>Gestão de Empréstimos</Text>
         <FlatList
             style={{ paddingHorizontal: 15 }}
             disableVirtualization={false}
@@ -195,7 +188,7 @@ function DetailLoan({ route, navigation }: any): JSX.Element {
         }
         <View style={styles.menuBottom}>
             <TouchableOpacity onPress={() => {
-                navigation.navigate("ManagerLoan");
+                navigation.navigate("ListLoan");
             }} style={styles.menuBottomButton}>
                 <BackBestSVG width={30} height={30} />
             </TouchableOpacity>
@@ -241,9 +234,9 @@ function DetailLoan({ route, navigation }: any): JSX.Element {
 
     </>
     return (
-        <SafeAreaView style={styles.body}>
+        <View style={styles.body}>
             <Menu route={route} screenElement={screen} navigation={navigation} />
-        </SafeAreaView>
+        </View>
     );
 }
 

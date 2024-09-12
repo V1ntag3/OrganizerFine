@@ -6,14 +6,14 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-import Globals from '../../Globals';
-import VestSVG from '../../assets/svgs/vestSVG';
-import ComidaSVG from '../../assets/svgs/comidaSVG';
-import EletroSVG from '../../assets/svgs/eletroSVG';
-import EntreSVG from '../../assets/svgs/entreSVG';
-import OutrosSVG from '../../assets/svgs/outrosSVG';
-import ServSVG from '../../assets/svgs/servSVG';
-import MoneySVG from '../../assets/svgs/moneySVG';
+import Globals from '@/Globals';
+import VestSVG from '@/assets/svgs/vestSVG';
+import ComidaSVG from '@/assets/svgs/comidaSVG';
+import EletroSVG from '@/assets/svgs/eletroSVG';
+import EntreSVG from '@/assets/svgs/entreSVG';
+import OutrosSVG from '@/assets/svgs/outrosSVG';
+import ServSVG from '@/assets/svgs/servSVG';
+import MoneySVG from '@/assets/svgs/moneySVG';
 
 interface RevenueSpending {
     id: string;

@@ -7,23 +7,23 @@ import {
     ScrollView,
     StatusBar,
 } from 'react-native';
-import Globals from '../../../Globals';
+import Globals from '@/Globals';
 import { useState } from 'react';
-import LixeiraSVG from '../../../assets/svgs/lixeiraSVG';
-import LoadingScreen from '../../LoadingScreen';
-import EditarSVG from '../../../assets/svgs/editarSVG';
-import SaveSVG from '../../../assets/svgs/saveSVG';
-import EditSVG from '../../../assets/svgs/editSVG';
+import LixeiraSVG from '@/assets/svgs/lixeiraSVG';
+import LoadingScreen from '@/views/LoadingScreen';
+import EditarSVG from '@/assets/svgs/editarSVG';
+import SaveSVG from '@/assets/svgs/saveSVG';
+import EditSVG from '@/assets/svgs/editSVG';
 import CurrencyInput from 'react-native-currency-input';
 import * as Animatable from 'react-native-animatable'
-import Menu from '../../../components/Menus/Menu';
-import DeleteTrashSVG from '../../../assets/svgs/deleteTrashSVG';
-import ModalGeneric from '../../../components/ModalGeneric';
-import DatePickerGen from '../../../components/DatePickerGen';
+import Menu from '@/components/Menus/Menu';
+import DeleteTrashSVG from '@/assets/svgs/deleteTrashSVG';
+import ModalGeneric from '@/components/ModalGeneric';
+import DatePickerGen from '@/components/DatePickerGen';
 import { Dropdown } from 'react-native-element-dropdown';
 import styles from './DetailRevenueSpendingStyle';
-import Validations from '../../../utils/Validations';
-import { deleteRevenueSpending, updateRevenueSpending } from '../../../server/database/services/revenueSpendingService';
+import Validations from '@/utils/Validations';
+import { deleteRevenueSpending, updateRevenueSpending } from '@/server/database/services/revenueSpendingService';
 
 function DetailRevenueSpending({ route, navigation }: any): JSX.Element {
     const { element } = route.params

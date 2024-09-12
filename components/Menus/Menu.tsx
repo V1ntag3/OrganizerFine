@@ -9,14 +9,14 @@ import {
     StatusBar,
 } from 'react-native';
 
-import Globals from '../../Globals';
+import Globals from '@/Globals';
 import { Drawer } from 'react-native-drawer-layout';
-import UserSVG from '../../assets/svgs/userSVG';
-import ConfigSVG from '../../assets/svgs/configSVG';
-import FineSVG from '../../assets/svgs/fineSVG';
+import UserSVG from '@/assets/svgs/userSVG';
+import ConfigSVG from '@/assets/svgs/configSVG';
+import FineSVG from '@/assets/svgs/fineSVG';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import HomeSVG from '../../assets/svgs/homeSVG';
-import MenuSVG from '../../assets/svgs/menuSVG';
+import HomeSVG from '@/assets/svgs/homeSVG';
+import MenuSVG from '@/assets/svgs/menuSVG';
 
 interface MenuProps {
     route: any;

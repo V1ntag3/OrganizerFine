@@ -4,17 +4,18 @@ import {
     RefreshControl,
     StatusBar,
     Text,
-    StyleSheet
+    StyleSheet,
+    SafeAreaView
 } from 'react-native';
-import Globals from '../../Globals';
-import Menu from '../../components/Menus/Menu';
+import Globals from '@/Globals';
+import Menu from '@/components/Menus/Menu';
 import { useCallback, useEffect, useState } from 'react';
-import AddSVG from '../../assets/svgs/addSVG';
-import { listLoans } from '../../server/database/services/LoansService';
-import BottomMenu from '../../components/Menus/BottomMenu';
-import CardLoan from '../../components/Cards/CardLoan';
-import Title from '../../components/Title';
-import NotFound from '../../assets/svgs/notFoundSVG'
+import AddSVG from '@/assets/svgs/addSVG';
+import { listLoans } from '@/server/database/services/LoansService';
+import BottomMenu from '@/components/Menus/BottomMenu';
+import CardLoan from '@/components/Cards/CardLoan';
+import Title from '@/components/Title';
+import NotFound from '@/assets/svgs/notFoundSVG'
 function ListLoan({ route, navigation }: any): JSX.Element {
     const [refreshing, setRefreshing] = useState(false);
 
@@ -25,6 +26,7 @@ function ListLoan({ route, navigation }: any): JSX.Element {
 
     const getLoans = async (currentPage: number, currentSchedulings: never[]) => {
         listLoans(currentPage, 12).then((data: any) => {
+            console.log(data)
             setPage(page + 1)
             setLoans(currentSchedulings.concat(data))
             if (data.length == 0) {
@@ -48,7 +50,7 @@ function ListLoan({ route, navigation }: any): JSX.Element {
     }, [navigation])
 
     const screen = <>
-        <Title text='Gestão de Emprestimos' />
+        <Title text='Gestão de Empréstimos' />
 
         <FlatList
             refreshControl={<RefreshControl progressBackgroundColor={Globals.COLOR.LIGHT.COLOR1} colors={[Globals.COLOR.LIGHT.COLOR3]} refreshing={refreshing}

@@ -1,6 +1,6 @@
 import * as React from "react"
 import Svg, { Path, G, Ellipse, Circle } from "react-native-svg"
-import Globals from "../../Globals";
+import Globals from "@/Globals";
 
 type officeSVGProps = {
    

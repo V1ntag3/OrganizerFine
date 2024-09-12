@@ -1,5 +1,4 @@
 import {
-    SafeAreaView,
     StyleSheet,
     View,
     Text,
@@ -7,18 +6,20 @@ import {
     RefreshControl,
     Pressable,
     FlatList,
+    StatusBar,
 } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import Globals from '../Globals';
+import Globals from '@/Globals';
 import DatePicker from 'react-native-modern-datepicker';
-import BackRotSVG from '../components/SVGComponentes/backRotSVG'
-import AddSVG from '../components/SVGComponentes/addSVG';
+import BackRotSVG from '@/assets/svgs/backRotSVG'
+import AddSVG from '@/assets/svgs/addSVG';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import LoadingScreen from './LoadingScreen';
+import LoadingScreen from '@/views/LoadingScreen';
 import * as Animatable from 'react-native-animatable'
-import Menu from '../components/Menu';
-import PieChartComp from '../components/PieChartComp';
-import ItemListRevSpen from '../components/ItemListRevSpen';
+import Menu from '@/components/Menus/Menu';
+import PieChartComp from '@/components/PieChartComp';
+import ItemListRevSpen from '@/components/Cards/CardRevenueSpending';
+import { listRevenueSpendings } from '@/server/database/services/revenueSpendingService';
 
 function DashBoard({ route, navigation }: any): JSX.Element {
 
@@ -81,9 +82,9 @@ function DashBoard({ route, navigation }: any): JSX.Element {
     const renderItens = () => {
         return (
             <FlatList
-                refreshControl={<RefreshControl 
-                progressBackgroundColor={Globals.COLOR.LIGHT.COLOR1} colors={[Globals.COLOR.LIGHT.COLOR3]} refreshing={refreshing}
-                onRefresh={onRefresh} />}
+                refreshControl={<RefreshControl
+                    progressBackgroundColor={Globals.COLOR.LIGHT.COLOR1} colors={[Globals.COLOR.LIGHT.COLOR3]} refreshing={refreshing}
+                    onRefresh={onRefresh} />}
                 contentContainerStyle={{
                     minHeight: Globals.HEIGHT * 0.4, backgroundColor: Globals.COLOR.LIGHT.COLOR4
                 }}
@@ -107,134 +108,105 @@ function DashBoard({ route, navigation }: any): JSX.Element {
         { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
     ]);
 
-    const getData = async (isPageReload = false) => {
-        try {
-            await AsyncStorage.getItem('token', (_, result) => {
-                fetch(Globals.BASE_URL_API + 'revenueSpending?month=' + month + '&year=' + year, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Bearer ' + result
-                    },
-                }).then(response => {
+    const getData = async () => {
+        listRevenueSpendings(month, year).then((json: any) => {
+            setShow(false)
 
-                    if (response.status === 401 || response.status === 403) {
-                        AsyncStorage.clear().then(() => { setUserToken(null) })
-                    }
-                    if (response.status == 200) {
+            if (json.length != 0) {
+                var array: any = []
+                var gastos: number = 0
+                var receitas: number = 0
+                var item0 = 0, item1 = 0, item2 = 0, item3 = 0, item4 = 0, item5 = 0
+                for (var item in json) {
 
-                        response.json().then((json) => {
-
-                            setShow(false)
-
-                            if (json.length != 0) {
-                                var array: any = []
-                                var gastos: number = 0
-                                var receitas: number = 0
-                                var item0 = 0, item1 = 0, item2 = 0, item3 = 0, item4 = 0, item5 = 0
-                                for (var item in json) {
-
-                                    switch (json[item].category) {
-                                        case 0:
-                                            item0 = + json[item].value
-                                            break
-                                        case 1:
-                                            item1 = + json[item].value
-                                            break
-                                        case 2:
-                                            item2 = + json[item].value
-                                            break
-                                        case 3:
-                                            item3 = + json[item].value
-                                            break
-                                        case 4:
-                                            item4 = + json[item].value
-                                            break
-                                        case 5:
-                                            item5 = + json[item].value
-                                            break
-                                    }
-
-                                    if (json[item].type == 0) {
-                                        receitas += json[item].value
-                                    }
-
-                                    if (json[item].type == 1) {
-                                        gastos += json[item].value
-                                    }
-                                    json[item].realDate = json[item].created_at
-                                    json[item].value = json[item].value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
-                                    var valor = Number(new Date()) - Number(new Date(json[item].created_at))
-                                    json[item].created_at = json[item].created_at
-                                    json[item].created_at = String(valor / (1000 * 60 * 60 * 24))[0] + ' dias atrás'
-                                    array.push(json[item])
-
-
-                                }
-
-                                setRevenue(receitas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-                                setSpending(gastos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
-
-                                var arrayValores = [item0, item1, item2, item3, item4, item5]
-                                pieData.current = [
-                                    { value: item0, color: '#323131', gradientCenterColor: '#323131' },
-                                    { value: item1, color: '#474747', gradientCenterColor: '#474747' },
-                                    { value: item2, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-                                    { value: item3, color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
-                                    { value: item4, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
-                                    { value: item5, color: '#60625F', gradientCenterColor: '#60625F' },
-                                ]
-
-                                if (item0 == 0 && item1 == 0 && item2 == 0 && item3 == 0 && item4 == 0 && item5 == 0) {
-                                    setItems([])
-                                    setValorMaiorPorc('0%')
-                                    setValorMaiorNome('')
-                                }
-
-                                else {
-                                    setItems(array)
-                                    setValorMaiorPorc(String(parseInt(String((Math.max(...arrayValores) / gastos) * 100))) + '%')
-                                    setValorMaiorNome(renderNome(arrayValores.indexOf(Math.max(...arrayValores))))
-                                }
-
-                            } else {
-                                pieData.current = [
-                                    { value: 0, color: '#323131', gradientCenterColor: '#323131' },
-                                    { value: 0, color: '#474747', gradientCenterColor: '#474747' },
-                                    { value: 0, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
-                                    { value: 0, color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
-                                    { value: 0, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
-                                    { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
-                                ]
-                                setItems([]);
-                                setSpending('R$ 0,00');
-                                setRevenue('R$ 0,00');
-                                setValorMaiorPorc('0%')
-                                setValorMaiorNome('')
-                            }
-
-                        })
+                    switch (json[item].category) {
+                        case 0:
+                            item0 = + json[item].value
+                            break
+                        case 1:
+                            item1 = + json[item].value
+                            break
+                        case 2:
+                            item2 = + json[item].value
+                            break
+                        case 3:
+                            item3 = + json[item].value
+                            break
+                        case 4:
+                            item4 = + json[item].value
+                            break
+                        case 5:
+                            item5 = + json[item].value
+                            break
                     }
 
-                }).catch(error => {
-                    if (error.toString() == "TypeError: Network request failed") {
+                    if (json[item].type == 0) {
+                        receitas += json[item].value
                     }
-                }).finally(() => {
-                    if (isPageReload) setRefreshing(false)
-                    setLoading(false)
-                })
-            })
-        } catch (e) {
-        }
+
+                    if (json[item].type == 1) {
+                        gastos += json[item].value
+                    }
+                    json[item].realDate = json[item].created_at
+                    json[item].value = json[item].value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })
+                    var valor = Number(new Date()) - Number(new Date(json[item].created_at))
+                    json[item].created_at = json[item].created_at
+                    json[item].created_at = String(valor / (1000 * 60 * 60 * 24))[0] + ' dias atrás'
+                    array.push(json[item])
+
+
+                }
+
+                setRevenue(receitas.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+                setSpending(gastos.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }))
+
+                var arrayValores = [item0, item1, item2, item3, item4, item5]
+                pieData.current = [
+                    { value: item0, color: '#323131', gradientCenterColor: '#323131' },
+                    { value: item1, color: '#474747', gradientCenterColor: '#474747' },
+                    { value: item2, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
+                    { value: item3, color: Globals.COLOR.LIGHT.COLOR1, gradientCenterColor: Globals.COLOR.LIGHT.COLOR1 },
+                    { value: item4, color: Globals.COLOR.LIGHT.COLOR3, gradientCenterColor: Globals.COLOR.LIGHT.COLOR3 },
+                    { value: item5, color: '#60625F', gradientCenterColor: '#60625F' },
+                ]
+
+                if (item0 == 0 && item1 == 0 && item2 == 0 && item3 == 0 && item4 == 0 && item5 == 0) {
+                    setItems([])
+                    setValorMaiorPorc('0%')
+                    setValorMaiorNome('')
+                }
+
+                else {
+                    setItems(array)
+                    setValorMaiorPorc(String(parseInt(String((Math.max(...arrayValores) / gastos) * 100))) + '%')
+                    setValorMaiorNome(renderNome(arrayValores.indexOf(Math.max(...arrayValores))))
+                }
+
+            } else {
+             
+                setItems([]);
+                setSpending('R$ 0,00');
+                setRevenue('R$ 0,00');
+                setValorMaiorPorc('0%')
+                setValorMaiorNome('')
+            }
+
+        }).catch(error => {
+            if (error.toString() == "TypeError: Network request failed") {
+            }
+        }).finally(() => {
+            setRefreshing(false)
+            setLoading(false)
+        })
+
     }
-    const { setUserToken } = route.params
 
     const handleDateSelect = (selectedDate: String) => {
 
         setMonth(parseInt(selectedDate.toString().slice(4, 7)))
         setYear(parseInt(selectedDate.slice(0, 4)))
 
-        // getData(false, selectedDate.slice(0, 4).toString(), Globals.MONTH[parseInt(selectedDate.toString().slice(4, 7)) - 1])
-        getData(false)
+        getData()
         setShow(false)
 
     }
@@ -250,7 +222,7 @@ function DashBoard({ route, navigation }: any): JSX.Element {
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        getData(true)
+        getData()
     }, []);
 
     const screen = <>
@@ -339,12 +311,14 @@ function DashBoard({ route, navigation }: any): JSX.Element {
     }, [month]);
 
     return (
-        <SafeAreaView style={styles.body}>
+        <View style={styles.body}>
+            <StatusBar backgroundColor={Globals.COLOR.LIGHT.COLOR4} />
+
             {
                 loading ? <LoadingScreen /> : (<></>)
             }
             <Menu route={route} screenElement={screen} navigation={navigation} />
-        </SafeAreaView>
+        </View>
     );
 }
 const styles = StyleSheet.create({

@@ -10,7 +10,7 @@ import {
     ImageStyle
 } from 'react-native';
 
-import Globals from '../Globals';
+import Globals from '@/Globals';
 
 interface ModalGenericProps {
     modalVisible: boolean;

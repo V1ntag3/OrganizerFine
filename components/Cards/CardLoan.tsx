@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import Globals from '../../Globals';
+import Globals from '@/Globals';
 
 interface CardLoanProps {
     loan: {

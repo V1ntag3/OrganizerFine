@@ -4,7 +4,7 @@ import {
     Text
 } from 'react-native';
 
-import Globals from '../Globals';
+import Globals from '@/Globals';
 import { PieChart, } from 'react-native-gifted-charts';
 
 interface PieChartCompProps {

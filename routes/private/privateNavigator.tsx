@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import DashBoard from '../../views/RevenueSpending/DashBoard';
-import AddRevenueSpending from '../../views/AddRevenueSpending/AddRevenueSpending';
-import DetailRevenueSpending from '../../views/DetailRevenueSpending/DetailRevenueSpending';
-import ProfileEdit from '../../views/ProfileEdit/ProfileEdit';
-import Home from '../../views/Home';
-import ManagerLoan from '../../views/Loan/ManagerLoan';
-import DetailLoan from '../../views/Loan/DetailLoan/DetailLoan';
-import AddTransaction from '../../views/Loan/AddTransaction';
-import AddLoan from '../../views/Loan/AddLoan';
+import DashBoard from '@/views/RevenueSpending/DashBoard';
+import AddRevenueSpending from '@/views/RevenueSpending/AddRevenueSpending/AddRevenueSpending';
+import DetailRevenueSpending from '@/views/RevenueSpending/DetailRevenueSpending/DetailRevenueSpending';
+import ProfileEdit from '@/views/ProfileEdit/ProfileEdit';
+import Home from '@/views/Home';
+import ListLoan from '@/views/Loan/ListLoan';
+import DetailLoan from '@/views/Loan/DetailLoan/DetailLoan';
+import AddTransaction from '@/views/Loan/AddTransaction';
+import AddLoan from '@/views/Loan/AddLoan';
 
 const Stack = createNativeStackNavigator();
 
@@ -38,7 +38,7 @@ function PrivateNavigator({ route }: any) {
         animationTypeForReplace: 'push',
         animation: 'slide_from_right'
       }} />
-      <Stack.Screen name="ManagerLoan" component={ManagerLoan} options={{
+      <Stack.Screen name="ListLoan" component={ListLoan} options={{
         animationTypeForReplace: 'push',
         animation: 'slide_from_right'
       }} />

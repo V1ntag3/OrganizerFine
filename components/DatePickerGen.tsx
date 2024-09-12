@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Globals from '../Globals';
+import Globals from '@/Globals';
 import DatePicker from 'react-native-modern-datepicker';
 
 interface DatePickerGenProps {

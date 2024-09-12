@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import BackBestSVG from '../../assets/svgs/backBest';
-import Globals from '../../Globals';
+import BackBestSVG from '@/assets/svgs/backBest';
+import Globals from '@/Globals';
 
 interface BottomMenuProps {
     onNavigateBack: () => void;
