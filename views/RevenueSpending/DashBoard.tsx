@@ -19,10 +19,15 @@ import * as Animatable from 'react-native-animatable'
 import Menu from '@/components/Menus/Menu';
 import PieChartComp from '@/components/PieChartComp';
 import ItemListRevSpen from '@/components/Cards/CardRevenueSpending';
-import { listRevenueSpendings } from '@/server/database/services/revenueSpendingService';
+import { listRevenueSpendings, paramsRevenueSpendings } from '@/server/database/services/revenueSpendingService';
+import moment from 'moment';
 
 function DashBoard({ route, navigation }: any): JSX.Element {
 
+    const [params,setParams] = useState({
+        minDate: moment().format('YYYY-DD'),
+        maxDate: moment().format('YYYY-DD')
+    })
     const [month, setMonth] = useState(new Date().getMonth() + 1)
     const [year, setYear] = useState(new Date().getFullYear());
 
@@ -109,6 +114,11 @@ function DashBoard({ route, navigation }: any): JSX.Element {
     ]);
 
     const getData = async () => {
+        const paramsResult = await paramsRevenueSpendings()
+        setParams({
+            minDate:paramsResult.minMonth,
+            maxDate:paramsResult.maxMonth
+        })
         listRevenueSpendings(month, year).then((json: any) => {
             setShow(false)
 
@@ -231,13 +241,11 @@ function DashBoard({ route, navigation }: any): JSX.Element {
             <><DatePicker
                 mode="monthYear"
                 isGregorian={true}
-                selectorStartingYear={2000}
-                minimumDate='2023-04-01'
-                maximumDate={selectedDateSe}
+                minimumDate={params.minDate}
+                maximumDate={params.maxDate}
                 current={selectedDateSe}
                 selected={selectedDateSe}
                 onMonthYearChange={selectedDate => handleDateSelect(selectedDate)}
-                selectorEndingYear={new Date().getFullYear()}
                 style={{
                     position: 'absolute',
                     top: 50,

@@ -105,7 +105,7 @@ const CardRevenueSpending: React.FC<CardRevenueSpendingProps> = ({ navigation, e
                 return <EntreSVG />;
             case 5:
                 return <OutrosSVG />;
-            case null:
+            case -1:
                 return <MoneySVG />;
             default:
                 return null;

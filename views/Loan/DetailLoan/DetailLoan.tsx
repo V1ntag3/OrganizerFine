@@ -8,108 +8,58 @@ import Globals from '@/Globals';
 import Menu from '@/components/Menus/Menu';
 import styles from './DetailLoanStyles';
 import React, { useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import EditSVG from '@/assets/svgs/editarSVG';
 import BackBestSVG from '@/assets/svgs/backBest'
 import * as Progress from 'react-native-progress';
 import Validations from '@/utils/Validations';
-import PDFSVG from '@/assets/svgs/pdfSVG'
 import TrashSVG from '@/assets/svgs/lixeiraSVG'
 import PaySVG from '@/assets/svgs/paySVG';
 import * as Animatable from 'react-native-animatable'
 import ModalGeneric from '@/components/ModalGeneric';
 import EditStorySVG from '@/assets/svgs/deleteTrashSVG'
+import { deleteLoan, getLoanById } from '@/server/database/services/LoansService';
+import { listTransactions } from '@/server/database/services/TransactionService';
 function DetailLoan({ route, navigation }: any): JSX.Element {
     const { item } = route.params
 
-    const [loan, setLoan] = useState({
-        name: "",
-        value: 0,
-        amount_paid: 0
-    })
+    const [loan, setLoan] = useState(item)
     const [page, setPage] = useState(1)
     const [transactions, setTransactions] = useState([])
     const [isFinalPage, setIsFinalPage] = useState(false)
     const [modalRemove, setModalRemove] = useState(false)
-    const [loading, setLoading] = useState(false)
 
-    const getData = async () => {
-        await AsyncStorage.getItem('token', (_, result) => {
-
-            fetch(Globals.BASE_URL_API + 'loan/' + item.id, {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + result
-                },
-            }).then(response => {
-              
-                if (response.status == 200) {
-                    response.json().then((json) => {
-                        setLoan(json)
-                    })
-                }
-
-            }).finally(() => {
-
-            })
-
+    const removeLoan = async () => {
+        deleteLoan(item.id).then(() => {
+            navigation.navigate("ListLoan")
         })
     }
-    const removeLoan = async () => {
-        await AsyncStorage.getItem('token', (_, result) => {
+    const getData = async () => {
 
-            fetch(Globals.BASE_URL_API + 'loan/' + item.id, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': 'Bearer ' + result
-                },
-            }).then(response => {
-                console.log(response.status)
+        getLoanById(item.id).then((json) => {
+            setLoan(json)
+        }).finally(() => {
 
-
-                if (response.status == 200) {
-                    navigation.navigate("ListLoan")
-                }
-
-            }).catch((err) => {
-                console.log(err)
-
-            }).finally(() => {
-
-            })
         })
+
     }
     const getDataTransactions = async () => {
-        await AsyncStorage.getItem('token', (_, result) => {
-            if (isFinalPage == false) {
-                fetch(Globals.BASE_URL_API + 'transaction/list?page=' + page + '&limit=12&loan=' + item.id, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Bearer ' + result
-                    },
-                }).then(response => {
+        if (isFinalPage == false) {
+            listTransactions(loan.id, page, 10).then((json:any) => {
 
-                    if (response.status === 401 || response.status === 403) {
-                    }
+                setPage(page + 1)
+                setTransactions(transactions.concat(json))
 
-                    if (response.status == 200) {
-                        response.json().then((json) => {
-                            setPage(page + 1)
-                            setTransactions(transactions.concat(json))
-
-                            if (json.length == 0) {
-                                setIsFinalPage(true)
-                            }
-                        })
-                    }
-
-                }).finally(() => {
-
-                })
-            }
+                if (json.length == 0) {
+                    setIsFinalPage(true)
+                }
 
 
-        })
+            }).finally(() => {
+
+            })
+        }
+
+
     }
 
     useEffect(() => {
@@ -198,8 +148,8 @@ function DetailLoan({ route, navigation }: any): JSX.Element {
                     <PDFSVG width={40} height={34} />
                 </TouchableOpacity> */}
 
-                <TouchableOpacity onPress={()=>{
-                    navigation.navigate("UpdateLoan",{
+                <TouchableOpacity onPress={() => {
+                    navigation.navigate("UpdateLoan", {
                         item
                     })
                 }} style={styles.menuBottomButton}>
@@ -232,8 +182,6 @@ function DetailLoan({ route, navigation }: any): JSX.Element {
             paragraph={"Tem certeza que deseja remover o empréstimo?"}
             textAffirmButton="Sim"
             textNegButton="Não agora"
-            isLoading={loading}
-            setIsLoading={setLoading}
         />
 
     </>

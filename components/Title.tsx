@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: Globals.COLOR.BRANCO,
         marginTop: 25,
-        marginLeft:35
+        marginLeft: 35
     },
 });
 
