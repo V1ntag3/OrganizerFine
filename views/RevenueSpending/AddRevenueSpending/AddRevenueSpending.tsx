@@ -17,6 +17,7 @@ import * as Animatable from 'react-native-animatable'
 import Menu from '@/components/Menus/Menu';
 import { Dropdown } from 'react-native-element-dropdown';
 import styles from './AddRevenueSpendingStyles';
+import { createRevenueSpending } from '@/server/database/services/revenueSpendingService';
 
 function AddRevenueSpending({ route, navigation }: any): JSX.Element {
     const [loading, setLoading] = useState(false)
@@ -25,6 +26,7 @@ function AddRevenueSpending({ route, navigation }: any): JSX.Element {
         label: "",
         value: null
     });
+    const [portion, setPortion] = useState<any>(1);
     const [value, setValue] = useState<any>(0);
     const [about, setAbout] = useState('')
     const [type, setType] = useState(1);
@@ -32,55 +34,39 @@ function AddRevenueSpending({ route, navigation }: any): JSX.Element {
     const [errors, setErrors] = useState({
         value: false,
         about: false,
-        selectedValue: false
+        selectedValue: false,
+        portion: false
     })
 
 
     const postData = async () => {
         var errors = {
             about: about == "" ? true : false,
-            selectedValue: selectedValue.value == null ? true : false,
-            value: value <= 0 ? true : false
+            selectedValue: type === 1 && selectedValue.value == null ? true : false,
+            value: value <= 0 ? true : false,
+            portion: type === 1 && portion <= 0 ? true : false,
         }
         setErrors(errors)
 
 
         if (!Validations.hasTruthyValue(errors)) {
-            var type0 = JSON.stringify({
-                'about': about,
-                'value': value,
-                'type': type
-            })
+            var data = {
+                about: about,
+                value: value,
+                type: type,
+                category: type === 1 ? selectedValue.value : -1,
+                portion: type === 1 ? portion : 1
+            };
 
-            var type1 = JSON.stringify({
-                'about': about,
-                'value': value,
-                'type': type,
-                'category': selectedValue.value
-            })
-            setLoading(true)
+            setLoading(true);
 
-            await AsyncStorage.getItem('token', (_, result) => {
-                fetch(Globals.BASE_URL_API + 'revenueSpending/create', {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json",
-                        'Authorization': 'Bearer ' + result
-                    },
-                    body: type == 0 ? type0 : type1
-                }).then(response => {
-                
-                    if (response.status === 401 || response.status === 403) {
-                    }
-                    if (response.status === 200) {
-                        navigation.navigate("DashBoard");
-                        return response.json();
-                    }
-                }
-                ).finally(() => {
-                    setLoading(false)
-                })
-            })
+            createRevenueSpending(data).then(response => {
+                navigation.navigate("DashBoard");
+            }).catch(error => {
+                console.log(error);
+            }).finally(() => {
+                setLoading(false);
+            });
         }
 
     }
@@ -178,6 +164,23 @@ function AddRevenueSpending({ route, navigation }: any): JSX.Element {
                     <Animatable.View
                         style={{ zIndex: 10 }}
                         delay={800}
+                        useNativeDriver={true}
+                        animation='fadeInLeft'
+                        duration={300}>
+                        {type === 1 && <CurrencyInput
+                            value={portion}
+                            onChangeValue={setPortion}
+                            suffix=" X"
+                            precision={0}
+                            minValue={1}
+                            style={[styles.inputStyle, { color: errors.portion ? Globals.COLOR_ERROR : 'white' }, { marginTop: 5 }, { backgroundColor: '#E65A50' }]}
+                            selectionColor='white'
+                            keyboardType="numeric" />}
+                        {type == 1 && <Text style={[styles.errorStyle, { display: errors.portion ? 'flex' : 'none' }]}>Campo inválido</Text>}
+                    </Animatable.View>
+                    <Animatable.View
+                        style={{ zIndex: 10 }}
+                        delay={1000}
                         useNativeDriver={true}
                         animation='fadeInLeft'
                         duration={300}>
