@@ -1,7 +1,7 @@
 
 # OrganizerFine
 
-Projeto mobile que foi idealizado e desenvolvido por mim, abrangendo tanto o design quanto o desenvolvimento do front-end e o back-end. Esse projeto tem como objetivo auxiliar os usuários na visualização e controle de gastos, permitindo uma gestão mais eficiente de suas finanças.
+Projeto mobile totalmente funcional no Android e no IOS que foi idealizado e desenvolvido por mim, abrangendo tanto o design quanto o desenvolvimento do front-end e o back-end local. Esse projeto tem como objetivo auxiliar os usuários na visualização e controle de gastos, permitindo uma gestão mais eficiente de suas finanças.
 ## Funcionalidades
 
 - Login e Registro
@@ -9,14 +9,13 @@ Projeto mobile que foi idealizado e desenvolvido por mim, abrangendo tanto o des
 - Gráfico com gastos com suas respectivas categorias
 - CRUD de Gastos e Receitas
 - Vizualização de Gastos e Receitas por Mês
-
+- CRUD de Empréstimos
+- CRUD de Pagamentos
 
 ## Stack utilizada
 
 **Front-end:** React-Native
 ######
-**Back-end:** Golang
-
 
 ## Design Figma
 Desgin pode ser encontrado em: https://www.figma.com/file/sKKGAu8xEg6Fk04XlS7Mp1/Organizer-Fine---Mobile-App?type=design&node-id=0-1&mode=design&t=sTJh7oPXujCwn0ju-0
@@ -40,12 +39,18 @@ Instale as dependências
   npm install
 ```
 
-Inicie o emulador android
+Instalar Build de Desenvolvimento
 
 ```bash
-  npx react-native start
+  npx expo run:ios 
+  npx expo run:android
 ```
 
+Instalar Build de Desenvolvimento
+
+```bash
+  npm start
+```
 
 ## Aprendizados
 
@@ -54,7 +59,7 @@ Com esse projeto consegui desenvolver minhas habilidades com o figma, além de a
 
 ## Melhorias
 
-No momento do desenvolvimento meu foco foi na otimização da aplicação, tentando ao máximo diminuir as atualizações de tela dos componentes. Além disso estou desenvolvendo mais um módulo de gerenciamento de empréstimos e uma melhorias nas telas de registro e de edição de dados.
+No momento do desenvolvimento meu foco foi na otimização da aplicação, tentando ao máximo diminuir as atualizações de tela dos componentes. Além disso adicionando mais funcionalidade nos meios de cadastro de gastos e receitas.
 
 ## Suporte
 

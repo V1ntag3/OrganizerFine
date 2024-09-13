@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import EditSVG from '@/assets/svgs/editarSVG';
 import BackBestSVG from '@/assets/svgs/backBest'
 import * as Progress from 'react-native-progress';
-import Validations from '@/Validations';
+import Validations from '@/utils/Validations';
 import PDFSVG from '@/assets/svgs/pdfSVG'
 import TrashSVG from '@/assets/svgs/lixeiraSVG'
 import PaySVG from '@/assets/svgs/paySVG';
@@ -194,11 +194,15 @@ function DetailLoan({ route, navigation }: any): JSX.Element {
             </TouchableOpacity>
 
             <View style={{ flexDirection: 'row', gap: 10 }}>
-                <TouchableOpacity style={styles.menuBottomButton}>
+                {/* <TouchableOpacity style={styles.menuBottomButton}>
                     <PDFSVG width={40} height={34} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
-                <TouchableOpacity style={styles.menuBottomButton}>
+                <TouchableOpacity onPress={()=>{
+                    navigation.navigate("UpdateLoan",{
+                        item
+                    })
+                }} style={styles.menuBottomButton}>
                     <EditSVG />
                 </TouchableOpacity>
 

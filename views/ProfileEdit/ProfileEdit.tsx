@@ -20,7 +20,7 @@ import Modal from '@/components/ModalGeneric';
 import styles from './ProfileEditStyles';
 import PencilSVG from '@/assets/svgs/pencilImageSVG'
 import ImagePicker from 'react-native-image-crop-picker';
-import Validations from '@/Validations';
+import Validations from '@/utils/Validations';
 
 function ProfileEdit({ route, navigation }: any): JSX.Element {
 

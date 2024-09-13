@@ -3,8 +3,7 @@ import {
   StyleSheet,
   Text,
   Animated,
-  View,
-
+  View
 } from 'react-native';
 
 import Globals from '@/Globals';

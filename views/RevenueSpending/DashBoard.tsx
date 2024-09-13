@@ -7,13 +7,13 @@ import {
     Pressable,
     FlatList,
     StatusBar,
+    Platform,
 } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Globals from '@/Globals';
 import DatePicker from 'react-native-modern-datepicker';
 import BackRotSVG from '@/assets/svgs/backRotSVG'
 import AddSVG from '@/assets/svgs/addSVG';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from '@/views/LoadingScreen';
 import * as Animatable from 'react-native-animatable'
 import Menu from '@/components/Menus/Menu';
@@ -54,7 +54,7 @@ function DashBoard({ route, navigation }: any): JSX.Element {
                             <Text style={styles.selectData}>{Globals.MONTH[month - 1]}</Text>
                             <Text style={styles.selectData}>{year}</Text>
                         </View>
-                        <View style={{ marginTop: 3, marginLeft: 3 }}>
+                        <View style={{ marginTop: 3, marginLeft: 3,transform: [{ rotateZ: Platform.OS === 'ios' ?  '-90deg' : '0deg'}] }}>
                             <BackRotSVG />
                         </View>
                     </View>

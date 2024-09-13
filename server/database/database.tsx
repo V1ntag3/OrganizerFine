@@ -7,7 +7,7 @@ enablePromise(true)
 
 export const connectToDatabase = async () => {
   return openDatabase(
-    { name: "organizer3.db", location: "default" },
+    { name: "organizer.db", location: "default" },
     () => { },
     (error) => {
       console.error(error)

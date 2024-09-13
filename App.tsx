@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import Routes from './routes';
+import Routes from './routes/Routes';
 import { connectToDatabase } from './server/database/database';
 import { createTables } from './server/database/createTables';
 import * as SplashScreen from 'expo-splash-screen';

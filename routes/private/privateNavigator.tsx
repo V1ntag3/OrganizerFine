@@ -10,6 +10,7 @@ import ListLoan from '@/views/Loan/ListLoan';
 import DetailLoan from '@/views/Loan/DetailLoan/DetailLoan';
 import AddTransaction from '@/views/Loan/AddTransaction';
 import AddLoan from '@/views/Loan/AddLoan';
+import UpdateLoan from '@/views/Loan/UpdateLoan';
 
 const Stack = createNativeStackNavigator();
 
@@ -51,6 +52,10 @@ function PrivateNavigator({ route }: any) {
         animation: 'slide_from_right'
       }} />
       <Stack.Screen name="AddLoan" component={AddLoan} options={{
+        animationTypeForReplace: 'push',
+        animation: 'slide_from_right'
+      }} />
+      <Stack.Screen name="UpdateLoan" component={UpdateLoan} options={{
         animationTypeForReplace: 'push',
         animation: 'slide_from_right'
       }} />

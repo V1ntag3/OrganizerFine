@@ -3,11 +3,11 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    FlatList,
+    FlatList
 } from 'react-native';
 
 import Globals from '@/Globals';
-import Validations from '@/Validations';
+import Validations from '@/utils/Validations';
 import { useState } from 'react';
 import AddSVG from '@/assets/svgs/addSVG';
 import AsyncStorage from '@react-native-async-storage/async-storage';

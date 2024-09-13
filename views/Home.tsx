@@ -2,9 +2,8 @@ import {
     StyleSheet,
     View,
     Text,
-    StatusBar,
-}
-    from 'react-native';
+    StatusBar
+} from 'react-native';
 import React from 'react';
 import BarChartSVG from '@/assets/svgs/barChartSVG'
 import Globals from '@/Globals';
