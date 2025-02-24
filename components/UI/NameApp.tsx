@@ -12,6 +12,7 @@ function NameApp() {
 const styles = StyleSheet.create({
 
     nameApp: {
+        fontFamily:"ABSTER",
         textAlign: 'center',
         fontWeight: '500',
         fontSize: 17,
