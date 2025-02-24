@@ -70,7 +70,7 @@ export default function ListLoan() {
                     <MenuBottom onNavigateBack={() => {
                         router.navigate("/")
 
-                    }} onConfirm={() => { router.navigate("/loan/addLoan") }} ConfirmIcon={<PlusCircle size={35} />} />
+                    }} onConfirm={() => { router.navigate("/loan/addLoan") }} ConfirmIcon={<PlusCircle color={"white"} size={35} />} />
                 </MenuSide>
 
             </SafeAreaView>

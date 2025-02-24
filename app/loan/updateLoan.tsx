@@ -101,7 +101,7 @@ const UpdateLoan = () => {
                 </View>
                 <MenuBottom onNavigateBack={() => {
                     router.back()
-                }} onConfirm={postData} ConfirmIcon={<HandCoins size={25} />
+                }} onConfirm={postData} ConfirmIcon={<HandCoins color={"white"} size={25} />
                 } />
             </MenuSide>
         </SafeAreaView>

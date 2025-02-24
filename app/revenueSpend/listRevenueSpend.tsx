@@ -63,9 +63,8 @@ function DashBoard(): JSX.Element {
                         </View>
                     </View>
                 </TouchableOpacity>
-                <View style={{ paddingHorizontal: 10 }}>
                     <Title text='Finanças' />
-                </View>
+               
                 <PieChart pieData={pieData} valorMaiorPorc={valorMaiorPorc} valorMaiorNome={valorMaiorNome} />
                 <View style={[styles.fundosGastos, {}, item.length <= 0 ? { maxHeight: 'auto', height: '100%', minHeight: Globals.HEIGHT * 0.38 } : {}]} >
                     <View style={styles.dados}>
@@ -88,7 +87,7 @@ function DashBoard(): JSX.Element {
     const pieData = useRef([
         { value: 0, color: '#323131', gradientCenterColor: '#323131' },
         { value: 0, color: '#474747', gradientCenterColor: '#474747' },
-        { value: 0, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
+        { value: 0, color: '#CD3CFA', gradientCenterColor: '#CD3CFA' },
         { value: 0, color: Globals.COLOR.COLOR1, gradientCenterColor: Globals.COLOR.COLOR1 },
         { value: 0, color: Globals.COLOR.COLOR3, gradientCenterColor: Globals.COLOR.COLOR3 },
         { value: 0, color: '#60625F', gradientCenterColor: '#60625F' },
@@ -102,6 +101,7 @@ function DashBoard(): JSX.Element {
             minDate: paramsResult.minMonth,
             maxDate: paramsResult.maxMonth
         })
+
         listRevenueSpendings(month, year).then((json: any) => {
             setShow(false)
             if (json.length != 0) {
@@ -154,7 +154,7 @@ function DashBoard(): JSX.Element {
                 pieData.current = [
                     { value: item0, color: '#323131', gradientCenterColor: '#323131' },
                     { value: item1, color: '#474747', gradientCenterColor: '#474747' },
-                    { value: item2, color: '#FFFFFF', gradientCenterColor: '#FFFFFF' },
+                    { value: item2, color: '#CD3CFA', gradientCenterColor: '#CD3CFA' },
                     { value: item3, color: Globals.COLOR.COLOR1, gradientCenterColor: Globals.COLOR.COLOR1 },
                     { value: item4, color: Globals.COLOR.COLOR3, gradientCenterColor: Globals.COLOR.COLOR3 },
                     { value: item5, color: '#60625F', gradientCenterColor: '#60625F' },
@@ -273,7 +273,7 @@ function DashBoard(): JSX.Element {
                                 marginLeft: 6,
                                 justifyContent: 'center'
                             }}>
-                                <PlusCircle size={32} />
+                                <PlusCircle color={"white"} size={32} />
                             </View>
 
                         </Animatable.View>

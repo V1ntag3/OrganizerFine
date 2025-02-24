@@ -2,7 +2,7 @@ import React from 'react';
 import {
     View,
     Text
-} from 'react-native';
+} from 'tamagui';
 
 import Globals from '@/Globals';
 import { PieChart, } from 'react-native-gifted-charts';
@@ -32,14 +32,18 @@ const PieChartComp: React.FC<PieChartCompProps> = ({ pieData, valorMaiorPorc, va
                             centerLabelComponent={() => (
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                     <Text
+                                     $theme-dark={{
+                                        color: 'white',
+                                    }}
                                         style={{
                                             fontSize: 22,
-                                            color: 'white',
                                             fontWeight: 'bold',
                                         }}>
                                         {valorMaiorPorc}
                                     </Text>
-                                    <Text style={{ fontSize: 11, color: 'white'}}>
+                                    <Text  $theme-dark={{
+                                    color: 'white',
+                                }} style={{ fontSize: 11}}>
                                         {valorMaiorNome}
                                     </Text>
                                 </View>
@@ -52,14 +56,19 @@ const PieChartComp: React.FC<PieChartCompProps> = ({ pieData, valorMaiorPorc, va
                         (
                             <View style={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 75 }}>
                                 <Text
+                                $theme-dark={{
+                                    color: 'white',
+                                }}
                                     style={{
                                         fontSize: 22,
-                                        color: 'white',
+                                        
                                         fontWeight: 'bold',
                                     }}>
                                     {valorMaiorPorc}
                                 </Text>
-                                <Text style={{ fontSize: 11, color: 'white'}}>
+                                <Text  $theme-dark={{
+                                    color: 'white',
+                                }} style={{ fontSize: 11}}>
                                     {valorMaiorNome}
                                 </Text>
                             </View>
@@ -84,7 +93,7 @@ const PieChartComp: React.FC<PieChartCompProps> = ({ pieData, valorMaiorPorc, va
                     {renderLegend('Entretenimento', Globals.COLOR.COLOR3)}
                 </View>
                 <View style={{ flexDirection: 'column' }}>
-                    {renderLegend('Eletrônicos', '#FFFFFF')}
+                    {renderLegend('Eletrônicos', '#CD3CFA')}
                     {renderLegend('Outros', '#60625F')}
                 </View>
             </View>
@@ -105,8 +114,11 @@ const renderLegend = (text: string, color: string): JSX.Element => {
                 }}
             />
             <Text
+             $theme-dark={{
+                color: 'white',
+            }}
                 style={{
-                    color: 'white',
+                    
                     fontSize: 11,
                     marginRight: 20,
                     marginTop: -3,

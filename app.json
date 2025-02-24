@@ -27,6 +27,7 @@
     },
     "android": {
       "jsEngine": "hermes",
+      "versionCode": 1,
       "package": "com.alencar.organizerfine",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",

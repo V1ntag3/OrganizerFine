@@ -1,7 +1,6 @@
 import React from 'react';
 import {
     StyleSheet,
-    TouchableOpacity,
 } from 'react-native';
 import { View, Text } from 'tamagui';
 import Globals from '@/Globals';
@@ -29,7 +28,7 @@ interface CardRevenueSpendingProps {
     element: RevenueSpending;
 }
 
-const CardRevenueSpending: React.FC<CardRevenueSpendingProps> = ({ navigation, element }) => {
+const CardRevenueSpending: React.FC<CardRevenueSpendingProps> = ({ element }) => {
     const styles = StyleSheet.create({
         valDate: {
             width: 'auto',

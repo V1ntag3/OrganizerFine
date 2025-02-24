@@ -16,7 +16,7 @@ const MenuBottom: React.FC<MenuBottomProps> = ({ onNavigateBack, onConfirm, Conf
                 onPress={onNavigateBack}
                 style={styles.menuBottomButton}
             >
-                <ArrowLeft size={25}/>
+                <ArrowLeft color={"white"} size={25}/>
             </TouchableOpacity>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={onConfirm} style={styles.menuBottomButton}>

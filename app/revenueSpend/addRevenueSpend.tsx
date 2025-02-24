@@ -218,7 +218,7 @@ function AddRevenueSpending(): JSX.Element {
                                 animation='fadeIn'
                                 duration={300}>
                                 <TouchableOpacity onPress={postData} style={styles.touchButton}>
-                                    <PlusCircle size={35} />
+                                    <PlusCircle color={"white"} size={35} />
                                 </TouchableOpacity>
                             </Animatable.View>
                             <Animatable.View

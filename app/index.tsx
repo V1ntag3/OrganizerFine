@@ -56,7 +56,7 @@ export default function Home() {
               borderRadius: 10
             }} scaleSpace={0.3} bordered onTouchEnd={() => {
               router.navigate("/loan/listLoan")
-            }} borderTopEndRadius={10} height={110} icon={<HandCoins strokeWidth={1} />} size={120} >
+            }} borderTopEndRadius={10} height={110} icon={<HandCoins  />} size={120} >
               <Text fontSize={20} fontWeight={700}>Gestão de Empréstimos</Text>
             </Button>
 
