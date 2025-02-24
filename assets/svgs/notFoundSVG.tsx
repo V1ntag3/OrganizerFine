@@ -18,7 +18,7 @@ export default function SvgComponent(props: React.JSX.IntrinsicAttributes & Reac
     >
       <Defs>
         <LinearGradient
-          
+
           id="a"
           x1={2184.59}
           y1={-2018.4}
@@ -50,28 +50,44 @@ export default function SvgComponent(props: React.JSX.IntrinsicAttributes & Reac
           y1={396.99}
           x2={134.42}
           y2={416.63}
-        />
+        >
+          <Stop offset={0} stopColor="#FF0000" />
+          <Stop offset={1} stopColor="#0000FF" />
+        </LinearGradient>
+
         <LinearGradient
           id="d"
           x1={273.5}
           y1={81.83}
           x2={320.47}
           y2={128.8}
-        />
+        >
+          <Stop offset={0} stopColor="#FF0000" />
+          <Stop offset={1} stopColor="#0000FF" />
+        </LinearGradient>
+
         <LinearGradient
           id="e"
           x1={301.7}
           y1={97.67}
           x2={321.34}
           y2={117.3}
-        />
+        >
+          <Stop offset={0} stopColor="#FF0000" />
+          <Stop offset={1} stopColor="#0000FF" />
+        </LinearGradient>
+
         <LinearGradient
           id="f"
           x1={272.24}
           y1={91.31}
           x2={291.87}
           y2={110.95}
-        />
+        >
+          <Stop offset={0} stopColor="#FF0000" />
+          <Stop offset={1} stopColor="#0000FF" />
+        </LinearGradient>
+
       </Defs>
       <Path
         d="M279.59 152.46c-13.32-9.28-24.57-24-34.72-36.1-46-55-124.87-49-181.88-10.23-21.47 14.58-36.58 30.5-44.8 56C12.13 181 15 203.87 29.9 216.83c9.62 8.39 22.6 11.51 34.1 17 48.85 23.46 1.45 65.82-20.63 89.62-16.89 18.2-24 36.4-18.66 61.56 8.28 38.66 51.68 63.84 86.39 73.46 51.68 14.32 102.57 4.24 122.23-2.7 39.49-13.92 75.27-37.59 105.76-66.08 21.52-20.12 40.9-42.68 64.52-60.29 14.35-10.7 30.09-19.43 44.47-30.1s27.66-23.71 34.66-40.19c10.08-23.75 2-52.76-17.37-69.4s-47.06-23.4-71.83-24.14c-41.8-1.23-80.27 10.36-113.95-13.11z"

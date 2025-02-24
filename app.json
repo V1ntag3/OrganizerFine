@@ -1,32 +1,65 @@
 {
   "expo": {
+    "newArchEnabled": false,
     "name": "OrganizerFine",
     "slug": "OrganizerFine",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon/icon.png",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/images/icon.png",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/icon/splash.png",
+      "image": "./assets/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#916DD5"
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "bundleIdentifier": "com.alencar.bundle.organizerfine",
+      "bundleIdentifier": "com.alencar.organizerfine",
       "supportsTablet": true,
       "infoPlist": {
-        "NSFileProtectionCompleteUntilFirstUserAuthentication": true
+        "NSCameraUsageDescription": true,
+        "NSDocumentsDirectoryUsageDescription": "O app precisa acessar seus arquivos para importar/exportar o banco de dados.",
+        "NSPhotoLibraryUsageDescription": "O app precisa acessar arquivos para backup do banco de dados."
       }
     },
     "android": {
+      "jsEngine": "hermes",
       "package": "com.alencar.organizerfine",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon/adaptive-icon.png",
+        "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#916DD5"
-      }
+      },
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "MANAGE_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
     },
     "plugins": [
-      "expo-font"
-    ]
+      "expo-router",
+      "expo-font",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "newArchEnabled": false
+          },
+          "android": {
+            "newArchEnabled": false
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }

@@ -1,4 +1,3 @@
-import * as React from "react"
 import Svg, { Path, Rect, G, Circle, Ellipse, SvgProps } from "react-native-svg"
 import Globals from "@/Globals"
 
@@ -209,7 +208,7 @@ function SvgComponent(props: JSX.IntrinsicAttributes & JSX.IntrinsicClassAttribu
       <G>
         <Path
           d="M355.48 406.31a8.44 8.44 0 01-7.05 8.33 220.3 220.3 0 01-73.3 0 8.43 8.43 0 01-7-8.33v-81h87.39z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
         <Path
           d="M268.08 326.77v11.37c5.26 1.95 22.53 3.38 43.7 3.38s38.47-1.43 43.7-3.38v-11.37z"
@@ -217,9 +216,9 @@ function SvgComponent(props: JSX.IntrinsicAttributes & JSX.IntrinsicClassAttribu
         />
         <Path
           d="M357.12 335.44c0 2.57-19.84 4.65-45.34 4.65s-45.34-2.08-45.34-4.65l-.83-10.1H358z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
-        <Ellipse cx={311.78} cy={325.34} rx={46.17} ry={4.64} fill={Globals.COLOR.LIGHT.COLOR3} />
+        <Ellipse cx={311.78} cy={325.34} rx={46.17} ry={4.64} fill={Globals.COLOR.COLOR3} />
         <Ellipse
           cx={311.78}
           cy={325.34}
@@ -263,7 +262,7 @@ function SvgComponent(props: JSX.IntrinsicAttributes & JSX.IntrinsicClassAttribu
         />
         <Path
           d="M223.24 176.68c8.53 6.53 8.19 18.84 8.19 18.84l-15.26 3.65s-4.68-12.38-2.78-16.91c1.98-4.72 5.05-9.26 9.85-5.58z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
         <Path
           d="M223.24 176.68c8.53 6.53 8.19 18.84 8.19 18.84l-15.26 3.65s-4.68-12.38-2.78-16.91c1.98-4.72 5.05-9.26 9.85-5.58z"
@@ -300,7 +299,7 @@ function SvgComponent(props: JSX.IntrinsicAttributes & JSX.IntrinsicClassAttribu
         />
         <Path
           d="M220.66 175.42s3.86 1.69-9.08 52.89l-35.94-3.11c1.87-14.57 2.66-23.59-1.73-54.22a107.55 107.55 0 0115.44-.69 115.37 115.37 0 0116.32 1.41 152.47 152.47 0 0114.99 3.72z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
         <Path
           d="M220.66 175.42s3.86 1.69-9.08 52.89l-35.94-3.11c1.87-14.57 2.66-23.59-1.73-54.22a107.55 107.55 0 0115.44-.69 115.37 115.37 0 0116.32 1.41 152.47 152.47 0 0114.99 3.72z"
@@ -345,7 +344,7 @@ function SvgComponent(props: JSX.IntrinsicAttributes & JSX.IntrinsicClassAttribu
         />
         <Path
           d="M191.86 397.55L173.8 397.06 174.9 391.25 193.56 391.36 191.86 397.55z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
         <Path
           d="M203.72 227.74s-6 58.74-19.71 90.7c-11.09 25.8-37.53 67.07-37.53 67.07l-10.56-6.18s17-45.89 25.39-63.09c20.47-42.17 1.43-76 14.33-91z"
@@ -353,11 +352,11 @@ function SvgComponent(props: JSX.IntrinsicAttributes & JSX.IntrinsicClassAttribu
         />
         <Path
           d="M147.63 386.41L134.16 379.02 136.35 373.26 150.7 381.36 147.63 386.41z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
         <Path
           d="M175.28 223.05l-1.9 3.08c-.14.23.13.52.55.55l37.69 3.26c.32 0 .61-.11.64-.31l.61-3.19c0-.22-.23-.43-.58-.46l-36.4-3.15a.68.68 0 00-.61.22z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
         <Path
           d="M179.82 227.54l-1-.08c-.19 0-.33-.13-.31-.25l.82-4.14c0-.13.21-.21.4-.19l1 .08c.2 0 .34.13.31.25l-.81 4.14c-.04.12-.23.21-.41.19zM208.85 230.05l-1-.08c-.2 0-.34-.13-.31-.25l.82-4.14c0-.12.2-.21.39-.19l1 .08c.19 0 .33.13.31.25l-.82 4.14c-.02.14-.24.21-.39.19zM194.33 228.8l-1-.09c-.19 0-.33-.13-.31-.25l.82-4.14c0-.12.2-.21.4-.19l1 .09c.19 0 .33.13.31.25l-.82 4.14c-.02.12-.2.2-.4.19zM205.2 145.21c-.1.71.2 1.34.66 1.4s.92-.46 1-1.17-.21-1.34-.67-1.4-.9.46-.99 1.17zM213.22 146.29c-.09.71.21 1.34.67 1.4s.92-.46 1-1.17-.2-1.34-.66-1.4-.91.46-1.01 1.17z"
@@ -374,7 +373,7 @@ function SvgComponent(props: JSX.IntrinsicAttributes & JSX.IntrinsicClassAttribu
         />
         <Path
           d="M224.5 218.68a16.13 16.13 0 1130.72 9.86L249 248l-30.72-9.87z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
         <Path
           d="M224.5 218.68a16.13 16.13 0 1130.72 9.86L249 248l-30.72-9.87z"
@@ -382,7 +381,7 @@ function SvgComponent(props: JSX.IntrinsicAttributes & JSX.IntrinsicClassAttribu
         />
         <Path
           d="M194.19 208.94l-5.62 17.5a2 2 0 001.3 2.53l28.4 9.12 6.24-19.42a16.13 16.13 0 0120.28-10.42l-30.31-9.74a16.15 16.15 0 00-20.29 10.43z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
         <Path
           d="M209.43 222.21l7.83-24.37a.64.64 0 00-.51-.82l-8-1.18-1 3.16 5.83 1.87-6.6 20.54z"
@@ -394,7 +393,7 @@ function SvgComponent(props: JSX.IntrinsicAttributes & JSX.IntrinsicClassAttribu
         />
         <Path
           d="M219.75 241l39.4 12.65a1.14 1.14 0 001.44-.74 1.13 1.13 0 00-.74-1.44l-41.58-13.35a2.29 2.29 0 001.48 2.88z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
         <Path
           d="M219.75 241l16.1 5.17a1.15 1.15 0 001.45-.74 1.15 1.15 0 00-.74-1.44l-18.29-5.87a2.29 2.29 0 001.48 2.88z"
@@ -414,7 +413,7 @@ function SvgComponent(props: JSX.IntrinsicAttributes & JSX.IntrinsicClassAttribu
         />
         <Path
           d="M173.91 171c-4.41.78-10.58 13.42-10.58 13.42l11.11 10s8.83-9.64 8.36-15.38c-.4-4.85-3.28-9.04-8.89-8.04z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
         <Path
           d="M173.91 171c-4.41.78-10.58 13.42-10.58 13.42l11.11 10s8.83-9.64 8.36-15.38c-.4-4.85-3.28-9.04-8.89-8.04z"
@@ -423,22 +422,22 @@ function SvgComponent(props: JSX.IntrinsicAttributes & JSX.IntrinsicClassAttribu
         />
         <Path
           d="M144.15 396.06a1.34 1.34 0 01-.35 0c-1.11-.06-2.29-1.76-2.9-2.76a.17.17 0 010-.19.16.16 0 01.18-.07c.36.07 3.47.77 3.86 1.82a.7.7 0 01-.12.68 1.32 1.32 0 01-.67.52zm-2.73-2.54c.89 1.37 1.77 2.19 2.4 2.23a.83.83 0 00.72-.39.32.32 0 00.07-.34c-.24-.64-2.11-1.24-3.19-1.5z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
         <Path
           d="M143.83 393.3a6.32 6.32 0 01-2.83.12.18.18 0 01-.12-.13.18.18 0 010-.17c.08-.07 1.9-1.85 3.17-1.76a1 1 0 01.8.42.72.72 0 01.08.88 2 2 0 01-1.1.64zm-2.41-.16c1 .14 2.87-.11 3.26-.68.06-.09.11-.23-.07-.46a.67.67 0 00-.54-.29c-.87-.06-2.13.96-2.65 1.43zM189.3 408.39a13.91 13.91 0 01-2.87-.37.17.17 0 010-.32c.43-.21 4.26-2 5.22-1.32a.58.58 0 01.25.54 1.28 1.28 0 01-.52 1 3.49 3.49 0 01-2.08.47zm-2.27-.6c1.13.21 3.23.49 4.1-.16a1 1 0 00.38-.73.22.22 0 00-.1-.23c-.54-.37-2.8.42-4.41 1.12z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
         <Path
           d="M186.46 408a.21.21 0 01-.11 0 .2.2 0 01-.06-.18c0-.16.91-3.93 3-3.69.52.07.66.32.69.53.13 1-2.28 2.89-3.43 3.37zm2.62-3.57c-1.32 0-2.09 2.2-2.35 3.08 1.25-.66 3-2.23 2.89-2.84 0-.05 0-.19-.39-.23z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
         <Path d="M206 144.05l1.77-.26s-1.05 1.21-1.77.26z" fill="#263238" />
       </G>
       <G>
         <Path
           d="M267.53 227.71l-38.72 8a2.58 2.58 0 01-3-2l-1.81-8.4-.65-3.1 1.14-3.54a12.72 12.72 0 01.57-1.49 1.07 1.07 0 01.1-.22 15.43 15.43 0 012.55-4l2-.42 33.2-6.89a2.58 2.58 0 013 2l3.53 17a2.58 2.58 0 01-1.91 3.06z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
         <Path
           d="M265.61 206.75l-18.68 19-4-1.62-15.56-6.31-2.19-.89a15.43 15.43 0 012.55-4l2-.42 33.2-6.89a2.59 2.59 0 012.68 1.13z"
@@ -446,7 +445,7 @@ function SvgComponent(props: JSX.IntrinsicAttributes & JSX.IntrinsicClassAttribu
         />
         <Path
           d="M265.61 206.75l-22.68 17.41-1.48 1.14-14.25-7.07-2.12-1a1.07 1.07 0 01.1-.22 15.43 15.43 0 012.55-4l2-.42 33.2-6.89a2.59 2.59 0 012.68 1.05z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
         <Path
           d="M265.61 206.75l-22.68 17.41-1.48 1.14-14.25-7.07-2.12-1a1.07 1.07 0 01.1-.22 15.43 15.43 0 012.55-4l2-.42 33.2-6.89a2.59 2.59 0 012.68 1.05z"
@@ -455,7 +454,7 @@ function SvgComponent(props: JSX.IntrinsicAttributes & JSX.IntrinsicClassAttribu
         />
         <Path
           d="M314.8 262.78L303 275.5a2.58 2.58 0 01-3.63.13l-28.94-26.95a2.57 2.57 0 01-.13-3.63l11.84-12.72a2.56 2.56 0 013.64-.13l28.93 26.95a2.57 2.57 0 01.65 2.8 2.36 2.36 0 01-.56.83z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
         <Path
           d="M315.32 262L289 257.71l-6.11-26a2.6 2.6 0 012.85.45l28.93 26.95a2.57 2.57 0 01.65 2.89z"
@@ -463,7 +462,7 @@ function SvgComponent(props: JSX.IntrinsicAttributes & JSX.IntrinsicClassAttribu
         />
         <Path
           d="M315.32 262l-25.63-7.64-6.8-22.56a2.6 2.6 0 012.85.45l28.93 26.95a2.57 2.57 0 01.65 2.8z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
         <Path
           d="M315.32 262l-25.63-7.64-6.8-22.56a2.6 2.6 0 012.85.45l28.93 26.95a2.57 2.57 0 01.65 2.8z"
@@ -472,7 +471,7 @@ function SvgComponent(props: JSX.IntrinsicAttributes & JSX.IntrinsicClassAttribu
         />
         <Path
           d="M325.09 283.73l13 15.18a2.81 2.81 0 01-.43 4.06l-28.24 22a2.23 2.23 0 01-2.94-.58l-10.17-11.6a3.08 3.08 0 01-.47-.74 2.15 2.15 0 01.23-2.32l25-26.11a2.69 2.69 0 013.14-.6 3 3 0 01.88.71z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
         <Path
           d="M324.21 283.05L318 310.67l-22.12 1.41a2.15 2.15 0 01.23-2.32l25-26.11a2.69 2.69 0 013.1-.6z"
@@ -480,7 +479,7 @@ function SvgComponent(props: JSX.IntrinsicAttributes & JSX.IntrinsicClassAttribu
         />
         <Path
           d="M324.21 283.05l-10.41 29.31-17.94-.28a2.15 2.15 0 01.23-2.32l25-26.11a2.69 2.69 0 013.12-.6z"
-          fill={Globals.COLOR.LIGHT.COLOR3}
+          fill={Globals.COLOR.COLOR3}
         />
         <Path
           d="M324.21 283.05l-10.41 29.31-17.94-.28a2.15 2.15 0 01.23-2.32l25-26.11a2.69 2.69 0 013.12-.6z"

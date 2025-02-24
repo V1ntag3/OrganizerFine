@@ -19,7 +19,7 @@
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.0</string>
+    <string>2.0.0</string>
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleURLTypes</key>
@@ -27,7 +27,8 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>com.alencar.bundle.organizerfine</string>
+          <string>myapp</string>
+          <string>com.alencar.organizerfine</string>
         </array>
       </dict>
     </array>
@@ -42,8 +43,16 @@
       <key>NSAllowsLocalNetworking</key>
       <true/>
     </dict>
-    <key>NSFileProtectionCompleteUntilFirstUserAuthentication</key>
+    <key>NSCameraUsageDescription</key>
     <true/>
+    <key>NSDocumentsDirectoryUsageDescription</key>
+    <string>O app precisa acessar seus arquivos para importar/exportar o banco de dados.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>O app precisa acessar arquivos para backup do banco de dados.</string>
+    <key>NSUserActivityTypes</key>
+    <array>
+      <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
+    </array>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>
@@ -67,7 +76,7 @@
       <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
     <key>UIUserInterfaceStyle</key>
-    <string>Light</string>
+    <string>Automatic</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
   </dict>
