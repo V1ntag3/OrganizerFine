@@ -25,7 +25,7 @@ export default {
         'Setembro',
         'Outubro',
         'Novembro',
-        'Dezembro',
+        'Dezembro'
     ],
     COLOR_ERROR: '#FA0501',
     COLOR_GASTO: '#FF6962',

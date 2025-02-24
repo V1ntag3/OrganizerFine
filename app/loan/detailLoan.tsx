@@ -12,7 +12,7 @@ import {
 import Validations from '@/utils/Validations';
 import * as Animatable from 'react-native-animatable'
 import { listTransactions } from '@/server/database/services/TransactionService';
-import { router, UnknownOutputParams, useLocalSearchParams, useNavigation } from 'expo-router';
+import { UnknownOutputParams, useLocalSearchParams, useNavigation } from 'expo-router';
 import { getLoanById } from '@/server/database/services/LoansService';
 import MenuBottomDetail from '@/components/Menus/MenuBottomDetail';
 import Title from '@/components/UI/Title';

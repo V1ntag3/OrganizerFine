@@ -6,8 +6,8 @@ import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 import { Provider } from '../context/Provider'
 import { useTheme } from 'tamagui'
-import { connectToDatabase } from 'server/database/database'
-import { createTables } from 'server/database/createTables'
+import { connectToDatabase } from '@/server/database/database'
+import { createTables } from '@/server/database/createTables'
 import * as SplashScreen from 'expo-splash-screen';
 
 SplashScreen.preventAutoHideAsync()

@@ -49,3 +49,4 @@ android
 
 .vscode
 .yarn
+!node_modules/react-native-modern-datepicker/
