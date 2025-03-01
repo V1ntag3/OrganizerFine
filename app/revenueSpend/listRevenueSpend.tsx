@@ -213,7 +213,8 @@ function DashBoard(): JSX.Element {
             <SafeAreaView edges={['top']} style={{ flex: 1 }}>
                 <MenuSide>
                     {show &&
-                        <><DatePicker
+                        <>
+                        <DatePicker
                             mode="monthYear"
                             isGregorian={true}
                             minimumDate={params.minDate}

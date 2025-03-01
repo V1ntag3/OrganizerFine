@@ -8,7 +8,7 @@ export const connectToDatabase = async (): Promise<SQLiteDatabase> => {
       { name: "organizer.db", location: "default" },
       () => {
         console.log("✅ Banco de dados aberto com sucesso!");
-        resolve(db as SQLiteDatabase); 
+        resolve(db as SQLiteDatabase);
       },
       (error) => {
         console.error("❌ Erro ao conectar ao banco:", error);

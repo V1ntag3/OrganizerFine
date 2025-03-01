@@ -3,23 +3,22 @@ import RNFS from "react-native-fs";
 import SQLite from "react-native-sqlite-storage";
 import Share from "react-native-share";
 import { Platform } from "react-native";
-import { connectToDatabase } from "../database";
 import { createTables } from "../createTables";
+
+const DB_NAME = "organizer.db";
 
 const getDatabasePath = () => {
     return Platform.OS === "ios"
-        ? `${RNFS.DocumentDirectoryPath}/../Library/LocalDatabase/organizer.db`
-        : `${RNFS.DocumentDirectoryPath}/../databases/organizer.db`;
+        ? `${RNFS.DocumentDirectoryPath}/../Library/LocalDatabase/${DB_NAME}`
+        : `${RNFS.DocumentDirectoryPath}/../databases/${DB_NAME}`;
 };
 
-const DB_NAME = "organizer.db";
 const DB_PATH = getDatabasePath();
 
 // 📂 Função para listar arquivos na pasta Library (Apenas para Debug)
 export const listLibraryFiles = async () => {
     try {
         const path = `${RNFS.LibraryDirectoryPath}/LocalDatabase/`;
-        console.log(path)
         const files = await RNFS.readDir(path);
         console.log("📂 Arquivos na pasta Library:", files.map(file => file.name));
     } catch (error) {
@@ -65,7 +64,7 @@ export const replaceDatabase = async (fileUri: string) => {
         // Verifica se o banco de dados atual existe
         const fileExists = await RNFS.exists(DB_PATH);
 
-        const db = SQLite.openDatabase({ name: "organizer.db", location: "default" });
+        const db = SQLite.openDatabase({ name: DB_NAME, location: "default" });
 
         if (db) {
             console.log("🛑 Fechando conexão com o banco antes de deletar...");
@@ -79,7 +78,7 @@ export const replaceDatabase = async (fileUri: string) => {
 
         // Copia o novo banco de dados para o local correto
         await RNFS.copyFile(fileUri, DB_PATH);
-        const newDb = await SQLite.openDatabase({ name: "organizer.db", location: "default" });
+        const newDb = await SQLite.openDatabase({ name: DB_NAME, location: "default" });
 
         console.log("📦 Criando tabelas...");
         await createTables(newDb);
@@ -97,7 +96,7 @@ export const resetDatabase = async () => {
     try {
         console.log("📂 Resetando banco de dados...");
 
-        const db = SQLite.openDatabase({ name: "organizer.db", location: "default" });
+        const db = SQLite.openDatabase({ name: DB_NAME, location: "default" });
 
         if (db) {
             console.log("🛑 Fechando conexão com o banco antes de deletar...");
@@ -114,7 +113,7 @@ export const resetDatabase = async () => {
         }
 
         console.log("📦 Criando um novo banco de dados...");
-        const newDb = await SQLite.openDatabase({ name: "organizer.db", location: "default" });
+        const newDb = await SQLite.openDatabase({ name: DB_NAME, location: "default" });
 
         console.log("📦 Criando tabelas...");
         await createTables(newDb);
