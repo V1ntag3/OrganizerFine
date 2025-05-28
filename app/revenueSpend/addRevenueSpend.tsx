@@ -221,7 +221,10 @@ function AddRevenueSpending(): JSX.Element {
                                     <PlusCircle color={"white"} size={35} />
                                 </TouchableOpacity>
                             </Animatable.View>
-                            <Animatable.View
+                          
+                        </View>
+                    </ScrollView>
+                    <Animatable.View
                                 useNativeDriver={true}
                                 animation={{
                                     from: {
@@ -237,9 +240,6 @@ function AddRevenueSpending(): JSX.Element {
                                     width: Globals.WIDTH * 1.5, height: 0.7 * Globals.HEIGHT, backgroundColor: type == 0 ? Globals.COLOR_RECEITA : Globals.COLOR_GASTO, position: 'absolute', zIndex: -1,
                                 }}>
                             </Animatable.View>
-                        </View>
-                    </ScrollView>
-
                 </MenuSide>
             </SafeAreaView>
         </View>
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
         padding: 10.75309,
         paddingBottom: 0,
         width: '100%',
-        height: 49.65,
+        height: 45,
         marginVertical: 8,
         marginBottom: 5,
         backgroundColor: 'white',
@@ -260,14 +260,10 @@ const styles = StyleSheet.create({
         borderRadius: 6.96875,
     },
     errorStyle: {
-        paddingLeft: 7,
         width: '100%',
-        maxWidth: '90%',
         alignSelf: 'center',
-        marginLeft: -15,
         color: Globals.COLOR_ERROR,
         fontSize: 11,
-        lineHeight: 12,
     },
     animationContainer: {
         width: '100%',
